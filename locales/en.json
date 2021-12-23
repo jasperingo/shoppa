@@ -1,0 +1,37 @@
+{
+
+  "_created": {
+    "_customer": "Customer created"
+  },
+
+  "_updated": {
+    "_customer": "Customer updated",
+    "_password": "Password updated"
+  },
+
+  "_login": "Login successfully",
+
+  "_error": {
+    
+    "_server": "Server is unable to process request",
+    "_bad_request": "Request parameters could not be processed",
+    "_not_found": "Resource could not be found",
+    "_forbidden": "Permission not granted",
+    "_unauthorized": "Authorization failed",
+
+    "_form": {
+      "_field_required": "This field is required",
+      "_field_invalid": "This field is invalid",
+      "_email_invalid": "This email is invalid",
+      "_email_exists": "This email already exists",
+      "_password_invalid": "This password is invalid",
+      "_password_length": "Password minimium length is {{min}} and maximum length is {{max}}",
+      "_password_confirmation_not_match": "This field do not match with password",
+      "_phone_number_invalid": "This phone number is invalid"
+    }
+
+  }
+
+}
+
+

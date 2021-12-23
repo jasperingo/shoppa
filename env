@@ -1,0 +1,12 @@
+APP_NAME=dailyneeds
+DOMAIN_NAME=http://localhost:3001/
+API_PATH=http://localhost:3001/api/
+
+DB_HOST=localhost
+DB_NAME=dailyneeds
+DB_USER=root
+DB_PASSWORD=
+DB_DIALECT=mysql
+
+JWT_SECRET=
+
