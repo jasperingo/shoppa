@@ -5,6 +5,11 @@ const sequelize = require("./DB");
 
 module.exports = {
 
+  async idExists(id) {
+    const res = await User.findOne({ attributes: ['id'], where: { id } });
+    return res !== null;
+  },
+
   async emailExists(email) {
     const res = await User.findOne({ attributes: ['id'], where: { email } });
     return res !== null;
@@ -50,8 +55,9 @@ module.exports = {
     });
   },
 
-  async get(id) {
-    return await Customer.findOne({   
+  get(id) {
+    return Customer.findOne({   
+      attributes: { exclude: ['password'] },
       include: {
         model: User,
         where: { id }
@@ -59,11 +65,11 @@ module.exports = {
     });
   },
 
-  async add(data, password) {
+  add(data, password) {
 
     data.name = `${data.first_name} ${data.last_name}`;
 
-    return await Customer.create({
+    return Customer.create({
       first_name: data.first_name,
       last_name: data.last_name,
       password,
@@ -74,8 +80,8 @@ module.exports = {
     }, { include: User });
   },
 
-  async update(id, { first_name, last_name, email, phone_number }) {
-    return await sequelize.transaction(async ()=> {
+  update(id, { first_name, last_name, email, phone_number }) {
+    return sequelize.transaction(async ()=> {
 
       const userUpdate = await User.update({ email, phone_number }, { where: { id } });
 
@@ -85,8 +91,12 @@ module.exports = {
     });
   },
 
-  async updatePassword(id, password) {
-    return await Customer.update({ password }, { where: { id } });
+  updatePassword(id, password) {
+    return Customer.update({ password }, { where: { id } });
+  },
+
+  updatePhoto(id, photo) {
+    return User.update({ photo }, { where : { id } })
   }
 
 };

@@ -1,7 +1,15 @@
+const { validationResult } = require("express-validator");
 const InternalServerException = require("../http/exceptions/InternalServerException");
 
 module.exports = {
 
+  errorFormat: err=> ({
+    name: err.param,
+    value: err.value,
+    message: err.msg,
+    errors: err.nestedErrors
+  }),
+  
   validationHasServerError(errors) {
     const emailError = errors.mapped().email;
     const passwordError = errors.mapped().password;

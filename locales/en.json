@@ -1,12 +1,19 @@
 {
 
   "_created": {
-    "_customer": "Customer created"
+    "_customer": "Customer created",
+    "_address": "Address created"
   },
 
   "_updated": {
     "_customer": "Customer updated",
-    "_password": "Password updated"
+    "_password": "Password updated",
+    "_photo": "Photo updated",
+    "_address": "Address updated"
+  },
+
+  "_fetched": {
+    "_address": "Address fetched"
   },
 
   "_login": "Login successfully",
@@ -20,6 +27,10 @@
     "_unauthorized": "Authorization failed",
 
     "_form": {
+      "_id_invalid": "This ID is invalid",
+      
+      "_title_exists": "This title already exists",
+
       "_field_required": "This field is required",
       "_field_invalid": "This field is invalid",
       "_email_invalid": "This email is invalid",

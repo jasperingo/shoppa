@@ -53,7 +53,7 @@ User.init({
       const photoName = this.getDataValue('photo');
       return {
         name: photoName,
-        href: `photos/${photoName ? photoName : 'default.jpg'}`
+        href: `${process.env.PHOTOS_PATH}user/${photoName ? photoName : 'default.jpg'}`
       };
     }
   },

@@ -1,14 +1,8 @@
 
 const { validationResult } = require("express-validator");
+const { errorFormat } = require("./ValidationRules");
 
-const ValidationCheck = validationResult.withDefaults({
-  formatter: err=> ({
-    name: err.param,
-    value: err.value,
-    message: err.msg,
-    errors: err.nestedErrors
-  })
-});
+const ValidationCheck = validationResult.withDefaults({ formatter: errorFormat });
 
 module.exports = ValidationCheck;
 

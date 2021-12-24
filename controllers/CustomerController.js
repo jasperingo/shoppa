@@ -72,8 +72,6 @@ module.exports = class CustomerController {
 
       const customer = await CustomerRepository.get(req.params.id);
 
-      customer.password = undefined;
-
       const response = new Response(Response.SUCCESS, req.__('_updated._customer'), customer);
 
       res.status(StatusCodes.OK).send(response);
@@ -89,7 +87,7 @@ module.exports = class CustomerController {
 
       const hashedPassword = await hashPassword(req.body.password);
       
-      await CustomerRepository.update(req.params.id, hashedPassword);
+      await CustomerRepository.updatePassword(req.params.id, hashedPassword);
 
       const response = new Response(Response.SUCCESS, req.__('_updated._password'));
 
@@ -100,7 +98,22 @@ module.exports = class CustomerController {
     }
   }
 
-  
+  async updatePhoto(req, res, next) {
+
+    try {
+
+      await CustomerRepository.updatePhoto(req.params.id, req.file.filename);
+
+      const customer = await CustomerRepository.get(req.params.id);
+
+      const response = new Response(Response.SUCCESS, req.__('_updated._password'), customer);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch (error) {
+      next(new InternalServerException(error));
+    }
+  }
 
 }
 
