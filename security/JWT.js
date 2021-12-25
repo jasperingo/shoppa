@@ -16,6 +16,11 @@ function signAdminJWT(payload) {
   return signJWT(payload);
 }
 
+function signStoreJWT(payload) {
+  payload.authType = AUTH_STORE_ADMIN;
+  return signJWT(payload);
+}
+
 function signJWT(payload) {
 
   const expiring_date = getJWTExpiringDate();
@@ -49,6 +54,7 @@ function verifyJWT(token) {
 module.exports = { 
   signCustomerJWT, 
   signAdminJWT, 
+  signStoreJWT,
   getJWTExpiringDate, 
   verifyJWT, 
   AUTH_APP_ADMIN, 

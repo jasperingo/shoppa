@@ -5,7 +5,15 @@ const User = require("./User");
 
 class Store extends Model {}
 
-Store.init({},
+Store.init({
+
+  id: {
+    type: DataTypes.BIGINT,
+    primaryKey: true,
+    autoIncrement: true
+  },
+
+},
 {
   sequelize,
   timestamps: false,
@@ -14,19 +22,18 @@ Store.init({},
 });
 
 const foreignKey = {
-  name: 'id',
-  type: DataTypes.BIGINT,
-  primaryKey: true
-};
-
-const catForeignKey = {
-  name: 'sub_category_id',
+  name: 'user_id',
   type: DataTypes.BIGINT
 };
 
 User.hasOne(Store, { foreignKey });
 
 Store.belongsTo(User, { foreignKey });
+
+const catForeignKey = {
+  name: 'sub_category_id',
+  type: DataTypes.BIGINT
+};
 
 Store.belongsTo(SubCategory, { foreignKey: catForeignKey });
 

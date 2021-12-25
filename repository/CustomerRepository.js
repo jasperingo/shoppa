@@ -11,7 +11,7 @@ module.exports = {
   },
 
   async emailExists(email) {
-    const res = await User.findOne({ attributes: ['id'], where: { email } });
+    const res = await User.findOne({ attributes: ['id'], where: { type: User.TYPE_CUSTOMER, email } });
     return res !== null;
   },
 
@@ -20,37 +20,21 @@ module.exports = {
       attributes: ['id'], 
       where: { 
         email, 
+        type: User.TYPE_CUSTOMER,
         [Op.not]: { id } 
       } 
     });
     return user !== null;
   },
 
-  async getPasswordById(id) {
-    const user = await Customer.findOne({ 
-      attributes: ['password'],
-      where: { id } 
-    });
-    return user ? user.password : '';
-  },
-
-  async getPasswordByEmail(email) {
-    const user = await Customer.findOne({ 
-      attributes: ['password'],
-      include: {
-        model: User,
-        attributes: [],
-        where: { email } 
-      } 
-    });
-    return user ? user.password : '';
-  },
-
   getByEmail(email) {
     return Customer.findOne({   
       include: {
         model: User,
-        where: { email }
+        where: { 
+          email,
+          type: User.TYPE_CUSTOMER
+        }
       } 
     });
   },
@@ -77,17 +61,16 @@ module.exports = {
       limit
     });
   },
-
+  
   add(data, password) {
-
-    data.name = `${data.first_name} ${data.last_name}`;
 
     return Customer.create({
       first_name: data.first_name,
       last_name: data.last_name,
       password,
       user: {
-        ...data,
+        email: data.email,
+        name: `${data.first_name} ${data.last_name}`,
         type: User.TYPE_CUSTOMER
       }
     }, { include: User });

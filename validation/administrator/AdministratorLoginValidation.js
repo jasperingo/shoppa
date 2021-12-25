@@ -1,14 +1,14 @@
 
 const InternalServerException = require('../../http/exceptions/InternalServerException');
-const { notEmpty, isEmail, isPasswordLength } = require('../ValidationRules');
+const ValidationRules = require('../ValidationRules');
 const { comparePassword } = require('../../security/Hash');
 const AdministratorRepository = require('../../repository/AdministratorRepository');
 
 module.exports = {
 
   email: {
-    notEmpty,
-    isEmail,
+    notEmpty: ValidationRules.notEmpty,
+    isEmail: ValidationRules.isEmail,
     custom: {
       options: async (value, { req })=> {
         try {
@@ -24,26 +24,8 @@ module.exports = {
     }
   },
 
-  password: {
-    isLength: isPasswordLength, 
-    custom: {
-      options: async (value, { req })=> {
-        try {
-          if (! (await comparePassword(value, req.data.administrator.password)) )
-            return Promise.reject(req.__('_error._form._password_invalid'));
-        } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
-        }
-      }
-    }
-  },
+  password: ValidationRules.getAuthPasswordValid('administrator'),
 
-  password_confirmation: {
-    isLength: isPasswordLength,
-    custom: {
-      options: (value, { req })=> value === req.body.password,
-      errorMessage: (value, { req })=> req.__('_error._form._password_confirmation_not_match')
-    }
-  }
+  password_confirmation: ValidationRules.getPasswordConfirmation()
 };
 

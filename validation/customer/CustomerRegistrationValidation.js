@@ -1,21 +1,21 @@
 
 const InternalServerException = require('../../http/exceptions/InternalServerException');
-const { notEmpty, isEmail, isPasswordLength } = require('../ValidationRules');
+const ValidationRules = require('../ValidationRules');
 const CustomerRepository = require('../../repository/CustomerRepository');
 
 module.exports = {
 
   first_name: {
-    notEmpty
+    notEmpty: ValidationRules.notEmpty
   },
 
   last_name: {
-    notEmpty
+    notEmpty: ValidationRules.notEmpty
   },
 
   email: {
-    notEmpty,
-    isEmail,
+    notEmpty: ValidationRules.notEmpty,
+    isEmail: ValidationRules.isEmail,
     custom: {
       options: async (value, { req })=> {
         try {
@@ -29,15 +29,9 @@ module.exports = {
   },
 
   password: {
-    isLength: isPasswordLength
+    isLength: ValidationRules.isPasswordLength
   },
   
-  password_confirmation: {
-    isLength: isPasswordLength,
-    custom: {
-      options: (value, { req })=> value === req.body.password,
-      errorMessage: (value, { req })=> req.__('_error._form._password_confirmation_not_match')
-    }
-  }
+  password_confirmation: ValidationRules.getPasswordConfirmation()
 };
 

@@ -58,7 +58,8 @@ Administrator.init({
 
   status: {
     type: DataTypes.ENUM(Administrator.STATUS_ACTIVE, Administrator.STATUS_SUSPENDED, Administrator.STATUS_DEACTIVATED),
-    allowNull: false
+    allowNull: false,
+    defaultValue: Administrator.STATUS_ACTIVE
   },
 
   created_at: {

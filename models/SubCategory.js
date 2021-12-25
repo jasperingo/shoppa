@@ -19,14 +19,28 @@ SubCategory.init({
 
   photo: {
     type: DataTypes.STRING,
+    get() {
+      const photoName = this.getDataValue('photo');
+      return {
+        name: photoName,
+        href: `${process.env.PHOTOS_PATH}sub-category/${photoName ? photoName : 'default.jpg'}`
+      };
+    }
   },
 
   description: {
     type: DataTypes.STRING
   },
 
-  create_at: {
+  created_at: {
     type: DataTypes.DATE
+  },
+
+  href: {
+    type: DataTypes.VIRTUAL,
+    get() {
+      return `${process.env.API_PATH}sub-category/${this.id}`;
+    }
   }
 
 },

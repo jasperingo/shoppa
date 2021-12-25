@@ -9,7 +9,9 @@ module.exports = class AddressController {
 
     try {
 
-      const address = await AddressRepository.addForCustomer(req.body);
+      const _address = await AddressRepository.addForCustomer(req.body);
+
+      const address = await AddressRepository.get(_address.id);
 
       const response = new Response(Response.SUCCESS, req.__('_created._address'), address);
 

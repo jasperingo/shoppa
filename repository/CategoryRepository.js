@@ -4,6 +4,11 @@ const Category = require("../models/Category");
 
 module.exports = {
 
+  async idExists(id) {
+    const res = await Category.findOne({ attributes: ['id'], where: { id } });
+    return res !== null;
+  },
+
   async nameExists(name) {
     const res = await Category.findOne({ attributes: ['id'], where: { name } });
     return res !== null;
@@ -33,7 +38,7 @@ module.exports = {
   },
   
   update(category, data) {
-    category.set(data)
+    category.set(data);
     return category.save();
   },
   

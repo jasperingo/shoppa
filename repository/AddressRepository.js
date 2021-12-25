@@ -87,10 +87,14 @@ module.exports = {
 
         if (addr !== null) data.type = Address.TYPE_DEFAULT;
       }
-
-      data.user_id = undefined;
-
-      address.set(data);
+      
+      address.set({
+        title: data.title,
+        street: data.street,
+        city: data.city,
+        state: data.state,
+        type: data.type
+      });
 
       return await address.save();
     });

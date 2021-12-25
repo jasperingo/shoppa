@@ -2,14 +2,12 @@
 const InternalServerException = require('../../http/exceptions/InternalServerException');
 const AddressRepository = require('../../repository/AddressRepository');
 const CustomerRepository = require('../../repository/CustomerRepository');
-const { notEmpty, addressTypeIsIn } = require('../ValidationRules');
+const { notEmpty, isInt, addressTypeIsIn } = require('../ValidationRules');
 
 module.exports = {
 
   user_id: {
-    isInt: {
-      bail: true
-    },
+    isInt,
     custom: {
       options: async (value, { req })=> {
         try {

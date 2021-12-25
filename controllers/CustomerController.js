@@ -22,14 +22,16 @@ module.exports = class CustomerController {
 
     return signCustomerJWT(userObj);
   }
-
+  
   register = async (req, res, next)=> {
     
     try {
       
       const hashedPassword = await hashPassword(req.body.password);
 
-      const customer = await CustomerRepository.add(req.body, hashedPassword);
+      const _customer = await CustomerRepository.add(req.body, hashedPassword);
+
+      const customer = await CustomerRepository.get(_customer.id);
 
       const token = await this.generateJWT(customer);
 

@@ -2,6 +2,7 @@
 const InternalServerException = require("../http/exceptions/InternalServerException");
 const Address = require("../models/Address");
 const Category = require("../models/Category");
+const CustomerRepository = require("../repository/CustomerRepository");
 
 module.exports = {
 
@@ -42,6 +43,11 @@ module.exports = {
     errorMessage: (value, { req })=> req.__('_error._form._field_required')
   },
 
+  isInt: {
+    bail: true,
+    errorMessage: (value, { req })=> req.__('_error._form._field_invalid')
+  },
+
   isEmail: {
     bail: true,
     errorMessage: (value, { req })=> req.__('_error._form._email_invalid')
@@ -55,6 +61,52 @@ module.exports = {
   categoryTypeIsIn: {
     options: [[Category.TYPE_STORE, Category.TYPE_PRODUCT]],
     errorMessage: (value, { req })=> req.__('_error._form._field_invalid')
+  },
+
+  getAuthPasswordValid(user) {
+    return {
+      isLength: this.isPasswordLength, 
+      custom: {
+        options: async (value, { req })=> {
+          try {
+            if (! (await comparePassword(value, req.data[user].password)) )
+              return Promise.reject(req.__('_error._form._password_invalid'));
+          } catch (err) {
+            return Promise.reject(InternalServerException.TAG);
+          }
+        }
+      }
+    };
+  },
+  
+  getCustomerEmailValid() {
+    return {
+      notEmpty: this.notEmpty,
+      isEmail: this.isEmail,
+      custom: {
+        options: async (value, { req })=> {
+          try {
+            const customer = await CustomerRepository.getByEmail(value)
+            if (customer === null)
+              return Promise.reject(req.__('_error._form._email_invalid'));
+            else 
+              req.data = { customer };
+          } catch (err) {
+            return Promise.reject(InternalServerException.TAG);
+          }
+        }
+      }
+    }
+  },
+
+  getPasswordConfirmation(pwd = 'password') {
+    return {
+      isLength: this.isPasswordLength,
+      custom: {
+        options: (value, { req })=> value === req.body[pwd],
+        errorMessage: (value, { req })=> req.__('_error._form._password_confirmation_not_match')
+      }
+    }
   }
 
 };

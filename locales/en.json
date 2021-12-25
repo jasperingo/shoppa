@@ -3,20 +3,25 @@
   "_created": {
     "_customer": "Customer created",
     "_address": "Address created",
-    "_category": "Category created"
+    "_category": "Category created",
+    "_sub_category": "Sub-category created",
+    "_store": "Store created"
   },
 
   "_updated": {
     "_customer": "Customer updated",
     "_password": "Password updated",
     "_photo": "Photo updated",
-    "_address": "Address updated"
+    "_address": "Address updated",
+    "_category": "Category updated",
+    "_sub_category": "Sub-category updated"
   },
 
   "_fetched": {
     "_customer": "Customer fetched",
     "_address": "Address fetched",
-    "_category": "Category fetched"
+    "_category": "Category fetched",
+    "_sub_category": "Sub-category fetched"
   },
 
   "_list_fetched": {

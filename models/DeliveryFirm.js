@@ -4,7 +4,15 @@ const User = require("./User");
 
 class DeliveryFirm extends Model {}
 
-DeliveryFirm.init({},
+DeliveryFirm.init({
+
+  id: {
+    type: DataTypes.BIGINT,
+    primaryKey: true,
+    autoIncrement: true
+  },
+
+},
 {
   sequelize,
   timestamps: false,
@@ -13,9 +21,8 @@ DeliveryFirm.init({},
 });
 
 const foreignKey = {
-  name: 'id',
-  type: DataTypes.BIGINT,
-  primaryKey: true
+  name: 'user_id',
+  type: DataTypes.BIGINT
 };
 
 User.hasOne(DeliveryFirm, { foreignKey });

@@ -13,6 +13,12 @@ class Customer extends Model {
 
 Customer.init({
 
+  id: {
+    type: DataTypes.BIGINT,
+    primaryKey: true,
+    autoIncrement: true
+  },
+
   first_name: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -43,9 +49,8 @@ Customer.init({
 });
 
 const foreignKey = {
-  name: 'id',
-  type: DataTypes.BIGINT,
-  primaryKey: true
+  name: 'user_id',
+  type: DataTypes.BIGINT
 };
 
 User.hasOne(Customer, {

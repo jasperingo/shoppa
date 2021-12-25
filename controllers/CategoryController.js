@@ -10,7 +10,9 @@ module.exports = class CategoryController {
     
     try {
 
-      const category = await CategoryRepository.add(req.body);
+      const _category = await CategoryRepository.add(req.body);
+
+      const category = await CategoryRepository.get(_category.id);
 
       const response = new Response(Response.SUCCESS, req.__('_created._category'), category);
 
@@ -55,7 +57,7 @@ module.exports = class CategoryController {
     }
   }
 
-  async get(req, res) {
+  get(req, res) {
 
     const response = new Response(Response.SUCCESS, req.__('_fetched._category'), req.data.category);
 
