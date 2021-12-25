@@ -3,7 +3,13 @@ const { Model, DataTypes } = require("sequelize");
 const sequelize = require('../repository/DB');
 const User = require("./User");
 
-class Customer extends Model {}
+class Customer extends Model {
+
+  hidePassword() {
+    this.password = undefined;
+  }
+
+}
 
 Customer.init({
 
@@ -34,18 +40,6 @@ Customer.init({
   timestamps: false,
   tableName: 'customers',
   modelName: 'customer',
-  hooks: {
-    afterFind: (record)=> {
-      if (record) {
-        record.dataValues = {
-          ...record.dataValues,
-          ...(record.dataValues.user ? record.dataValues.user.dataValues : {}),
-          photo: (record.dataValues.user ? record.dataValues.user.photo : {}),
-          user: undefined
-        }
-      }
-    }
-  }
 });
 
 const foreignKey = {

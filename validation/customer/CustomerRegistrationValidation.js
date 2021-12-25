@@ -4,12 +4,15 @@ const { notEmpty, isEmail, isPasswordLength } = require('../ValidationRules');
 const CustomerRepository = require('../../repository/CustomerRepository');
 
 module.exports = {
+
   first_name: {
     notEmpty
   },
+
   last_name: {
     notEmpty
   },
+
   email: {
     notEmpty,
     isEmail,
@@ -24,9 +27,11 @@ module.exports = {
       }
     }
   },
+
   password: {
     isLength: isPasswordLength
   },
+  
   password_confirmation: {
     isLength: isPasswordLength,
     custom: {

@@ -1,5 +1,4 @@
 
-const { get } = require("express/lib/response");
 const { Model, DataTypes } = require("sequelize");
 const sequelize = require('../repository/DB');
 
@@ -10,6 +9,7 @@ class User extends Model {
   static TYPE_STORE = 'store';
 
   static TYPE_DELIVERY_FIRM = 'delivery_firm';
+  
 
   static STATUS_ACTIVE = 'active';
 

@@ -1,9 +1,8 @@
 
 const InternalServerException = require('../../http/exceptions/InternalServerException');
-const Address = require('../../models/Address');
 const AddressRepository = require('../../repository/AddressRepository');
 const CustomerRepository = require('../../repository/CustomerRepository');
-const { notEmpty } = require('../ValidationRules');
+const { notEmpty, addressTypeIsIn } = require('../ValidationRules');
 
 module.exports = {
 
@@ -51,7 +50,7 @@ module.exports = {
 
   type: {
     notEmpty,
-    in: [Address.TYPE_DEFAULT, Address.TYPE_SUB, Address.TYPE_PICK_UP]
+    isIn: addressTypeIsIn
   }
 
 };

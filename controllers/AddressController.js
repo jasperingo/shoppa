@@ -1,6 +1,5 @@
 const { StatusCodes } = require("http-status-codes");
 const InternalServerException = require("../http/exceptions/InternalServerException");
-const NotFoundException = require("../http/exceptions/NotFoundException");
 const Response = require("../http/Response");
 const AddressRepository = require("../repository/AddressRepository");
 
@@ -25,9 +24,11 @@ module.exports = class AddressController {
 
     try {
 
-      await AddressRepository.updateForCustomer(req.params.id, req.body);
+      const { address } = req.data;
 
-      const address = await AddressRepository.get(parseInt(req.params.id));
+      await AddressRepository.updateForCustomer(address, req.body);
+
+      //const address = await AddressRepository.get(parseInt(req.params.id));
 
       const response = new Response(Response.SUCCESS, req.__('_updated._address'), address);
 
@@ -38,25 +39,29 @@ module.exports = class AddressController {
     }
   }
 
-  async get(req, res, next) {
+  get(req, res) {
+
+    const response = new Response(Response.SUCCESS, req.__('_fetched._address'), req.data.address);
+
+    res.status(StatusCodes.OK).send(response);
+  }
+
+  async getListByCustomer(req, res, next) {
 
     try {
 
-      const address = await AddressRepository.get(parseInt(req.params.id));
+      const addresses = await AddressRepository.getListByCustomer(req.params.id);
 
-      if (address === null) {
-        next(new NotFoundException());
-      } else {
-        
-        const response = new Response(Response.SUCCESS, req.__('_fetched._address'), address);
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._address'), addresses);
 
-        res.status(StatusCodes.OK).send(response);
-      }
+      res.status(StatusCodes.OK).send(response);
 
-    } catch (error) {
-      next(new InternalServerException(error));
+    } catch(error) {
+      next(new InternalServerException());
     }
   }
+
+
 
 }
 

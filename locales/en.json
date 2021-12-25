@@ -2,7 +2,8 @@
 
   "_created": {
     "_customer": "Customer created",
-    "_address": "Address created"
+    "_address": "Address created",
+    "_category": "Category created"
   },
 
   "_updated": {
@@ -13,7 +14,15 @@
   },
 
   "_fetched": {
-    "_address": "Address fetched"
+    "_customer": "Customer fetched",
+    "_address": "Address fetched",
+    "_category": "Category fetched"
+  },
+
+  "_list_fetched": {
+    "_customer": "Customer list fetched",
+    "_address": "Address list fetched",
+    "_category": "Category list fetched"
   },
 
   "_login": "Login successfully",
@@ -30,6 +39,8 @@
       "_id_invalid": "This ID is invalid",
       
       "_title_exists": "This title already exists",
+
+      "_name_exists": "This name already exists",
 
       "_field_required": "This field is required",
       "_field_invalid": "This field is invalid",

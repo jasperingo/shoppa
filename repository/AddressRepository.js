@@ -33,8 +33,15 @@ module.exports = {
     return addr !== null;
   },
 
-  async get(id) {
+  get(id) {
     return Address.findByPk(id);
+  },
+
+  getListByCustomer(id) {
+    return Address.findAll({ 
+      where: { user_id: id },
+      order: [['type', 'ASC']]
+    });
   },
 
   addForCustomer(data) {
@@ -61,7 +68,7 @@ module.exports = {
     });
   },
 
-  updateForCustomer(id, data) {
+  updateForCustomer(address, data) {
     
     return sequelize.transaction(async ()=> {
 
@@ -83,7 +90,9 @@ module.exports = {
 
       data.user_id = undefined;
 
-      return await Address.update(data, { where: { id } });
+      address.set(data);
+
+      return await address.save();
     });
   },
 

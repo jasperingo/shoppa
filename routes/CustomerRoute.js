@@ -4,7 +4,7 @@ const { checkSchema } = require('express-validator');
 const CustomerController = require('../controllers/CustomerController');
 const UnauthorizedException = require('../http/exceptions/UnauthorizedException');
 const AuthMiddleware = require('../middlewares/AuthMiddleware');
-const PermissionMiddleware = require('../middlewares/PermissionMiddleware');
+const CustomerPermissionMiddleware = require('../middlewares/permissions/CustomerPermissionMiddleware');
 const ValidationMiddleware = require('../middlewares/ValidationMiddleware');
 const FileUploadMiddleware = require('../middlewares/FileUploadMiddleware');
 const CustomerLoginValidation = require('../validation/customer/CustomerLoginValidation');
@@ -12,20 +12,83 @@ const CustomerRegistrationValidation = require('../validation/customer/CustomerR
 const CustomerUpdatePasswordValidation = require('../validation/customer/CustomerUpdatePasswordValidation');
 const CustomerUpdateValidation = require('../validation/customer/CustomerUpdateValidation');
 const FileUploadValidationMiddleware = require('../middlewares/FileUploadValidationMiddleware');
+const CustomerFetchMiddleware = require('../middlewares/fetch/CustomerFetchMiddleware');
+const PaginationMiddleware = require('../middlewares/PaginationMiddleware');
+const AdministratorPermissionMiddleware = require('../middlewares/permissions/AdministratorPermissionMiddleware');
+const AddressController = require('../controllers/AddressController');
 
 const router = express.Router();
 
 const controller = new CustomerController();
 
-router.post('/register', checkSchema(CustomerRegistrationValidation), ValidationMiddleware(), controller.register);
+const addressController = new AddressController();
 
-router.post('/login', checkSchema(CustomerLoginValidation), ValidationMiddleware(UnauthorizedException), controller.login);
+router.post(
+  '/register', 
+  checkSchema(CustomerRegistrationValidation), 
+  ValidationMiddleware(), 
+  controller.register
+);
 
-router.put('/:id/update/photo', AuthMiddleware, PermissionMiddleware.permit(), FileUploadMiddleware('user').single('photo'), FileUploadValidationMiddleware, controller.updatePhoto);
+router.post(
+  '/login', 
+  checkSchema(CustomerLoginValidation), 
+  ValidationMiddleware(UnauthorizedException), 
+  controller.login
+);
 
-router.put('/:id/update/password', AuthMiddleware, PermissionMiddleware.permit(), checkSchema(CustomerUpdatePasswordValidation), ValidationMiddleware(), controller.updatePassword);
+router.put(
+  '/:id(\\d+)/update', 
+  CustomerFetchMiddleware,
+  AuthMiddleware, 
+  CustomerPermissionMiddleware, 
+  checkSchema(CustomerUpdateValidation), 
+  ValidationMiddleware(), 
+  controller.update
+);
 
-router.put('/:id/update', AuthMiddleware, PermissionMiddleware.permit(), checkSchema(CustomerUpdateValidation), ValidationMiddleware(), controller.update);
+router.put(
+  '/:id(\\d+)/photo/update',
+  CustomerFetchMiddleware, 
+  AuthMiddleware,
+  CustomerPermissionMiddleware, 
+  FileUploadMiddleware('user').single('photo'), 
+  FileUploadValidationMiddleware, 
+  controller.updatePhoto
+);
 
+router.put(
+  '/:id(\\d+)/password/update', 
+  CustomerFetchMiddleware,
+  AuthMiddleware, 
+  CustomerPermissionMiddleware, 
+  checkSchema(CustomerUpdatePasswordValidation), 
+  ValidationMiddleware(), 
+  controller.updatePassword
+);
+
+router.get(
+  '/list', 
+  AuthMiddleware, 
+  AdministratorPermissionMiddleware,
+  PaginationMiddleware,
+  controller.getList
+);
+
+router.get(
+  '/:id(\\d+)/address/list', 
+  CustomerFetchMiddleware,
+  AuthMiddleware, 
+  CustomerPermissionMiddleware,
+  addressController.getListByCustomer
+);
+
+router.get(
+  '/:id(\\d+)', 
+  CustomerFetchMiddleware,
+  AuthMiddleware, 
+  CustomerPermissionMiddleware,
+  controller.get
+);
 
 module.exports = router;

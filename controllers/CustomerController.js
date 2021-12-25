@@ -1,6 +1,7 @@
 
 const { StatusCodes } = require("http-status-codes");
 const InternalServerException = require("../http/exceptions/InternalServerException");
+const Pagination = require("../http/Pagination");
 const Response = require("../http/Response");
 const CustomerRepository = require("../repository/CustomerRepository");
 const { hashPassword } = require("../security/Hash");
@@ -10,13 +11,13 @@ module.exports = class CustomerController {
 
   generateJWT = (customer)=> {
     
-    customer.password = undefined;
+    customer.hidePassword();
 
     const userObj = {
       id : customer.id,
       first_name: customer.first_name,
       last_name: customer.last_name,
-      email: customer.email
+      email: customer.user.email
     };
 
     return signCustomerJWT(userObj);
@@ -103,14 +104,40 @@ module.exports = class CustomerController {
     try {
 
       await CustomerRepository.updatePhoto(req.params.id, req.file.filename);
-
+      
       const customer = await CustomerRepository.get(req.params.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._password'), customer);
+      const response = new Response(Response.SUCCESS, req.__('_updated._photo'), customer);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
+      next(new InternalServerException(error));
+    }
+  }
+
+  get(req, res) {
+
+    const response = new Response(Response.SUCCESS, req.__('_fetched._customer'), req.data.customer);
+
+    res.status(StatusCodes.OK).send(response);
+  }
+
+  async getList(req, res, next) {
+
+    try {
+
+      const { pager } = req.data;
+
+      const { count, rows } = await CustomerRepository.getList(pager.page_offset, pager.page_limit);
+
+      const pagination = new Pagination(req, pager.page, pager.page_limit, count);
+
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._customer'), rows, pagination);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
       next(new InternalServerException(error));
     }
   }

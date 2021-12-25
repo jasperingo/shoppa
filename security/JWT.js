@@ -2,7 +2,9 @@
 const jwt = require('jsonwebtoken');
 
 const AUTH_CUSTOMER = 'CUSTOMER';
-const AUTH_ADMIN = 'ADMIN';
+const AUTH_APP_ADMIN = 'APP_ADMIN';
+const AUTH_STORE_ADMIN = 'STORE_ADMIN';
+const AUTH_DELIVERY_ADMIN = 'DELIVERY_ADMIN';
 
 function signCustomerJWT(payload) {
   payload.authType = AUTH_CUSTOMER;
@@ -10,7 +12,7 @@ function signCustomerJWT(payload) {
 }
 
 function signAdminJWT(payload) {
-  payload.authType = AUTH_ADMIN;
+  payload.authType = AUTH_APP_ADMIN;
   return signJWT(payload);
 }
 
@@ -44,4 +46,13 @@ function verifyJWT(token) {
   });
 }
 
-module.exports = { signCustomerJWT, signAdminJWT, getJWTExpiringDate, verifyJWT, AUTH_ADMIN, AUTH_CUSTOMER };
+module.exports = { 
+  signCustomerJWT, 
+  signAdminJWT, 
+  getJWTExpiringDate, 
+  verifyJWT, 
+  AUTH_APP_ADMIN, 
+  AUTH_CUSTOMER,
+  AUTH_STORE_ADMIN,
+  AUTH_DELIVERY_ADMIN
+};

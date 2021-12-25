@@ -1,19 +1,22 @@
 
 const InternalServerException = require('../../http/exceptions/InternalServerException');
 const { notEmpty, isEmail, isPasswordLength } = require('../ValidationRules');
-const { emailExists, getPasswordByEmail } = require('../../repository/CustomerRepository');
 const { comparePassword } = require('../../security/Hash');
+const AdministratorRepository = require('../../repository/AdministratorRepository');
 
 module.exports = {
-  
+
   email: {
     notEmpty,
     isEmail,
     custom: {
       options: async (value, { req })=> {
         try {
-          if (!(await emailExists(value)))
+          const administrator = await AdministratorRepository.getByEmail(value);
+          if (administrator === null)
             return Promise.reject(req.__('_error._form._email_invalid'));
+          else 
+            req.data = { administrator };
         } catch (err) {
           return Promise.reject(InternalServerException.TAG);
         }
@@ -26,8 +29,7 @@ module.exports = {
     custom: {
       options: async (value, { req })=> {
         try {
-          const pwd = await getPasswordByEmail(req.body.email);
-          if (!(await comparePassword(value, pwd)) )
+          if (! (await comparePassword(value, req.data.administrator.password)) )
             return Promise.reject(req.__('_error._form._password_invalid'));
         } catch (err) {
           return Promise.reject(InternalServerException.TAG);

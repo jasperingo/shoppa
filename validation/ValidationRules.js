@@ -1,5 +1,7 @@
-const { validationResult } = require("express-validator");
+
 const InternalServerException = require("../http/exceptions/InternalServerException");
+const Address = require("../models/Address");
+const Category = require("../models/Category");
 
 module.exports = {
 
@@ -43,6 +45,16 @@ module.exports = {
   isEmail: {
     bail: true,
     errorMessage: (value, { req })=> req.__('_error._form._email_invalid')
+  },
+
+  addressTypeIsIn: {
+    options: [[Address.TYPE_DEFAULT, Address.TYPE_SUB, Address.TYPE_PICK_UP]],
+    errorMessage: (value, { req })=> req.__('_error._form._field_invalid')
+  },
+
+  categoryTypeIsIn: {
+    options: [[Category.TYPE_STORE, Category.TYPE_PRODUCT]],
+    errorMessage: (value, { req })=> req.__('_error._form._field_invalid')
   }
 
 };

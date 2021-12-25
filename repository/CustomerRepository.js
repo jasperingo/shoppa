@@ -46,8 +46,8 @@ module.exports = {
     return user ? user.password : '';
   },
 
-  async getByEmail(email) {
-    return await Customer.findOne({   
+  getByEmail(email) {
+    return Customer.findOne({   
       include: {
         model: User,
         where: { email }
@@ -62,6 +62,19 @@ module.exports = {
         model: User,
         where: { id }
       } 
+    });
+  },
+
+  getList(offset, limit) {
+    return Customer.findAndCountAll({   
+      attributes: ['id', 'first_name', 'last_name'],
+      include: {
+        model: User,
+        attributes: ['id', 'photo', 'name'],
+      },
+      order: [[User, 'created_at', 'DESC']],
+      offset,
+      limit
     });
   },
 
@@ -83,8 +96,8 @@ module.exports = {
   update(id, { first_name, last_name, email, phone_number }) {
     return sequelize.transaction(async ()=> {
 
-      const userUpdate = await User.update({ email, phone_number }, { where: { id } });
-
+      const userUpdate = await User.update({ email, phone_number, name: `${first_name} ${last_name}` }, { where: { id } });
+      
       const customerUpdate = await Customer.update({ first_name, last_name }, { where: { id } });
 
       return userUpdate[0] || customerUpdate[0];
@@ -96,7 +109,7 @@ module.exports = {
   },
 
   updatePhoto(id, photo) {
-    return User.update({ photo }, { where : { id } })
+    return User.update({ photo }, { where : { id } });
   }
 
 };

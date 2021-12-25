@@ -1,10 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
+const HTTPException = require("./HTTPException");
 
-module.exports = class UnauthorizedException {
+module.exports = class UnauthorizedException extends HTTPException {
   status = StatusCodes.UNAUTHORIZED;
   message = '_error._unauthorized';
-  data;
-  constructor(data) {
-    this.data = data;
-  }
 }

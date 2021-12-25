@@ -37,7 +37,7 @@ app.use('/api', apiRouter);
 
 
 app.use(function(req, res, next) {
-  next(new NotFoundException());
+  next(new NotFoundException({ path: req.originalUrl }));
 });
 
 app.use(function(err, req, res, next) {
