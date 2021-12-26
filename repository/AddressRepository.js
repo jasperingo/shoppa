@@ -44,6 +44,14 @@ module.exports = {
     });
   },
 
+  add(user_id, { street, city, state }) {
+    return Address.create({ user_id, street, city, state, type: Address.TYPE_DEFAULT });
+  },
+
+  update(address, { street, city, state }) {
+    return Address.update({ street, city, state }, { where: { id: address.id }});
+  },
+
   addForCustomer(data) {
     
     return sequelize.transaction(async ()=> {
@@ -73,7 +81,7 @@ module.exports = {
     return sequelize.transaction(async ()=> {
 
       if (data.type === Address.TYPE_DEFAULT) {
-        await this.updateTypeDefaultToSubForCustomer(data.user_id);
+        await this.updateTypeDefaultToSubForCustomer(address.user_id);
       } else {
         const addr = await Address.findOne({ 
           attributes: ['id'], 

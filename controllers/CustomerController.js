@@ -4,8 +4,8 @@ const InternalServerException = require("../http/exceptions/InternalServerExcept
 const Pagination = require("../http/Pagination");
 const Response = require("../http/Response");
 const CustomerRepository = require("../repository/CustomerRepository");
-const { hashPassword } = require("../security/Hash");
-const { signCustomerJWT } = require("../security/JWT");
+const Hash = require("../security/Hash");
+const JWT = require("../security/JWT");
 
 module.exports = class CustomerController {
 
@@ -20,14 +20,14 @@ module.exports = class CustomerController {
       email: customer.user.email
     };
 
-    return signCustomerJWT(userObj);
+    return JWT.signCustomerJWT(userObj);
   }
   
   register = async (req, res, next)=> {
     
     try {
       
-      const hashedPassword = await hashPassword(req.body.password);
+      const hashedPassword = await Hash.hashPassword(req.body.password);
 
       const _customer = await CustomerRepository.add(req.body, hashedPassword);
 
@@ -51,7 +51,7 @@ module.exports = class CustomerController {
 
     try {
       
-      const customer = await CustomerRepository.getByEmail(req.body.email);
+      const { customer } = req.data;
 
       const token = await this.generateJWT(customer);
 
@@ -71,7 +71,7 @@ module.exports = class CustomerController {
 
     try {
       
-      await CustomerRepository.update(req.params.id, req.body);
+      await CustomerRepository.update(req.data.customer, req.body);
 
       const customer = await CustomerRepository.get(req.params.id);
 
@@ -88,7 +88,7 @@ module.exports = class CustomerController {
 
     try {
 
-      const hashedPassword = await hashPassword(req.body.password);
+      const hashedPassword = await Hash.hashPassword(req.body.password);
       
       await CustomerRepository.updatePassword(req.params.id, hashedPassword);
 
@@ -105,7 +105,7 @@ module.exports = class CustomerController {
 
     try {
 
-      await CustomerRepository.updatePhoto(req.params.id, req.file.filename);
+      await CustomerRepository.updatePhoto(req.data.customer, req.file.filename);
       
       const customer = await CustomerRepository.get(req.params.id);
 

@@ -3,6 +3,7 @@ const InternalServerException = require("../http/exceptions/InternalServerExcept
 const Address = require("../models/Address");
 const Category = require("../models/Category");
 const CustomerRepository = require("../repository/CustomerRepository");
+const Hash = require("../security/Hash");
 
 module.exports = {
 
@@ -14,10 +15,15 @@ module.exports = {
   }),
   
   validationHasServerError(errors) {
-    const emailError = errors.mapped().email;
-    const passwordError = errors.mapped().password;
-    return ((emailError && emailError.message === InternalServerException.TAG) || 
-      (passwordError && passwordError.message === InternalServerException.TAG))
+    
+    const errs = errors.array();
+    //TODO
+    // for (let i of errs) {
+    //   if (i.message === InternalServerException.TAG) 
+    //     return true;
+    // }
+
+    return false;
   },
 
   isPasswordLength: {
@@ -69,7 +75,7 @@ module.exports = {
       custom: {
         options: async (value, { req })=> {
           try {
-            if (! (await comparePassword(value, req.data[user].password)) )
+            if (!req.data || !req.data[user] || ! (await Hash.comparePassword(value, req.data[user].password)) )
               return Promise.reject(req.__('_error._form._password_invalid'));
           } catch (err) {
             return Promise.reject(InternalServerException.TAG);

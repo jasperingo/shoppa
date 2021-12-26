@@ -14,14 +14,16 @@
     "_photo": "Photo updated",
     "_address": "Address updated",
     "_category": "Category updated",
-    "_sub_category": "Sub-category updated"
+    "_sub_category": "Sub-category updated",
+    "_store": "Store updated"
   },
 
   "_fetched": {
     "_customer": "Customer fetched",
     "_address": "Address fetched",
     "_category": "Category fetched",
-    "_sub_category": "Sub-category fetched"
+    "_sub_category": "Sub-category fetched",
+    "_store": "Store fetched"
   },
 
   "_list_fetched": {
@@ -46,6 +48,7 @@
       "_title_exists": "This title already exists",
 
       "_name_exists": "This name already exists",
+      "_name_invalid": "This name is invalid",
 
       "_field_required": "This field is required",
       "_field_invalid": "This field is invalid",

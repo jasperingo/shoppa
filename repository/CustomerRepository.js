@@ -76,12 +76,12 @@ module.exports = {
     }, { include: User });
   },
 
-  update(id, { first_name, last_name, email, phone_number }) {
+  update(customer, { first_name, last_name, email, phone_number }) {
     return sequelize.transaction(async ()=> {
 
-      const userUpdate = await User.update({ email, phone_number, name: `${first_name} ${last_name}` }, { where: { id } });
+      const userUpdate = await User.update({ email, phone_number, name: `${first_name} ${last_name}` }, { where: { id: customer.user_id } });
       
-      const customerUpdate = await Customer.update({ first_name, last_name }, { where: { id } });
+      const customerUpdate = await Customer.update({ first_name, last_name }, { where: { id: customer.id } });
 
       return userUpdate[0] || customerUpdate[0];
     });
@@ -91,8 +91,8 @@ module.exports = {
     return Customer.update({ password }, { where: { id } });
   },
 
-  updatePhoto(id, photo) {
-    return User.update({ photo }, { where : { id } });
+  updatePhoto(customer, photo) {
+    return User.update({ photo }, { where : { id: customer.user_id } });
   }
 
 };

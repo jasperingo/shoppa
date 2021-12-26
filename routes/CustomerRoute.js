@@ -53,7 +53,7 @@ router.put(
   AuthMiddleware,
   CustomerPermissionMiddleware, 
   FileUploadMiddleware('user').single('photo'), 
-  FileUploadValidationMiddleware, 
+  FileUploadValidationMiddleware('photo'), 
   controller.updatePhoto
 );
 

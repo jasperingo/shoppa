@@ -40,7 +40,7 @@ router.put(
   AuthMiddleware,
   CategoryPermissionMiddleware,
   FileUploadMiddleware('sub-category').single('photo'), 
-  FileUploadValidationMiddleware, 
+  FileUploadValidationMiddleware('photo'), 
   controller.updatePhoto
 );
 

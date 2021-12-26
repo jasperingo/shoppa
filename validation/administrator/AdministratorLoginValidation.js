@@ -1,7 +1,6 @@
 
 const InternalServerException = require('../../http/exceptions/InternalServerException');
 const ValidationRules = require('../ValidationRules');
-const { comparePassword } = require('../../security/Hash');
 const AdministratorRepository = require('../../repository/AdministratorRepository');
 
 module.exports = {
@@ -25,7 +24,6 @@ module.exports = {
   },
 
   password: ValidationRules.getAuthPasswordValid('administrator'),
-
-  password_confirmation: ValidationRules.getPasswordConfirmation()
+  
 };
 

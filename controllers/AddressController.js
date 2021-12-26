@@ -2,6 +2,7 @@ const { StatusCodes } = require("http-status-codes");
 const InternalServerException = require("../http/exceptions/InternalServerException");
 const Response = require("../http/Response");
 const AddressRepository = require("../repository/AddressRepository");
+const StoreRepository = require("../repository/StoreRepository");
 
 module.exports = class AddressController {
 
@@ -16,6 +17,29 @@ module.exports = class AddressController {
       const response = new Response(Response.SUCCESS, req.__('_created._address'), address);
 
       res.status(StatusCodes.CREATED).send(response);
+
+    } catch (error) {
+      next(new InternalServerException(error));
+    }
+  }
+
+  async updateStoreAddress(req, res, next) {
+
+    try {
+
+      const { store: { user }, store: { user: { addresses } } } = req.data;
+
+      if (addresses.length === 0) {
+        await AddressRepository.add(user.id, req.body);
+      } else {
+        await AddressRepository.update(addresses[0], req.body);
+      }
+
+      const store = await StoreRepository.get(req.data.store.id);
+
+      const response = new Response(Response.SUCCESS, req.__('_updated._address'), store);
+
+      res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
       next(new InternalServerException(error));
