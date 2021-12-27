@@ -1,5 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
 const InternalServerException = require("../http/exceptions/InternalServerException");
+const Pagination = require("../http/Pagination");
 const Response = require("../http/Response");
 const StoreRepository = require("../repository/StoreRepository");
 const Hash = require("../security/Hash");
@@ -110,6 +111,24 @@ module.exports = class StoreController {
     res.status(StatusCodes.OK).send(response);
   }
 
+  async getList(req, res, next) {
+
+    try {
+
+      const { pager } = req.data;
+
+      const { count, rows } = await StoreRepository.getList(pager.page_offset, pager.page_limit);
+
+      const pagination = new Pagination(req, pager.page, pager.page_limit, count);
+
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._store'), rows, pagination);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      next(new InternalServerException(error));
+    }
+  }
 
 
 }

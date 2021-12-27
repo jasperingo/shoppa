@@ -15,7 +15,9 @@
     "_address": "Address updated",
     "_category": "Category updated",
     "_sub_category": "Sub-category updated",
-    "_store": "Store updated"
+    "_store": "Store updated",
+    "_working_hours": "Working hours updated",
+    "_withdrawal_account": "Withdrawal account updated"
   },
 
   "_fetched": {
@@ -28,6 +30,7 @@
 
   "_list_fetched": {
     "_customer": "Customer list fetched",
+    "_store": "Store list fetched",
     "_address": "Address list fetched",
     "_category": "Category list fetched"
   },

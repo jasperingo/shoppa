@@ -1,5 +1,6 @@
 const { Op } = require("sequelize");
 const Address = require("../models/Address");
+const User = require("../models/User");
 const sequelize = require("./DB");
 
 module.exports = {
@@ -44,12 +45,19 @@ module.exports = {
     });
   },
 
-  add(user_id, { street, city, state }) {
-    return Address.create({ user_id, street, city, state, type: Address.TYPE_DEFAULT });
-  },
+  addOrUpdate(user, { street, city, state }) {
+    return sequelize.transaction(async ()=> {
 
-  update(address, { street, city, state }) {
-    return Address.update({ street, city, state }, { where: { id: address.id }});
+      if (user.addresses.length > 0) {
+        await Address.update({ street, city, state }, { where: { id: user.addresses[0].id }});
+      } else {
+        await Address.create({ user_id: user.id, street, city, state, type: Address.TYPE_DEFAULT });
+      }
+
+      if (user.status === User.STATUS_ACTIVATING && user.working_hours.length > 0) {
+        await User.update({ status: User.STATUS_ACTIVE }, { where : { id: user.id } });
+      }
+    });
   },
 
   addForCustomer(data) {

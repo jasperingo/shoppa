@@ -62,16 +62,17 @@ module.exports = {
     });
   },
   
-  add(data, password) {
+  add({ first_name, last_name, email }, password) {
 
     return Customer.create({
-      first_name: data.first_name,
-      last_name: data.last_name,
+      first_name,
+      last_name,
       password,
       user: {
-        email: data.email,
-        name: `${data.first_name} ${data.last_name}`,
-        type: User.TYPE_CUSTOMER
+        email,
+        name: `${first_name} ${last_name}`,
+        type: User.TYPE_CUSTOMER,
+        status: User.STATUS_ACTIVE
       }
     }, { include: User });
   },

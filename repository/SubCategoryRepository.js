@@ -2,7 +2,6 @@ const { Op } = require("sequelize");
 const Category = require("../models/Category");
 const SubCategory = require("../models/SubCategory");
 
-
 module.exports = {
 
   async idForStoreExists(id) {
@@ -12,6 +11,18 @@ module.exports = {
       include: {
         model: Category,
         where: { type: Category.TYPE_STORE }
+      }
+    });
+    return res !== null;
+  },
+
+  async idForProductExists(id) {
+    const res = await SubCategory.findOne({ 
+      attributes: ['id'], 
+      where: { id },
+      include: {
+        model: Category,
+        where: { type: Category.TYPE_PRODUCT }
       }
     });
     return res !== null;

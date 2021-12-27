@@ -27,13 +27,9 @@ module.exports = class AddressController {
 
     try {
 
-      const { store: { user }, store: { user: { addresses } } } = req.data;
-
-      if (addresses.length === 0) {
-        await AddressRepository.add(user.id, req.body);
-      } else {
-        await AddressRepository.update(addresses[0], req.body);
-      }
+      const { store: { user } } = req.data;
+      
+      await AddressRepository.addOrUpdate(user, req.body);
 
       const store = await StoreRepository.get(req.data.store.id);
 

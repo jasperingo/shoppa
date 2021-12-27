@@ -13,6 +13,8 @@ class User extends Model {
 
   static STATUS_ACTIVE = 'active';
 
+  static STATUS_ACTIVATING = 'activating';
+
   static STATUS_SUSPENDED = 'suspended';
 
   static STATUS_DEACTIVATED = 'deactivated';
@@ -60,8 +62,7 @@ User.init({
 
   status: {
     type: DataTypes.ENUM(User.STATUS_ACTIVE, User.STATUS_SUSPENDED, User.STATUS_DEACTIVATED),
-    allowNull: false,
-    defaultValue: User.STATUS_ACTIVE
+    allowNull: false
   },
 
   created_at: {

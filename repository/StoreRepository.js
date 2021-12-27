@@ -6,17 +6,43 @@ const Customer = require("../models/Customer");
 const Store = require("../models/Store");
 const SubCategory = require("../models/SubCategory");
 const User = require("../models/User");
+const WithdrawalAccount = require("../models/WithdrawalAccount");
+const WorkingHour = require("../models/WorkingHour");
 const sequelize = require("./DB");
 
 module.exports = {
 
   USER_INCLUDE: {
     model: User,
-    attributes: ['id', 'name', 'email', 'phone_number', 'photo'],
-    include: {
-      model: Address,
-      attributes: ['id', 'street', 'city', 'state']
-    }
+    attributes: ['id', 'name', 'email', 'phone_number', 'photo', 'status'],
+    include: [
+      {
+        model: Address,
+        attributes: ['id', 'street', 'city', 'state']
+      },
+      {
+        model: WorkingHour,
+        attributes: ['id', 'day', 'opening', 'closing']
+      }
+    ]
+  },
+
+  USER_WITH_WITHDRAWAL_ACCOUNT_INCLUDE: {
+    model: User,
+    attributes: ['id', 'name', 'email', 'phone_number', 'photo', 'status'],
+    include: [
+      {
+        model: Address,
+        attributes: ['id', 'street', 'city', 'state']
+      },
+      {
+        model: WorkingHour,
+        attributes: ['id', 'day', 'opening', 'closing']
+      },
+      {
+        model: WithdrawalAccount
+      }
+    ]
   },
 
   SUB_CATEGORY_INCLUDE: {
@@ -26,6 +52,11 @@ module.exports = {
       model: Category,
       attributes: ['id', 'name', 'href'],
     }
+  },
+
+  async idExists(id) {
+    const res = await Store.findOne({ attributes: ['id'], where: { id } });
+    return res !== null;
   },
 
   async nameExists(name) {
@@ -72,6 +103,18 @@ module.exports = {
     });
   },
 
+  getList(offset, limit) {
+    return Store.findAndCountAll({
+      include: [
+        this.USER_INCLUDE,
+        this.SUB_CATEGORY_INCLUDE
+      ],
+      order: [[User, 'created_at', 'DESC']],
+      offset,
+      limit
+    });
+  },
+
   getWithAdministrator(id, administrator_id) {
     return Store.findOne({
       where: { 
@@ -89,6 +132,16 @@ module.exports = {
             attributes: ['first_name', 'last_name']
           }
         },
+      ]
+    });
+  },
+
+  getWithWithdrawalAccount(id) {
+    return Store.findOne({
+      where: { id },
+      include: [
+        this.USER_WITH_WITHDRAWAL_ACCOUNT_INCLUDE,
+        this.SUB_CATEGORY_INCLUDE,
       ]
     });
   },
@@ -114,7 +167,8 @@ module.exports = {
         user: {
           name: data.name,
           email: data.email,
-          type: User.TYPE_STORE
+          type: User.TYPE_STORE,
+          status: User.STATUS_ACTIVATING
         }
       }, { include: User });
 
@@ -143,7 +197,11 @@ module.exports = {
 
   updatePhoto(store, photo) {
     return User.update({ photo }, { where : { id: store.user_id } });
-  }
+  },
+  
+  updateStatus(store, status) {
+    return User.update({ status }, { where : { id: store.user_id } });
+  },
   
 };
 
