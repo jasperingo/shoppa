@@ -1,26 +1,10 @@
 
 const InternalServerException = require('../../http/exceptions/InternalServerException');
 const ProductRepository = require('../../repository/ProductRepository');
-const StoreRepository = require('../../repository/StoreRepository');
 const SubCategoryRepository = require('../../repository/SubCategoryRepository');
 const ValidationRules = require('../ValidationRules');
 
 module.exports = {
-
-  store_id: {
-    notEmpty: ValidationRules.notEmpty,
-    isInt: ValidationRules.isInt,
-    custom: {
-      options: async (value, { req })=> {
-        try {
-          if (! (await StoreRepository.idExists(value)))
-            return Promise.reject(req.__('_error._form._id_invalid'));
-        } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
-        }
-      }
-    }
-  },
 
   sub_category_id: {
     notEmpty: ValidationRules.notEmpty,
@@ -42,7 +26,7 @@ module.exports = {
     custom: {
       options: async (value, { req })=> {
         try {
-          if (await ProductRepository.codeExists(value))
+          if (await ProductRepository.updateCodeExists(value, req.params.id))
             return Promise.reject(req.__('_error._form._code_exists'));
         } catch (err) {
           return Promise.reject(InternalServerException.TAG);
@@ -56,7 +40,7 @@ module.exports = {
     custom: {
       options: async (value, { req })=> {
         try {
-          if (await ProductRepository.titleExists(value))
+          if (await ProductRepository.updateTitleExists(value, req.params.id))
             return Promise.reject(req.__('_error._form._title_exists'));
         } catch (err) {
           return Promise.reject(InternalServerException.TAG);

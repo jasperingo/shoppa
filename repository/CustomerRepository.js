@@ -78,11 +78,14 @@ module.exports = {
   },
 
   update(customer, { first_name, last_name, email, phone_number }) {
-    return sequelize.transaction(async ()=> {
+    return sequelize.transaction(async (t)=> {
 
-      const userUpdate = await User.update({ email, phone_number, name: `${first_name} ${last_name}` }, { where: { id: customer.user_id } });
+      const userUpdate = await User.update(
+        { email, phone_number, name: `${first_name} ${last_name}` }, 
+        { where: { id: customer.user_id }, transaction: t }
+      );
       
-      const customerUpdate = await Customer.update({ first_name, last_name }, { where: { id: customer.id } });
+      const customerUpdate = await Customer.update({ first_name, last_name }, { where: { id: customer.id }, transaction: t });
 
       return userUpdate[0] || customerUpdate[0];
     });

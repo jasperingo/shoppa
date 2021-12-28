@@ -5,7 +5,8 @@
     "_address": "Address created",
     "_category": "Category created",
     "_sub_category": "Sub-category created",
-    "_store": "Store created"
+    "_store": "Store created",
+    "_product": "Product created"
   },
 
   "_updated": {
@@ -16,6 +17,7 @@
     "_category": "Category updated",
     "_sub_category": "Sub-category updated",
     "_store": "Store updated",
+    "_product": "Product updated",
     "_working_hours": "Working hours updated",
     "_withdrawal_account": "Withdrawal account updated"
   },
@@ -49,18 +51,24 @@
       "_id_invalid": "This ID is invalid",
       
       "_title_exists": "This title already exists",
+      "_code_exists": "This code already exists",
 
       "_name_exists": "This name already exists",
       "_name_invalid": "This name is invalid",
 
       "_field_required": "This field is required",
       "_field_invalid": "This field is invalid",
+
       "_email_invalid": "This email is invalid",
       "_email_exists": "This email already exists",
+
+      "_phone_number_invalid": "This phone number is invalid",
+      "_phone_number_exists": "This phone number already exists",
+
       "_password_invalid": "This password is invalid",
       "_password_length": "Password minimium length is {{min}} and maximum length is {{max}}",
-      "_password_confirmation_not_match": "This field do not match with password",
-      "_phone_number_invalid": "This phone number is invalid"
+      "_password_confirmation_not_match": "This field do not match with password"
+      
     }
 
   }

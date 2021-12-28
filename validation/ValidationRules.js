@@ -69,6 +69,29 @@ module.exports = {
     errorMessage: (value, { req })=> req.__('_error._form._field_invalid')
   },
 
+  isFloatWithZeroMin: {
+    options: {
+      min: 0
+    },
+    bail: true,
+    errorMessage: (value, { req })=> req.__('_error._form._field_invalid')
+  },
+
+  isValidArray: {
+    isArray: {
+      bail: true,
+      errorMessage: (value, { req })=> req.__('_error._form._field_required')
+    },
+    custom: {
+      options: (value, { req })=> {
+        if (value.length === 0)
+          throw req.__('_error._form._field_invalid');
+        else 
+          return true;
+      }
+    }
+  },
+
   getAuthPasswordValid(user) {
     return {
       isLength: this.isPasswordLength, 

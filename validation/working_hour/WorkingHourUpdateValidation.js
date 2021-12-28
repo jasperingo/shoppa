@@ -1,5 +1,6 @@
 
 const WorkingHour = require('../../models/WorkingHour');
+const ValidationRules = require('../ValidationRules');
 
 const DAYS = [
   WorkingHour.DAY_SUNDAY, 
@@ -15,20 +16,7 @@ const TIME_REGEX = /^[0-2][0-9]:[0-5][0-9]$/;
 
 module.exports = {
 
-  working_hours: {
-    isArray: {
-      bail: true,
-      errorMessage: (value, { req })=> req.__('_error._form._field_required')
-    },
-    custom: {
-      options: (value, { req })=> {
-        if (value.length === 0)
-          throw req.__('_error._form._field_invalid');
-        else 
-          return true;
-      }
-    }
-  },
+  working_hours: ValidationRules.isValidArray,
 
   'working_hours.*.day': {
     isIn: {

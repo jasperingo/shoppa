@@ -25,36 +25,6 @@ Product.init({
     allowNull: false
   },
 
-  sub_title: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-
-  price: {
-    type: DataTypes.DOUBLE,
-    allowNull: false
-  },
-
-  quantity: {
-    type: DataTypes.DOUBLE,
-    allowNull: false
-  },
-
-  available: {
-    type: DataTypes.BOOLEAN,
-    allowNull: false
-  },
-
-  unit: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-
-  weight: {
-    type: DataTypes.DOUBLE,
-    allowNull: false
-  },
-
   description: {
     type: DataTypes.STRING,
     allowNull: false
