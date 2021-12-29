@@ -13,6 +13,13 @@ Store.init({
     autoIncrement: true
   },
 
+  href: {
+    type: DataTypes.VIRTUAL,
+    get() {
+      return `${process.env.API_PATH}store/${this.id}`;
+    }
+  },
+
 },
 {
   sequelize,

@@ -2,6 +2,7 @@
 const express = require('express');
 const { checkSchema } = require('express-validator');
 const ProductController = require('../controllers/ProductController');
+const Files = require('../http/Files');
 const AuthMiddleware = require('../middlewares/AuthMiddleware');
 const ProductFetchMiddleware = require('../middlewares/fetch/ProductFetchMiddleware');
 const FileUploadMiddleware = require('../middlewares/FileUploadMiddleware');
@@ -40,9 +41,15 @@ router.put(
   ProductFetchMiddleware, 
   AuthMiddleware,
   ProductUpdatePermissionMiddleware, 
-  FileUploadMiddleware('product').single('photo'), 
+  FileUploadMiddleware(Files.PRODUCT_PHOTO_PATH).single('photo'), 
   FileUploadValidationMiddleware('photo'), 
   controller.updatePhoto
+);
+
+router.get(
+  '/:id(\\d+)',
+  ProductFetchMiddleware, 
+  controller.get
 );
 
 module.exports = router;

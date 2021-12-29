@@ -16,6 +16,7 @@ const CustomerFetchMiddleware = require('../middlewares/fetch/CustomerFetchMiddl
 const PaginationMiddleware = require('../middlewares/PaginationMiddleware');
 const AdministratorPermissionMiddleware = require('../middlewares/permissions/AdministratorPermissionMiddleware');
 const AddressController = require('../controllers/AddressController');
+const Files = require('../http/Files');
 
 const router = express.Router();
 
@@ -52,7 +53,7 @@ router.put(
   CustomerFetchMiddleware, 
   AuthMiddleware,
   CustomerPermissionMiddleware, 
-  FileUploadMiddleware('user').single('photo'), 
+  FileUploadMiddleware(Files.USER_PHOTO_PATHS.customer).single('photo'), 
   FileUploadValidationMiddleware('photo'), 
   controller.updatePhoto
 );

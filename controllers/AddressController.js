@@ -2,6 +2,7 @@ const { StatusCodes } = require("http-status-codes");
 const InternalServerException = require("../http/exceptions/InternalServerException");
 const Response = require("../http/Response");
 const AddressRepository = require("../repository/AddressRepository");
+const DeliveryFirmRepository = require("../repository/DeliveryFirmRepository");
 const StoreRepository = require("../repository/StoreRepository");
 
 module.exports = class AddressController {
@@ -34,6 +35,25 @@ module.exports = class AddressController {
       const store = await StoreRepository.get(req.data.store.id);
 
       const response = new Response(Response.SUCCESS, req.__('_updated._address'), store);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch (error) {
+      next(new InternalServerException(error));
+    }
+  }
+
+  async updateDeliveryFirmAddress(req, res, next) {
+
+    try {
+
+      const { deliveryFirm: { user } } = req.data;
+      
+      await AddressRepository.addOrUpdate(user, req.body);
+
+      const deliveryFirm = await DeliveryFirmRepository.get(req.data.deliveryFirm.id);
+
+      const response = new Response(Response.SUCCESS, req.__('_updated._address'), deliveryFirm);
 
       res.status(StatusCodes.OK).send(response);
 

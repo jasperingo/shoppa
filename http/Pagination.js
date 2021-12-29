@@ -42,7 +42,7 @@ module.exports = class Pagination {
   getLink(page) {
     return {
       page,
-      href: `${this.req.baseUrl}${this.req.path}?page=${page}&page_limit=${this.page_limit}`
+      href: `${process.env.DOMAIN_NAME}${this.req.baseUrl.substring(1)}${this.req.path}?page=${page}&page_limit=${this.page_limit}`
     };
   }
 

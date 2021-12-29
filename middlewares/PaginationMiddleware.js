@@ -13,7 +13,10 @@ module.exports = (req, res, next) => {
   else
     page_offset = (page * page_limit)-page_limit;
 
-  req.data = { pager: { page, page_offset, page_limit } };
+  if (req.data)
+    req.data.pager = { page, page_offset, page_limit }
+  else 
+    req.data = { pager: { page, page_offset, page_limit } };
 
   next();
 }

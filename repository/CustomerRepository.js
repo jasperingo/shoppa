@@ -54,7 +54,7 @@ module.exports = {
       attributes: ['id', 'first_name', 'last_name'],
       include: {
         model: User,
-        attributes: ['id', 'photo', 'name'],
+        attributes: ['id', 'photo', 'name', 'type', 'status'],
       },
       order: [[User, 'created_at', 'DESC']],
       offset,

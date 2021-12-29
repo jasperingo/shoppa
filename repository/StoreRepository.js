@@ -14,7 +14,7 @@ module.exports = {
 
   USER_INCLUDE: {
     model: User,
-    attributes: ['id', 'name', 'email', 'phone_number', 'photo', 'status'],
+    attributes: ['id', 'name', 'email', 'phone_number', 'photo', 'status', 'type'],
     include: [
       {
         model: Address,
@@ -29,7 +29,7 @@ module.exports = {
 
   USER_WITH_WITHDRAWAL_ACCOUNT_INCLUDE: {
     model: User,
-    attributes: ['id', 'name', 'email', 'phone_number', 'photo', 'status'],
+    attributes: ['id', 'name', 'email', 'phone_number', 'photo', 'status', 'type'],
     include: [
       {
         model: Address,
@@ -151,7 +151,7 @@ module.exports = {
       include: [
         {
           model: User,
-          attributes: ['id', 'name', 'email', 'phone_number', 'photo', 'status'],
+          attributes: ['id', 'name', 'email', 'phone_number', 'photo', 'status', 'type'],
           where: {
             '$user.name$': name,
           },

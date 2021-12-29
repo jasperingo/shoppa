@@ -1,8 +1,7 @@
 
 const InternalServerException = require('../../http/exceptions/InternalServerException');
 const ValidationRules = require('../ValidationRules');
-const StoreRepository = require('../../repository/StoreRepository');
-const SubCategoryRepository = require('../../repository/SubCategoryRepository');
+const DeliveryFirmRepository = require('../../repository/DeliveryFirmRepository');
 
 module.exports = {
 
@@ -11,22 +10,8 @@ module.exports = {
     custom: {
       options: async (value, { req })=> {
         try {
-          if (await StoreRepository.updateNameExists(value, req.data.store.user.id))
+          if (await DeliveryFirmRepository.updateNameExists(value, req.data.deliveryFirm.user.id))
             return Promise.reject(req.__('_error._form._name_exists'));
-        } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
-        }
-      }
-    }
-  },
-
-  sub_category_id: {
-    isInt: ValidationRules.isInt,
-    custom: {
-      options: async (value, { req })=> {
-        try {
-          if (! (await SubCategoryRepository.idForStoreExists(value)) )
-            return Promise.reject(req.__('_error._form._id_invalid'));
         } catch (err) {
           return Promise.reject(InternalServerException.TAG);
         }
@@ -40,7 +25,7 @@ module.exports = {
     custom: {
       options: async (value, { req })=> {
         try {
-          if (await StoreRepository.updateEmailExists(value, req.data.store.user.id))
+          if (await DeliveryFirmRepository.updateEmailExists(value, req.data.deliveryFirm.user.id))
             return Promise.reject(req.__('_error._form._email_exists'));
         } catch (err) {
           return Promise.reject(InternalServerException.TAG);
@@ -50,6 +35,19 @@ module.exports = {
   },
 
   phone_number: {
-    optional: true
-  }
+    notEmpty: ValidationRules.notEmpty,
+    isLength: ValidationRules.isPhoneNumberLength,
+    custom: {
+      options: async (value, { req })=> {
+        try {
+          if (await DeliveryFirmRepository.updatePhoneNumberExists(value, req.data.deliveryFirm.user.id))
+            return Promise.reject(req.__('_error._form._phone_number_exists'));
+        } catch (err) {
+          return Promise.reject(InternalServerException.TAG);
+        }
+      }
+    }
+  },
+
 };
+

@@ -18,6 +18,7 @@
     "_sub_category": "Sub-category updated",
     "_store": "Store updated",
     "_product": "Product updated",
+    "_delivery_firm": "Delivery firm updated",
     "_working_hours": "Working hours updated",
     "_withdrawal_account": "Withdrawal account updated"
   },
@@ -27,14 +28,18 @@
     "_address": "Address fetched",
     "_category": "Category fetched",
     "_sub_category": "Sub-category fetched",
-    "_store": "Store fetched"
+    "_store": "Store fetched",
+    "_delivery_firm": "Delivery firm fetched",
+    "_product": "Product fetched"
   },
 
   "_list_fetched": {
     "_customer": "Customer list fetched",
     "_store": "Store list fetched",
     "_address": "Address list fetched",
-    "_category": "Category list fetched"
+    "_category": "Category list fetched",
+    "_delivery_firm": "Delivery firm list fetched",
+    "_product": "Product list fetched"
   },
 
   "_login": "Login successfully",

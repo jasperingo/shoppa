@@ -1,6 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
 const InternalServerException = require("../http/exceptions/InternalServerException");
 const Response = require("../http/Response");
+const Pagination = require("../http/Pagination");
 const ProductRepository = require("../repository/ProductRepository");
 
 
@@ -57,5 +58,32 @@ module.exports = class ProductController {
     }
   }
 
+  get(req, res) {
+
+    const response = new Response(Response.SUCCESS, req.__('_fetched._product'), req.data.product);
+
+    res.status(StatusCodes.OK).send(response);
+  }
+
+  async getListByStore(req, res, next) {
+    
+    try {
+
+      const { pager, store } = req.data;
+
+      const { count, rows } = await ProductRepository.getListByStore(store, pager.page_offset, pager.page_limit);
+
+      const pagination = new Pagination(req, pager.page, pager.page_limit, count);
+
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._product'), rows, pagination);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      next(new InternalServerException(error));
+    }
+  }
+
 }
+
 

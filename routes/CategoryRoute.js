@@ -2,6 +2,7 @@
 const express = require('express');
 const { checkSchema } = require('express-validator');
 const CategoryController = require('../controllers/CategoryController');
+const Files = require('../http/Files');
 const AuthMiddleware = require('../middlewares/AuthMiddleware');
 const CategoryFetchMiddleware = require('../middlewares/fetch/CategoryFetchMiddleware');
 const FileUploadMiddleware = require('../middlewares/FileUploadMiddleware');
@@ -39,7 +40,7 @@ router.put(
   CategoryFetchMiddleware,
   AuthMiddleware,
   CategoryPermissionMiddleware,
-  FileUploadMiddleware('category').single('photo'), 
+  FileUploadMiddleware(Files.CATEGORY_PHOTO_PATH).single('photo'), 
   FileUploadValidationMiddleware('photo'), 
   controller.updatePhoto
 );

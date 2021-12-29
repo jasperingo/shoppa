@@ -12,6 +12,13 @@ DeliveryFirm.init({
     autoIncrement: true
   },
 
+  href: {
+    type: DataTypes.VIRTUAL,
+    get() {
+      return `${process.env.API_PATH}delivery-firm/${this.id}`;
+    }
+  },
+
 },
 {
   sequelize,

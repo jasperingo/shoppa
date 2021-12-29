@@ -1,4 +1,5 @@
 const { Model, DataTypes } = require("sequelize");
+const Files = require("../http/Files");
 const sequelize = require('../repository/DB');
 
 class Category extends Model {
@@ -33,7 +34,7 @@ Category.init({
       const photoName = this.getDataValue('photo');
       return {
         name: photoName,
-        href: `${process.env.PHOTOS_PATH}category/${photoName ? photoName : 'default.jpg'}`
+        href: Files.getCategoryPhotoPath(photoName)
       };
     }
   },

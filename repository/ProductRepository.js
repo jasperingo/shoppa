@@ -39,7 +39,7 @@ module.exports = {
           attributes: ['id'],
           include: {
             model: User,
-            attributes: ['id', 'name', 'photo']
+            attributes: ['id', 'name', 'photo', 'type']
           }
         },
         {
@@ -54,7 +54,52 @@ module.exports = {
           }
         },
       ]
-    })
+    });
+  },
+  
+  getListByStore(store, offset, limit) {
+    return sequelize.transaction(async (transaction)=> {
+
+      const count = await Product.count({
+        include: {
+          model: Store,
+          attributes: ['id', 'user_id'],
+          where: { '$store.id$': store.id }
+        },
+        transaction
+      });
+      
+      const rows = await Product.findAll({
+        include: [
+          {
+            model: Store,
+            attributes: ['id', 'user_id'],
+            where: { '$store.id$': store.id },
+            include: {
+              model: User,
+              attributes: ['id', 'name', 'photo', 'type']
+            }
+          },
+          {
+            model: ProductVariant
+          },
+          {
+            model: SubCategory,
+            attributes: ['id', 'name', 'href'],
+            include: {
+              model: Category,
+              attributes: ['id', 'name', 'href'],
+            }
+          },
+        ],
+        order: [['created_at', 'DESC']],
+        offset,
+        limit,
+        transaction
+      });
+      
+      return { count, rows };
+    });
   },
 
   add({ store_id, sub_category_id, code, title, description, product_variants }) {

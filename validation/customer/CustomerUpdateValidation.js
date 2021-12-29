@@ -15,7 +15,7 @@ module.exports = {
     custom: {
       options: async (value, { req })=> {
         try {
-          if (await CustomerRepository.updateEmailExists(value, req.params.id))
+          if (await CustomerRepository.updateEmailExists(value, req.data.customer.user.id))
             return Promise.reject(req.__('_error._form._email_exists'));
         } catch (err) {
           return Promise.reject(InternalServerException.TAG);

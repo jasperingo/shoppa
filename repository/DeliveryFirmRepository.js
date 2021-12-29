@@ -4,11 +4,18 @@ const Administrator = require("../models/Administrator");
 const Customer = require("../models/Customer");
 const DeliveryFirm = require("../models/DeliveryFirm");
 const User = require("../models/User");
+const WithdrawalAccount = require("../models/WithdrawalAccount");
 const WorkingHour = require("../models/WorkingHour");
 const sequelize = require("./DB");
 
 
 module.exports = {
+
+  USER_GET_ATTR: ['id', 'name', 'email', 'phone_number', 'photo', 'status', 'type'],
+
+  ADDRESS_GET_ATTR: ['id', 'street', 'city', 'state'],
+
+  WORKING_HOURS_GET_ATTR: ['id', 'day', 'opening', 'closing'],
 
   async nameExists(name) {
     const res = await User.findOne({ attributes: ['id'], where: { type: User.TYPE_DELIVERY_FIRM, name } });
@@ -61,27 +68,45 @@ module.exports = {
     return res !== null;
   },
 
+  get(id) {
+    return DeliveryFirm.findOne({
+      where: { id },
+      include: {
+        model: User,
+        attributes: this.USER_GET_ATTR,
+        include: [
+          {
+            model: Address,
+            attributes: this.ADDRESS_GET_ATTR
+          },
+          {
+            model: WorkingHour,
+            attributes: this.WORKING_HOURS_GET_ATTR
+          }
+        ]
+      }
+    });
+  },
+
   getByName(name) {
     return DeliveryFirm.findOne({
-      include: [
-        {
-          model: User,
-          attributes: ['id', 'name', 'email', 'phone_number', 'photo', 'status'],
-          where: {
-            '$user.name$': name,
+      include: {
+        model: User,
+        attributes: this.USER_GET_ATTR,
+        where: {
+          '$user.name$': name,
+        },
+        include: [
+          {
+            model: Address,
+            attributes: this.ADDRESS_GET_ATTR
           },
-          include: [
-            {
-              model: Address,
-              attributes: ['id', 'street', 'city', 'state']
-            },
-            {
-              model: WorkingHour,
-              attributes: ['id', 'day', 'opening', 'closing']
-            }
-          ]
-        }
-      ]
+          {
+            model: WorkingHour,
+            attributes: this.WORKING_HOURS_GET_ATTR
+          }
+        ]
+      }
     });
   },
 
@@ -94,15 +119,15 @@ module.exports = {
       include: [
         {
           model: User,
-          attributes: ['id', 'name', 'email', 'phone_number', 'photo', 'status'],
+          attributes: this.USER_GET_ATTR,
           include: [
             {
               model: Address,
-              attributes: ['id', 'street', 'city', 'state']
+              attributes: this.ADDRESS_GET_ATTR
             },
             {
               model: WorkingHour,
-              attributes: ['id', 'day', 'opening', 'closing']
+              attributes: this.WORKING_HOURS_GET_ATTR
             }
           ]
         },
@@ -115,6 +140,51 @@ module.exports = {
           }
         },
       ]
+    });
+  },
+
+  getWithWithdrawalAccount(id) {
+    return DeliveryFirm.findOne({
+      where: { id },
+      include: {
+        model: User,
+        attributes: this.USER_GET_ATTR,
+        include: [
+          {
+            model: Address,
+            attributes: this.ADDRESS_GET_ATTR
+          },
+          {
+            model: WorkingHour,
+            attributes: this.WORKING_HOURS_GET_ATTR
+          },
+          {
+            model: WithdrawalAccount
+          }
+        ]
+      }
+    });
+  },
+
+  getList(offset, limit) {
+    return DeliveryFirm.findAndCountAll({
+      include: {
+        model: User,
+        attributes: this.USER_GET_ATTR,
+        include: [
+          {
+            model: Address,
+            attributes: this.ADDRESS_GET_ATTR
+          },
+          {
+            model: WorkingHour,
+            attributes: this.WORKING_HOURS_GET_ATTR
+          }
+        ]
+      },
+      order: [[User, 'created_at', 'DESC']],
+      offset,
+      limit
     });
   },
 
@@ -148,6 +218,14 @@ module.exports = {
 
       return { deliveryFirm, administrator };
     });
+  },
+  
+  update(deliveryFirm, { name, email, phone_number }) {
+    return User.update({ email, phone_number, name }, { where: { id: deliveryFirm.user_id } });
+  },
+
+  updatePhoto(deliveryFirm, photo) {
+    return User.update({ photo }, { where : { id: deliveryFirm.user_id } });
   },
 
 };

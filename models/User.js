@@ -1,5 +1,6 @@
 
 const { Model, DataTypes } = require("sequelize");
+const Files = require("../http/Files");
 const sequelize = require('../repository/DB');
 
 class User extends Model {
@@ -10,7 +11,7 @@ class User extends Model {
 
   static TYPE_DELIVERY_FIRM = 'delivery_firm';
   
-
+  
   static STATUS_ACTIVE = 'active';
 
   static STATUS_ACTIVATING = 'activating';
@@ -53,9 +54,10 @@ User.init({
     type: DataTypes.STRING,
     get() {
       const photoName = this.getDataValue('photo');
+      const type = this.getDataValue('type');
       return {
         name: photoName,
-        href: `${process.env.PHOTOS_PATH}user/${photoName ? photoName : 'default.jpg'}`
+        href: Files.getUserPhotoPath(photoName, type)
       };
     }
   },

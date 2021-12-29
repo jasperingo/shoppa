@@ -1,4 +1,5 @@
 const { Model, DataTypes } = require("sequelize");
+const Files = require("../http/Files");
 const sequelize = require('../repository/DB');
 const Store = require("./Store");
 const SubCategory = require("./SubCategory");
@@ -36,14 +37,21 @@ Product.init({
       const photoName = this.getDataValue('photo');
       return {
         name: photoName,
-        href: `${process.env.PHOTOS_PATH}product/${photoName ? photoName : 'default.jpg'}`
+        href: Files.getProductPhotoPath(photoName)
       };
     }
   },
 
   created_at: {
     type: DataTypes.DATE
-  }
+  },
+
+  href: {
+    type: DataTypes.VIRTUAL,
+    get() {
+      return `${process.env.API_PATH}product/${this.id}`;
+    }
+  },
 
 },
 {

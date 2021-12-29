@@ -1,4 +1,5 @@
 const { Model, DataTypes } = require("sequelize");
+const Files = require("../http/Files");
 const sequelize = require('../repository/DB');
 const Category = require("./Category");
 
@@ -23,7 +24,7 @@ SubCategory.init({
       const photoName = this.getDataValue('photo');
       return {
         name: photoName,
-        href: `${process.env.PHOTOS_PATH}sub-category/${photoName ? photoName : 'default.jpg'}`
+        href: Files.getSubCategoryPhotoPath(photoName)
       };
     }
   },
