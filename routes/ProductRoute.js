@@ -10,8 +10,8 @@ const FileUploadValidationMiddleware = require('../middlewares/FileUploadValidat
 const ProductAddPermissionMiddleware = require('../middlewares/permissions/product/ProductAddPermissionMiddleware');
 const ProductUpdatePermissionMiddleware = require('../middlewares/permissions/product/ProductUpdatePermissionMiddleware');
 const ValidationMiddleware = require('../middlewares/ValidationMiddleware');
-const ProductAddValidation = require('../validation/production/ProductAddValidation');
-const ProductUpdateValidation = require('../validation/production/ProductUpdateValidation');
+const ProductAddValidation = require('../validation/product/ProductAddValidation');
+const ProductUpdateValidation = require('../validation/product/ProductUpdateValidation');
 
 const router = express.Router();
 

@@ -12,48 +12,6 @@ const sequelize = require("./DB");
 
 module.exports = {
 
-  USER_INCLUDE: {
-    model: User,
-    attributes: ['id', 'name', 'email', 'phone_number', 'photo', 'status', 'type'],
-    include: [
-      {
-        model: Address,
-        attributes: ['id', 'street', 'city', 'state']
-      },
-      {
-        model: WorkingHour,
-        attributes: ['id', 'day', 'opening', 'closing']
-      }
-    ]
-  },
-
-  USER_WITH_WITHDRAWAL_ACCOUNT_INCLUDE: {
-    model: User,
-    attributes: ['id', 'name', 'email', 'phone_number', 'photo', 'status', 'type'],
-    include: [
-      {
-        model: Address,
-        attributes: ['id', 'street', 'city', 'state']
-      },
-      {
-        model: WorkingHour,
-        attributes: ['id', 'day', 'opening', 'closing']
-      },
-      {
-        model: WithdrawalAccount
-      }
-    ]
-  },
-
-  SUB_CATEGORY_INCLUDE: {
-    model: SubCategory,
-    attributes: ['id', 'name', 'href'],
-    include: {
-      model: Category,
-      attributes: ['id', 'name', 'href'],
-    }
-  },
-
   async idExists(id) {
     const res = await Store.findOne({ attributes: ['id'], where: { id } });
     return res !== null;
@@ -93,12 +51,49 @@ module.exports = {
     return res !== null;
   },
 
+  async phoneNumberExists(phone_number) {
+    const res = await User.findOne({ attributes: ['id'], where: { type: User.TYPE_STORE, phone_number } });
+    return res !== null;
+  },
+
+  async updatePhoneNumberExists(phone_number, id) {
+    const res = await User.findOne({ 
+      attributes: ['id'], 
+      where: { 
+        type: User.TYPE_STORE, 
+        phone_number,
+        [Op.not]: { id }
+      } 
+    });
+    return res !== null;
+  },
+
   get(id) {
     return Store.findOne({
       where: { id },
       include: [
-        this.USER_INCLUDE,
-        this.SUB_CATEGORY_INCLUDE
+        {
+          model: User,
+          attributes: User.GET_ATTR,
+          include: [
+            {
+              model: Address,
+              attributes: Address.GET_ATTR
+            },
+            {
+              model: WorkingHour,
+              attributes: WorkingHour.GET_ATTR
+            }
+          ]
+        },
+        {
+          model: SubCategory,
+          attributes: SubCategory.GET_ATTR,
+          include: {
+            model: Category,
+            attributes: Category.GET_ATTR,
+          }
+        }
       ]
     });
   },
@@ -106,8 +101,28 @@ module.exports = {
   getList(offset, limit) {
     return Store.findAndCountAll({
       include: [
-        this.USER_INCLUDE,
-        this.SUB_CATEGORY_INCLUDE
+        {
+          model: User,
+          attributes: User.GET_ATTR,
+          include: [
+            {
+              model: Address,
+              attributes: Address.GET_ATTR
+            },
+            {
+              model: WorkingHour,
+              attributes: WorkingHour.GET_ATTR
+            }
+          ]
+        },
+        {
+          model: SubCategory,
+          attributes: SubCategory.GET_ATTR,
+          include: {
+            model: Category,
+            attributes: Category.GET_ATTR,
+          }
+        }
       ],
       order: [[User, 'created_at', 'DESC']],
       offset,
@@ -122,14 +137,34 @@ module.exports = {
         '$administrators.id$': administrator_id
       },
       include: [
-        this.USER_INCLUDE,
-        this.SUB_CATEGORY_INCLUDE,
+        {
+          model: User,
+          attributes: User.GET_ATTR,
+          include: [
+            {
+              model: Address,
+              attributes: Address.GET_ATTR
+            },
+            {
+              model: WorkingHour,
+              attributes: WorkingHour.GET_ATTR
+            }
+          ]
+        },
+        {
+          model: SubCategory,
+          attributes: SubCategory.GET_ATTR,
+          include: {
+            model: Category,
+            attributes: Category.GET_ATTR,
+          }
+        },
         {
           model: Administrator,
-          attributes: ['id', 'role', 'type'],
+          attributes: Administrator.GET_ATTR,
           include: {
             model: Customer,
-            attributes: ['first_name', 'last_name']
+            attributes: Customer.GET_ATTR
           }
         },
       ]
@@ -140,8 +175,31 @@ module.exports = {
     return Store.findOne({
       where: { id },
       include: [
-        this.USER_WITH_WITHDRAWAL_ACCOUNT_INCLUDE,
-        this.SUB_CATEGORY_INCLUDE,
+        {
+          model: User,
+          attributes: User.GET_ATTR,
+          include: [
+            {
+              model: Address,
+              attributes: Address.GET_ATTR
+            },
+            {
+              model: WorkingHour,
+              attributes: WorkingHour.GET_ATTR
+            },
+            {
+              model: WithdrawalAccount
+            }
+          ]
+        },
+        {
+          model: SubCategory,
+          attributes: SubCategory.GET_ATTR,
+          include: {
+            model: Category,
+            attributes: Category.GET_ATTR,
+          }
+        }
       ]
     });
   },
@@ -151,36 +209,44 @@ module.exports = {
       include: [
         {
           model: User,
-          attributes: ['id', 'name', 'email', 'phone_number', 'photo', 'status', 'type'],
+          attributes: User.GET_ATTR,
           where: {
             '$user.name$': name,
           },
           include: [
             {
               model: Address,
-              attributes: ['id', 'street', 'city', 'state']
+              attributes: Address.GET_ATTR
             },
             {
               model: WorkingHour,
-              attributes: ['id', 'day', 'opening', 'closing']
+              attributes: WorkingHour.GET_ATTR
             }
           ]
         },
-        this.SUB_CATEGORY_INCLUDE,
+        {
+          model: SubCategory,
+          attributes: SubCategory.GET_ATTR,
+          include: {
+            model: Category,
+            attributes: Category.GET_ATTR,
+          }
+        }
       ]
     });
   },
 
-  async add(data, password, customer_id) {
+  async add({ sub_category_id, name, email, phone_number }, password, customer_id) {
 
     return sequelize.transaction(async (t)=> {
 
       const store = await Store.create(
         {
-          sub_category_id: data.sub_category_id,
+          sub_category_id,
           user: {
-            name: data.name,
-            email: data.email,
+            name,
+            email,
+            phone_number,
             type: User.TYPE_STORE,
             status: User.STATUS_ACTIVATING
           }
@@ -206,9 +272,15 @@ module.exports = {
   update(store, { sub_category_id, name, email, phone_number }) {
     return sequelize.transaction(async (t)=> {
 
-      const userUpdate = await User.update({ email, phone_number, name }, { where: { id: store.user_id }, transaction: t });
+      const userUpdate = await User.update(
+        { email, phone_number, name }, 
+        { where: { id: store.user_id }, transaction: t }
+      );
       
-      const storeUpdate = await Store.update({ sub_category_id }, { where: { id: store.id }, transaction: t });
+      const storeUpdate = await Store.update(
+        { sub_category_id }, 
+        { where: { id: store.id }, transaction: t }
+      );
 
       return userUpdate[0] || storeUpdate[0];
     });

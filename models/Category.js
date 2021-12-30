@@ -8,6 +8,9 @@ class Category extends Model {
 
   static TYPE_STORE = 'store';
 
+
+  static GET_ATTR =  ['id', 'name', 'href'];
+
 }
 
 Category.init({

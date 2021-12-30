@@ -8,6 +8,8 @@ const SubCategoryRoute = require('./SubCategoryRoute');
 const StoreRoute = require('./StoreRoute');
 const ProductRoute = require('./ProductRoute');
 const DeliveryFirmRoute = require('./DeliveryFirmRoute');
+const LocationRoute = require('./LocationRoute');
+const RouteRoute = require('./RouteRoute');
 
 const router = express.Router();
 
@@ -26,6 +28,10 @@ router.use('/store', StoreRoute);
 router.use('/product', ProductRoute);
 
 router.use('/delivery-firm', DeliveryFirmRoute);
+
+router.use('/location', LocationRoute);
+
+router.use('/route', RouteRoute);
 
 module.exports = router;
 

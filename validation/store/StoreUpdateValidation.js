@@ -50,6 +50,17 @@ module.exports = {
   },
 
   phone_number: {
-    optional: true
+    notEmpty: ValidationRules.notEmpty,
+    isLength: ValidationRules.isPhoneNumberLength,
+    custom: {
+      options: async (value, { req })=> {
+        try {
+          if (await StoreRepository.updatePhoneNumberExists(value, req.data.store.user.id))
+            return Promise.reject(req.__('_error._form._phone_number_exists'));
+        } catch (err) {
+          return Promise.reject(InternalServerException.TAG);
+        }
+      }
+    }
   }
 };

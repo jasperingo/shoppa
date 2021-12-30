@@ -20,6 +20,9 @@ class User extends Model {
 
   static STATUS_DEACTIVATED = 'deactivated';
 
+
+  static GET_ATTR = ['id', 'name', 'email', 'phone_number', 'photo', 'status', 'type'];
+
 }
 
 User.init({
@@ -47,7 +50,8 @@ User.init({
   },
 
   phone_number: {
-    type: DataTypes.STRING
+    type: DataTypes.STRING,
+    allowNull: false
   },
 
   photo: {

@@ -1,4 +1,5 @@
 
+const Locations = require('naija-state-local-government');
 const InternalServerException = require("../http/exceptions/InternalServerException");
 const Address = require("../models/Address");
 const Category = require("../models/Category");
@@ -90,6 +91,36 @@ module.exports = {
           return true;
       }
     }
+  },
+
+  getStateValid() {
+    return {
+      notEmpty: this.notEmpty,
+      custom: {
+        options: (value, { req })=> {
+          if (!Locations.states().includes(value)) {
+            throw req.__('_error._form._field_invalid');
+          } else {
+            return true;
+          }
+        }
+      }
+    };
+  },
+
+  getCityValid(state = 'state') {
+    return {
+      notEmpty: this.notEmpty,
+      custom: {
+        options: (value, { req })=> {
+          if (!Locations.lgas(req.body[state]).lgas.includes(value)) {
+            throw req.__('_error._form._field_invalid');
+          } else {
+            return true;
+          }
+        }
+      }
+    };
   },
 
   getAuthPasswordValid(user) {

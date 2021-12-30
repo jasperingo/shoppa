@@ -1,17 +1,19 @@
 const InternalServerException = require("../../http/exceptions/InternalServerException");
-const { notEmpty, isEmail, isPhoneNumberLength } = require('../ValidationRules');
+const ValidationRules = require('../ValidationRules');
 const CustomerRepository = require('../../repository/CustomerRepository');
 
 module.exports = {
   first_name: {
-    notEmpty
+    notEmpty: ValidationRules.notEmpty
   },
+
   last_name: {
-    notEmpty
+    notEmpty: ValidationRules.notEmpty
   },
+
   email: {
-    notEmpty,
-    isEmail,
+    notEmpty: ValidationRules.notEmpty,
+    isEmail: ValidationRules.isEmail,
     custom: {
       options: async (value, { req })=> {
         try {
@@ -23,9 +25,20 @@ module.exports = {
       }
     }
   },
+
   phone_number: {
-    optional: true,
-    isLength: isPhoneNumberLength
+    notEmpty: ValidationRules.notEmpty,
+    isLength: ValidationRules.isPhoneNumberLength,
+    custom: {
+      options: async (value, { req })=> {
+        try {
+          if (await CustomerRepository.updatePhoneNumberExists(value, req.data.customer.user.id))
+            return Promise.reject(req.__('_error._form._phone_number_exists'));
+        } catch (err) {
+          return Promise.reject(InternalServerException.TAG);
+        }
+      }
+    }
   }
 };
 

@@ -1,18 +1,14 @@
 
-const { notEmpty } = require('../ValidationRules');
+const ValidationRules = require('../ValidationRules');
 
 module.exports = {
 
+  state: ValidationRules.getStateValid(),
+
+  city: ValidationRules.getCityValid(),
+
   street: {
-    notEmpty
-  },
-
-  city: {
-    notEmpty
-  },
-
-  state: {
-    notEmpty
+    notEmpty: ValidationRules.notEmpty
   }
 
 };

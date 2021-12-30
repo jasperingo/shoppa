@@ -2,12 +2,12 @@
 const InternalServerException = require('../../http/exceptions/InternalServerException');
 const AddressRepository = require('../../repository/AddressRepository');
 const CustomerRepository = require('../../repository/CustomerRepository');
-const { notEmpty, isInt, addressTypeIsIn } = require('../ValidationRules');
+const ValidationRules = require('../ValidationRules');
 
 module.exports = {
 
   user_id: {
-    isInt,
+    isInt: ValidationRules.isInt,
     custom: {
       options: async (value, { req })=> {
         try {
@@ -21,7 +21,7 @@ module.exports = {
   },
 
   title: {
-    notEmpty,
+    notEmpty: ValidationRules.notEmpty,
     custom: {
       options: async (value, { req })=> {
         try {
@@ -34,21 +34,17 @@ module.exports = {
     }
   },
 
+  state: ValidationRules.getStateValid(),
+
+  city: ValidationRules.getCityValid(),
+
   street: {
-    notEmpty
-  },
-
-  city: {
-    notEmpty
-  },
-
-  state: {
-    notEmpty
+    notEmpty: ValidationRules.notEmpty
   },
 
   type: {
-    notEmpty,
-    isIn: addressTypeIsIn
+    notEmpty: ValidationRules.notEmpty,
+    isIn: ValidationRules.addressTypeIsIn
   }
 
 };

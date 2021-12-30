@@ -19,6 +19,9 @@ class WorkingHour extends Model {
 
   static DAY_SATURDAY = 'saturday';
 
+
+  static GET_ATTR = ['id', 'day', 'opening', 'closing'];
+
 }
 
 WorkingHour.init({

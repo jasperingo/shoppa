@@ -11,6 +11,9 @@ class Address extends Model {
 
   static TYPE_PICK_UP = 'pick_up';
 
+
+  static GET_ATTR = ['id', 'street', 'city', 'state'];
+
 }
 
 Address.init({

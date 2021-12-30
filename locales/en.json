@@ -39,7 +39,8 @@
     "_address": "Address list fetched",
     "_category": "Category list fetched",
     "_delivery_firm": "Delivery firm list fetched",
-    "_product": "Product list fetched"
+    "_product": "Product list fetched",
+    "_location": "Location list fetched"
   },
 
   "_login": "Login successfully",

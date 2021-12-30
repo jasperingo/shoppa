@@ -9,10 +9,8 @@ module.exports = {
     const addr = await Address.findOne({ 
       attributes: ['id'], 
       where: {
-        [Op.and]: [
-          { user_id },
-          { title }
-        ]
+        user_id,
+        title
       } 
     });
 
@@ -23,11 +21,9 @@ module.exports = {
     const addr = await Address.findOne({ 
       attributes: ['id'], 
       where: {
-        [Op.and]: [
-          { user_id },
-          { title },
-          { [Op.not]: { id } }
-        ]
+        user_id,
+        title,
+        [Op.not]: { id }
       } 
     });
 

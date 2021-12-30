@@ -24,6 +24,9 @@ class Administrator extends Model {
   static STATUS_SUSPENDED = 'suspended';
 
   static STATUS_DEACTIVATED = 'deactivated';
+
+
+  static GET_ATTR =  ['id', 'role', 'type'];
   
 
   hidePassword() {

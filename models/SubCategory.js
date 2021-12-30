@@ -3,7 +3,11 @@ const Files = require("../http/Files");
 const sequelize = require('../repository/DB');
 const Category = require("./Category");
 
-class SubCategory extends Model {}
+class SubCategory extends Model {
+
+  static GET_ATTR =  ['id', 'name', 'href'];
+  
+}
 
 SubCategory.init({
 

@@ -27,6 +27,23 @@ module.exports = {
     return user !== null;
   },
 
+  async phoneNumberExists(phone_number) {
+    const res = await User.findOne({ attributes: ['id'], where: { type: User.TYPE_CUSTOMER, phone_number } });
+    return res !== null;
+  },
+
+  async updatePhoneNumberExists(phone_number, id) {
+    const res = await User.findOne({ 
+      attributes: ['id'], 
+      where: { 
+        type: User.TYPE_CUSTOMER, 
+        phone_number,
+        [Op.not]: { id }
+      } 
+    });
+    return res !== null;
+  },
+
   getByEmail(email) {
     return Customer.findOne({   
       include: {
@@ -40,21 +57,21 @@ module.exports = {
   },
 
   get(id) {
-    return Customer.findOne({   
+    return Customer.findOne({
+      where: { id },
       attributes: { exclude: ['password'] },
       include: {
-        model: User,
-        where: { id }
+        model: User
       } 
     });
   },
 
   getList(offset, limit) {
     return Customer.findAndCountAll({   
-      attributes: ['id', 'first_name', 'last_name'],
+      attributes: Customer.GET_ATTR,
       include: {
         model: User,
-        attributes: ['id', 'photo', 'name', 'type', 'status'],
+        attributes: User.GET_ATTR,
       },
       order: [[User, 'created_at', 'DESC']],
       offset,
@@ -62,7 +79,7 @@ module.exports = {
     });
   },
   
-  add({ first_name, last_name, email }, password) {
+  add({ first_name, last_name, email, phone_number }, password) {
 
     return Customer.create({
       first_name,
@@ -70,6 +87,7 @@ module.exports = {
       password,
       user: {
         email,
+        phone_number,
         name: `${first_name} ${last_name}`,
         type: User.TYPE_CUSTOMER,
         status: User.STATUS_ACTIVE
@@ -85,7 +103,10 @@ module.exports = {
         { where: { id: customer.user_id }, transaction: t }
       );
       
-      const customerUpdate = await Customer.update({ first_name, last_name }, { where: { id: customer.id }, transaction: t });
+      const customerUpdate = await Customer.update(
+        { first_name, last_name }, 
+        { where: { id: customer.id }, transaction: t }
+      );
 
       return userUpdate[0] || customerUpdate[0];
     });

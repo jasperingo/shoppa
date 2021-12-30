@@ -1,16 +1,16 @@
 
 const InternalServerException = require('../../http/exceptions/InternalServerException');
 const AddressRepository = require('../../repository/AddressRepository');
-const { notEmpty, addressTypeIsIn } = require('../ValidationRules');
+const ValidationRules = require('../ValidationRules');
 
 module.exports = {
 
   title: {
-    notEmpty,
+    notEmpty: ValidationRules.notEmpty,
     custom: {
       options: async (value, { req })=> {
         try {
-          if (await AddressRepository.updateTitleExistsForUser(value, req.body.user_id, req.params.id))
+          if (await AddressRepository.updateTitleExistsForUser(value, req.data.address.user_id, req.params.id))
             return Promise.reject(req.__('_error._form._title_exists'));
         } catch (err) {
           return Promise.reject(InternalServerException.TAG);
@@ -19,21 +19,17 @@ module.exports = {
     }
   },
 
+  state: ValidationRules.getStateValid(),
+
+  city: ValidationRules.getCityValid(),
+
   street: {
-    notEmpty
-  },
-
-  city: {
-    notEmpty
-  },
-
-  state: {
-    notEmpty
+    notEmpty: ValidationRules.notEmpty
   },
 
   type: {
-    notEmpty,
-    isIn: addressTypeIsIn
+    notEmpty: ValidationRules.notEmpty,
+    isIn: ValidationRules.addressTypeIsIn
   }
 
 };

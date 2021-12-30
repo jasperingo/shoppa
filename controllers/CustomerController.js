@@ -17,7 +17,8 @@ module.exports = class CustomerController {
       id : customer.id,
       first_name: customer.first_name,
       last_name: customer.last_name,
-      email: customer.user.email
+      email: customer.user.email,
+      phone_number: customer.user.phone_number
     };
 
     return JWT.signCustomerJWT(userObj);
@@ -43,6 +44,7 @@ module.exports = class CustomerController {
       res.status(StatusCodes.CREATED).send(response);
 
     } catch (error) {
+      console.log(error)
       next(new InternalServerException(error));
     }
   }

@@ -11,12 +11,6 @@ const sequelize = require("./DB");
 
 module.exports = {
 
-  USER_GET_ATTR: ['id', 'name', 'email', 'phone_number', 'photo', 'status', 'type'],
-
-  ADDRESS_GET_ATTR: ['id', 'street', 'city', 'state'],
-
-  WORKING_HOURS_GET_ATTR: ['id', 'day', 'opening', 'closing'],
-
   async nameExists(name) {
     const res = await User.findOne({ attributes: ['id'], where: { type: User.TYPE_DELIVERY_FIRM, name } });
     return res !== null;
@@ -73,15 +67,15 @@ module.exports = {
       where: { id },
       include: {
         model: User,
-        attributes: this.USER_GET_ATTR,
+        attributes: User.GET_ATTR,
         include: [
           {
             model: Address,
-            attributes: this.ADDRESS_GET_ATTR
+            attributes: Address.GET_ATTR
           },
           {
             model: WorkingHour,
-            attributes: this.WORKING_HOURS_GET_ATTR
+            attributes: WorkingHour.GET_ATTR
           }
         ]
       }
@@ -92,18 +86,18 @@ module.exports = {
     return DeliveryFirm.findOne({
       include: {
         model: User,
-        attributes: this.USER_GET_ATTR,
+        attributes: User.GET_ATTR,
         where: {
           '$user.name$': name,
         },
         include: [
           {
             model: Address,
-            attributes: this.ADDRESS_GET_ATTR
+            attributes: Address.GET_ATTR
           },
           {
             model: WorkingHour,
-            attributes: this.WORKING_HOURS_GET_ATTR
+            attributes: WorkingHour.GET_ATTR
           }
         ]
       }
@@ -119,24 +113,24 @@ module.exports = {
       include: [
         {
           model: User,
-          attributes: this.USER_GET_ATTR,
+          attributes: User.GET_ATTR,
           include: [
             {
               model: Address,
-              attributes: this.ADDRESS_GET_ATTR
+              attributes: Address.GET_ATTR
             },
             {
               model: WorkingHour,
-              attributes: this.WORKING_HOURS_GET_ATTR
+              attributes: WorkingHour.GET_ATTR
             }
           ]
         },
         {
           model: Administrator,
-          attributes: ['id', 'role', 'type'],
+          attributes: Administrator.GET_ATTR,
           include: {
             model: Customer,
-            attributes: ['first_name', 'last_name']
+            attributes: Customer.GET_ATTR
           }
         },
       ]
@@ -148,15 +142,15 @@ module.exports = {
       where: { id },
       include: {
         model: User,
-        attributes: this.USER_GET_ATTR,
+        attributes: User.GET_ATTR,
         include: [
           {
             model: Address,
-            attributes: this.ADDRESS_GET_ATTR
+            attributes: Address.GET_ATTR
           },
           {
             model: WorkingHour,
-            attributes: this.WORKING_HOURS_GET_ATTR
+            attributes: WorkingHour.GET_ATTR
           },
           {
             model: WithdrawalAccount
@@ -170,15 +164,15 @@ module.exports = {
     return DeliveryFirm.findAndCountAll({
       include: {
         model: User,
-        attributes: this.USER_GET_ATTR,
+        attributes: User.GET_ATTR,
         include: [
           {
             model: Address,
-            attributes: this.ADDRESS_GET_ATTR
+            attributes: Address.GET_ATTR
           },
           {
             model: WorkingHour,
-            attributes: this.WORKING_HOURS_GET_ATTR
+            attributes: WorkingHour.GET_ATTR
           }
         ]
       },
