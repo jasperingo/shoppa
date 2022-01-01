@@ -58,6 +58,21 @@ module.exports = class ProductController {
     }
   }
 
+  async delete(req, res, next) {
+
+    try {
+
+      await ProductRepository.delete(req.data.product);
+
+      const response = new Response(Response.SUCCESS, req.__('_deleted._product'));
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch (error) {
+      next(new InternalServerException(error));
+    }
+  }
+
   get(req, res) {
 
     const response = new Response(Response.SUCCESS, req.__('_fetched._product'), req.data.product);

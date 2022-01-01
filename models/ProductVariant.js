@@ -38,6 +38,10 @@ ProductVariant.init({
     allowNull: false
   },
 
+  deleted_at: {
+    type: DataTypes.DATE
+  },
+
   created_at: {
     type: DataTypes.DATE
   }

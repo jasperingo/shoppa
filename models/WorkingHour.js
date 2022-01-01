@@ -22,6 +22,18 @@ class WorkingHour extends Model {
 
   static GET_ATTR = ['id', 'day', 'opening', 'closing'];
 
+  static getDays() {
+    return [
+      WorkingHour.DAY_SUNDAY, 
+      WorkingHour.DAY_MONDAY, 
+      WorkingHour.DAY_TUESDAY, 
+      WorkingHour.DAY_WEDNESDAY, 
+      WorkingHour.DAY_THURSDAY,
+      WorkingHour.DAY_FRIDAY,
+      WorkingHour.DAY_SATURDAY
+    ];
+  }
+
 }
 
 WorkingHour.init({

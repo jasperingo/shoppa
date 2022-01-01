@@ -46,6 +46,14 @@ router.put(
   controller.updatePhoto
 );
 
+router.delete(
+  '/:id(\\d+)/delete',
+  ProductFetchMiddleware, 
+  AuthMiddleware,
+  ProductUpdatePermissionMiddleware,
+  controller.delete
+);
+
 router.get(
   '/:id(\\d+)',
   ProductFetchMiddleware, 

@@ -30,6 +30,10 @@ Route.init({
     type: DataTypes.STRING
   },
 
+  deleted_at: {
+    type: DataTypes.DATE
+  },
+
   created_at: {
     type: DataTypes.DATE
   }

@@ -6,7 +6,8 @@
     "_category": "Category created",
     "_sub_category": "Sub-category created",
     "_store": "Store created",
-    "_product": "Product created"
+    "_product": "Product created",
+    "_route": "Route created"
   },
 
   "_updated": {
@@ -19,8 +20,14 @@
     "_store": "Store updated",
     "_product": "Product updated",
     "_delivery_firm": "Delivery firm updated",
+    "_route": "Route updated",
     "_working_hours": "Working hours updated",
     "_withdrawal_account": "Withdrawal account updated"
+  },
+
+  "_deleted": {
+    "_product": "Product deleted",
+    "_route": "Route deleted"
   },
 
   "_fetched": {
@@ -30,7 +37,8 @@
     "_sub_category": "Sub-category fetched",
     "_store": "Store fetched",
     "_delivery_firm": "Delivery firm fetched",
-    "_product": "Product fetched"
+    "_product": "Product fetched",
+    "_route": "Route fetched"
   },
 
   "_list_fetched": {
@@ -59,6 +67,9 @@
       "_title_exists": "This title already exists",
       "_code_exists": "This code already exists",
 
+      
+      "_route_exists": "This route already exists",
+
       "_name_exists": "This name already exists",
       "_name_invalid": "This name is invalid",
 
@@ -73,7 +84,16 @@
 
       "_password_invalid": "This password is invalid",
       "_password_length": "Password minimium length is {{min}} and maximum length is {{max}}",
-      "_password_confirmation_not_match": "This field do not match with password"
+      "_password_confirmation_not_match": "This field do not match with password",
+
+      "_opening_hour_is_gte": "Opening hour cannot be greater than or equal to closing hour",
+
+      "_minimium_is_gte": "Minimium cannot be greater than or equal to maximium",
+      "_maximium_is_lte": "Maximium cannot be less than or equal to minimium",
+
+      "_field_duplicated": "This field has duplicates",
+
+      "_field_pair": "This field should be sent with the {{ pair }} field"
       
     }
 

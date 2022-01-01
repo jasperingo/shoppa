@@ -11,7 +11,6 @@ module.exports = {
 
   location_2_city: ValidationRules.getOptionalCityValid('location_2_state'),
 
-
   route_weights: {
     isArray: ValidationRules.isArray,
     custom: {
@@ -24,10 +23,10 @@ module.exports = {
           err,
           req.__('_error._form._field_invalid'), 
           req.__('_error._form._minimium_is_gte'), 
-          null,
-          null
+          req.data.route.route_weights.map(i=> i.id),
+          req.__('_error._form._id_invalid')
         );
-        
+
         if (err.length > 0) throw err;
 
         ValidationRules.routeWeightAndDurationIsUnique(value, err, req.__('_error._form._field_duplicated'), false);
@@ -50,9 +49,11 @@ module.exports = {
           value,
           err,
           req.__('_error._form._field_invalid'),
-          req.__('_error._form._minimium_is_gte')
+          req.__('_error._form._minimium_is_gte'),
+          req.data.route.route_durations.map(i=> i.id),
+          req.__('_error._form._id_invalid')
         );
-       
+
         if (err.length > 0) throw err;
 
         ValidationRules.routeWeightAndDurationIsUnique(value, err, req.__('_error._form._field_duplicated'), true);
@@ -63,6 +64,7 @@ module.exports = {
       }
     }
   }
-  
+
 };
+
 

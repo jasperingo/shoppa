@@ -39,18 +39,23 @@ module.exports = {
           attributes: ['id'],
           include: {
             model: User,
-            attributes: ['id', 'name', 'photo', 'type']
+            attributes: User.GET_ATTR
           }
         },
         {
-          model: ProductVariant
+          model: ProductVariant,
+          where: {
+            deleted_at: {
+              [Op.is]: null
+            }
+          }
         },
         {
           model: SubCategory,
-          attributes: ['id', 'name', 'href'],
+          attributes: SubCategory.GET_ATTR,
           include: {
             model: Category,
-            attributes: ['id', 'name', 'href'],
+            attributes: Category.GET_ATTR,
           }
         },
       ]
@@ -77,18 +82,23 @@ module.exports = {
             where: { '$store.id$': store.id },
             include: {
               model: User,
-              attributes: ['id', 'name', 'photo', 'type']
+              attributes: User.GET_ATTR
             }
           },
           {
-            model: ProductVariant
+            model: ProductVariant,
+            where: {
+              deleted_at: {
+                [Op.is]: null
+              }
+            }
           },
           {
             model: SubCategory,
-            attributes: ['id', 'name', 'href'],
+            attributes: SubCategory.GET_ATTR,
             include: {
               model: Category,
-              attributes: ['id', 'name', 'href'],
+              attributes: Category.GET_ATTR,
             }
           },
         ],
@@ -103,17 +113,17 @@ module.exports = {
   },
 
   add({ store_id, sub_category_id, code, title, description, product_variants }) {
-    return sequelize.transaction(async (t)=> {
+    return sequelize.transaction(async (transaction)=> {
 
       const product = await Product.create(
         { store_id, sub_category_id, code, title, description },
-        { transaction: t }
+        { transaction }
       );
       
       for (let { name, price, quantity, weight, available } of product_variants) {
         await ProductVariant.create(
           { product_id: product.id, name, price, quantity, weight, available },
-          { transaction: t }
+          { transaction }
         );
       }
 
@@ -128,23 +138,35 @@ module.exports = {
         { sub_category_id, code, title, description },
         { where: { id: product.id }, transaction }
       );
+
+      const variantIDs = [];
       
-      for (let { name, price, quantity, weight, available } of product_variants) {
+      for (let { id, name, price, quantity, weight, available } of product_variants) {
 
-        let variant = await ProductVariant.findOne({ where: { name, product_id: product.id }, transaction });
-
-        if (variant === null) {
-          await ProductVariant.create(
+        if (id === undefined) {
+          let variant = await ProductVariant.create(
             { product_id: product.id, name, price, quantity, weight, available },
             { transaction }
           );
+          variantIDs.push(variant.id);
         } else {
+          variantIDs.push(id);
           await ProductVariant.update(
             { name, price, quantity, weight, available },
-            { where: { id: variant.id }, transaction }
+            { where: { id }, transaction }
           );
         }
       }
+
+      await ProductVariant.update({ deleted_at: Date.now() }, { 
+        where: { 
+          product_id: product.id, 
+          id: {
+            [Op.notIn]: variantIDs
+          }
+        },
+        transaction
+      });
       
       return result;
     });
@@ -153,6 +175,25 @@ module.exports = {
   updatePhoto(product, photo) {
     return Product.update({ photo }, { where : { id: product.id } });
   },
+
+  delete(product) {
+    return sequelize.transaction(async (transaction)=> {
+
+      const deleted_at = Date.now();
+
+      return await Promise.all([
+        Product.update(
+          { deleted_at }, 
+          { where: { id: product.id }, transaction }
+        ),
+
+        ProductVariant.update(
+          { deleted_at }, 
+          { where: { product_id: product.id }, transaction }
+        )
+      ]);
+    });
+  }
 
 };
 

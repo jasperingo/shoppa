@@ -15,6 +15,17 @@ class RouteDuration extends Model {
 
   static UNIT_MONTH = 'month';
 
+
+  static getUnits() {
+    return [
+      RouteDuration.UNIT_MINUTE, 
+      RouteDuration.UNIT_HOUR, 
+      RouteDuration.UNIT_DAY, 
+      RouteDuration.UNIT_WEEK, 
+      RouteDuration.UNIT_MONTH
+    ];
+  }
+
 }
 
 RouteDuration.init({
@@ -23,11 +34,6 @@ RouteDuration.init({
     type: DataTypes.BIGINT,
     primaryKey: true,
     autoIncrement: true
-  },
-
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false
   },
 
   minimium: {
@@ -54,6 +60,10 @@ RouteDuration.init({
       RouteDuration.UNIT_MONTH
     ),
     allowNull: false
+  },
+
+  deleted_at: {
+    type: DataTypes.DATE
   },
 
   created_at: {

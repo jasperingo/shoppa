@@ -1,7 +1,7 @@
 
-const NaijaStates = require('naija-state-local-government');
 const InternalServerException = require('../http/exceptions/InternalServerException');
 const Response = require('../http/Response');
+const LocationRepository = require('../repository/LocationRepository');
 
 module.exports = class LocationController {
 
@@ -10,14 +10,9 @@ module.exports = class LocationController {
 
     try {
 
-      const locations = NaijaStates.all();
+      const locations = LocationRepository.getList();
 
-      locations.map(i=> {
-        i.senatorial_districts = undefined;
-        return i;
-      });
-
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._location'), locations)
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._location'), locations);
 
       res.send(response);
 

@@ -1,26 +1,10 @@
 
 const InternalServerException = require('../../http/exceptions/InternalServerException');
 const ProductRepository = require('../../repository/ProductRepository');
-const StoreRepository = require('../../repository/StoreRepository');
 const SubCategoryRepository = require('../../repository/SubCategoryRepository');
 const ValidationRules = require('../ValidationRules');
 
 module.exports = {
-
-  store_id: {
-    notEmpty: ValidationRules.notEmpty,
-    isInt: ValidationRules.isInt,
-    custom: {
-      options: async (value, { req })=> {
-        try {
-          if (! (await StoreRepository.idExists(value)))
-            return Promise.reject(req.__('_error._form._id_invalid'));
-        } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
-        }
-      }
-    }
-  },
 
   sub_category_id: {
     notEmpty: ValidationRules.notEmpty,
@@ -69,33 +53,34 @@ module.exports = {
     notEmpty: ValidationRules.notEmpty,
   },
   
-  product_variants: ValidationRules.isValidArray,
+  product_variants: {
+    isArray: ValidationRules.isArray,
+    custom: {
+      options: (value, { req })=> {
 
-  'product_variants.*.name': {
-    notEmpty: ValidationRules.notEmpty,
-  },
+        const err = [];
+        
+        ValidationRules.productVarientCheck(
+          value,
+          err,
+          req.__('_error._form._field_invalid')
+        )
 
-  'product_variants.*.price': {
-    notEmpty: ValidationRules.notEmpty,
-    isFloat: ValidationRules.isFloatWithZeroMin
-  },
+        if (err.length > 0) throw err;
 
-  'product_variants.*.quantity': {
-    notEmpty: ValidationRules.notEmpty,
-    isFloat: ValidationRules.isFloatWithZeroMin
-  },
+        ValidationRules.productVariantIsUnique(
+          value,
+          err,
+          req.__('_error._form._field_duplicated')
+        );
 
-  'product_variants.*.available': {
-    notEmpty: ValidationRules.notEmpty,
-    isBoolean: {
-      errorMessage: (value, { req })=> req.__('_error._form._field_invalid')
+        if (err.length > 0) throw err;
+
+        return true;
+      }
     }
   },
 
-  'product_variants.*.weight': {
-    notEmpty: ValidationRules.notEmpty,
-    isFloat: ValidationRules.isFloatWithZeroMin
-  },
 
 };
 

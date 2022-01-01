@@ -42,6 +42,10 @@ Product.init({
     }
   },
 
+  deleted_at: {
+    type: DataTypes.DATE
+  },
+
   created_at: {
     type: DataTypes.DATE
   },
