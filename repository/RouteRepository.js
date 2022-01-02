@@ -50,6 +50,54 @@ module.exports = {
     });
   },
 
+  getListByDeliveryFirm(deliveryFirm, offset, limit) {
+    return sequelize.transaction(async (transaction)=> {
+
+      const count = await Route.count({
+        where: { 
+          delivery_firm_id: deliveryFirm.id,
+          deleted_at: {
+            [Op.is]: null
+          } 
+        },
+        transaction
+      });
+
+      const rows = await Route.findAll({
+        where: { 
+          delivery_firm_id: deliveryFirm.id,
+          deleted_at: {
+            [Op.is]: null
+          }
+        },
+        include: [
+          {
+            model: RouteWeight,
+            where: {
+              deleted_at: {
+                [Op.is]: null
+              }
+            }
+          },
+          {
+            model: RouteDuration,
+            where: {
+              deleted_at: {
+                [Op.is]: null
+              }
+            }
+          }
+        ],
+        order: [['created_at', 'DESC']],
+        offset,
+        limit,
+        transaction
+      });
+
+      return { count, rows };
+    });
+  },
+
   add({ delivery_firm_id, location_1_state, location_2_state, location_1_city, location_2_city, route_weights, route_durations }) {
     return sequelize.transaction(async (transaction)=> {
 

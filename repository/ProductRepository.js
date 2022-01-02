@@ -10,23 +10,28 @@ const sequelize = require("./DB");
 
 module.exports = {
 
+  async idExists(id) {
+    const product = await Product.findOne({ attributes: ['id'], where: { id } });
+    return product !== null;
+  },
+
   async codeExists(code) {
-    const product = await Product.findOne({ where: { code } });
+    const product = await Product.findOne({ attributes: ['id'], where: { code } });
     return product !== null;
   },
 
   async titleExists(title) {
-    const product = await Product.findOne({ where: { title } });
+    const product = await Product.findOne({ attributes: ['id'], where: { title } });
     return product !== null;
   },
 
   async updateCodeExists(code, id) {
-    const product = await Product.findOne({ where: { code, [Op.not]: { id } } });
+    const product = await Product.findOne({ attributes: ['id'], where: { code, [Op.not]: { id } } });
     return product !== null;
   },
 
   async updateTitleExists(title, id) {
-    const product = await Product.findOne({ where: { title, [Op.not]: { id } } });
+    const product = await Product.findOne({ attributes: ['id'], where: { title, [Op.not]: { id } } });
     return product !== null;
   },
 
@@ -66,20 +71,15 @@ module.exports = {
     return sequelize.transaction(async (transaction)=> {
 
       const count = await Product.count({
-        include: {
-          model: Store,
-          attributes: ['id', 'user_id'],
-          where: { '$store.id$': store.id }
-        },
+        where: { store_id: store.id },
         transaction
       });
       
       const rows = await Product.findAll({
+        where: { store_id: store.id },
         include: [
           {
             model: Store,
-            attributes: ['id', 'user_id'],
-            where: { '$store.id$': store.id },
             include: {
               model: User,
               attributes: User.GET_ATTR
@@ -87,6 +87,7 @@ module.exports = {
           },
           {
             model: ProductVariant,
+            attributes: ['price'],
             where: {
               deleted_at: {
                 [Op.is]: null

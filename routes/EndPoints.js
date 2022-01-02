@@ -10,6 +10,7 @@ const ProductRoute = require('./ProductRoute');
 const DeliveryFirmRoute = require('./DeliveryFirmRoute');
 const LocationRoute = require('./LocationRoute');
 const RouteRoute = require('./RouteRoute');
+const FavoriteRoute = require('./FavoriteRoute');
 
 const router = express.Router();
 
@@ -32,6 +33,8 @@ router.use('/delivery-firm', DeliveryFirmRoute);
 router.use('/location', LocationRoute);
 
 router.use('/route', RouteRoute);
+
+router.use('/favorite', FavoriteRoute);
 
 module.exports = router;
 

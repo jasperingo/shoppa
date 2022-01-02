@@ -1,5 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
 const InternalServerException = require("../http/exceptions/InternalServerException");
+const Pagination = require("../http/Pagination");
 const Response = require("../http/Response");
 const RouteRepository = require("../repository/RouteRepository");
 
@@ -60,6 +61,25 @@ module.exports = class RouteController {
     const response = new Response(Response.SUCCESS, req.__('_fetched._route'), req.data.route);
 
     res.status(StatusCodes.OK).send(response);
+  }
+
+  async getListByDeliveryFirm(req, res, next) {
+    
+    try {
+
+      const { pager, deliveryFirm } = req.data;
+
+      const { count, rows } = await RouteRepository.getListByDeliveryFirm(deliveryFirm, pager.page_offset, pager.page_limit);
+
+      const pagination = new Pagination(req, pager.page, pager.page_limit, count);
+
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._route'), rows, pagination);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      next(new InternalServerException(error));
+    }
   }
 
 }

@@ -2,7 +2,10 @@
 const express = require('express');
 const { checkSchema } = require('express-validator');
 const CustomerController = require('../controllers/CustomerController');
+const FavoriteController = require('../controllers/FavoriteController');
+const AddressController = require('../controllers/AddressController');
 const UnauthorizedException = require('../http/exceptions/UnauthorizedException');
+const Files = require('../http/Files');
 const AuthMiddleware = require('../middlewares/AuthMiddleware');
 const CustomerPermissionMiddleware = require('../middlewares/permissions/CustomerPermissionMiddleware');
 const ValidationMiddleware = require('../middlewares/ValidationMiddleware');
@@ -15,14 +18,14 @@ const FileUploadValidationMiddleware = require('../middlewares/FileUploadValidat
 const CustomerFetchMiddleware = require('../middlewares/fetch/CustomerFetchMiddleware');
 const PaginationMiddleware = require('../middlewares/PaginationMiddleware');
 const AdministratorPermissionMiddleware = require('../middlewares/permissions/AdministratorPermissionMiddleware');
-const AddressController = require('../controllers/AddressController');
-const Files = require('../http/Files');
 
 const router = express.Router();
 
 const controller = new CustomerController();
 
 const addressController = new AddressController();
+
+const favoriteController = new FavoriteController();
 
 router.post(
   '/register', 
@@ -82,6 +85,15 @@ router.get(
   AuthMiddleware, 
   CustomerPermissionMiddleware,
   addressController.getListByCustomer
+);
+
+router.get(
+  '/:id(\\d+)/favorite/list', 
+  CustomerFetchMiddleware,
+  AuthMiddleware, 
+  CustomerPermissionMiddleware,
+  PaginationMiddleware,
+  favoriteController.getListByCustomer
 );
 
 router.get(

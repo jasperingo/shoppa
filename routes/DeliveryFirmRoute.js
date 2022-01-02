@@ -21,6 +21,7 @@ const WorkingHourUpdateValidation = require('../validation/working_hour/WorkingH
 const WithdrawalAccountUpdateValidation = require('../validation/withdrawal_account/WithdrawalAccountUpdateValidation');
 const PaginationMiddleware = require('../middlewares/PaginationMiddleware');
 const AdministratorPermissionMiddleware = require('../middlewares/permissions/AdministratorPermissionMiddleware');
+const RouteController = require('../controllers/RouteController');
 
 const router = express.Router();
 
@@ -31,6 +32,8 @@ const addressController = new AddressController();
 const workingHourController = new WorkingHourController();
 
 const withdrawalAccountController = new WithdrawalAccountController();
+
+const routeController = new RouteController();
 
 router.post(
   '/register', 
@@ -102,6 +105,15 @@ router.put(
   checkSchema(WithdrawalAccountUpdateValidation),
   ValidationMiddleware(),
   withdrawalAccountController.updateDeliveryFirmWithdrawalAccount
+);
+
+router.get(
+  '/:id(\\d+)/route/list', 
+  DeliveryFirmFetchMiddleware,
+  AuthMiddleware, 
+  DeliveryFirmPermissionMiddleware,
+  PaginationMiddleware,
+  routeController.getListByDeliveryFirm
 );
 
 router.get(

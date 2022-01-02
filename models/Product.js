@@ -5,7 +5,11 @@ const Store = require("./Store");
 const SubCategory = require("./SubCategory");
 
 
-class Product extends Model {}
+class Product extends Model {
+
+  static GET_ATTR = ['id', 'title', 'code']
+
+}
 
 Product.init({
 

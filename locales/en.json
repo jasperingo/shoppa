@@ -7,7 +7,8 @@
     "_sub_category": "Sub-category created",
     "_store": "Store created",
     "_product": "Product created",
-    "_route": "Route created"
+    "_route": "Route created",
+    "_favorite": "Favorite created"
   },
 
   "_updated": {
@@ -27,7 +28,8 @@
 
   "_deleted": {
     "_product": "Product deleted",
-    "_route": "Route deleted"
+    "_route": "Route deleted",
+    "_favorite": "Favorite deleted"
   },
 
   "_fetched": {
@@ -48,7 +50,9 @@
     "_category": "Category list fetched",
     "_delivery_firm": "Delivery firm list fetched",
     "_product": "Product list fetched",
-    "_location": "Location list fetched"
+    "_location": "Location list fetched",
+    "_favorite": "Favorite list fetched",
+    "_route": "Route list fetched"
   },
 
   "_login": "Login successfully",
@@ -69,6 +73,8 @@
 
       
       "_route_exists": "This route already exists",
+      
+      "_favorite_exists": "This favorite already exists",
 
       "_name_exists": "This name already exists",
       "_name_invalid": "This name is invalid",
