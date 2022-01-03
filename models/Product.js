@@ -7,7 +7,7 @@ const SubCategory = require("./SubCategory");
 
 class Product extends Model {
 
-  static GET_ATTR = ['id', 'title', 'code']
+  static GET_ATTR = ['id', 'title', 'code', 'photo']
 
 }
 

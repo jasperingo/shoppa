@@ -15,6 +15,7 @@ module.exports = class CustomerController {
 
     const userObj = {
       id : customer.id,
+      user_id: customer.user.id,
       first_name: customer.first_name,
       last_name: customer.last_name,
       email: customer.user.email,

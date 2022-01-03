@@ -15,6 +15,11 @@ module.exports = {
     return product !== null;
   },
 
+  async variantIdExists(id) {
+    const productVariant = await ProductVariant.findOne({ attributes: ['id'], where: { id } });
+    return productVariant !== null;
+  },
+
   async codeExists(code) {
     const product = await Product.findOne({ attributes: ['id'], where: { code } });
     return product !== null;

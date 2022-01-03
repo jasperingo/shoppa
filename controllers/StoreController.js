@@ -18,6 +18,7 @@ module.exports = class StoreController {
       type: admin.type,
       store: {
         id: store.id,
+        user_id: store.user.id,
         name: store.user.name,
         email: store.user.email
       }

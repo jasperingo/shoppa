@@ -22,6 +22,7 @@ const StoreRegisterValidation = require('../validation/store/StoreRegisterValida
 const StoreUpdateValidation = require('../validation/store/StoreUpdateValidation');
 const WithdrawalAccountUpdateValidation = require('../validation/withdrawal_account/WithdrawalAccountUpdateValidation');
 const WorkingHourUpdateValidation = require('../validation/working_hour/WorkingHourUpdateValidation');
+const SavedCartController = require('../controllers/SavedCartController');
 
 const router = express.Router();
 
@@ -34,6 +35,8 @@ const addressController = new AddressController();
 const workingHourController = new WorkingHourController();
 
 const withdrawalAccountController = new WithdrawalAccountController();
+
+const savedCartController = new SavedCartController();
 
 router.post(
   '/register', 
@@ -112,6 +115,15 @@ router.get(
   StoreFetchMiddleware,
   PaginationMiddleware,
   productController.getListByStore
+);
+
+router.get(
+  '/:id(\\d+)/saved-cart/list', 
+  StoreFetchMiddleware,
+  AuthMiddleware, 
+  StorePermissionMiddleware,
+  PaginationMiddleware,
+  savedCartController.getListByStore
 );
 
 router.get(

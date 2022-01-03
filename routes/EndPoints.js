@@ -11,6 +11,7 @@ const DeliveryFirmRoute = require('./DeliveryFirmRoute');
 const LocationRoute = require('./LocationRoute');
 const RouteRoute = require('./RouteRoute');
 const FavoriteRoute = require('./FavoriteRoute');
+const SavedCartRoute = require('./SavedCartRoute');
 
 const router = express.Router();
 
@@ -35,6 +36,8 @@ router.use('/location', LocationRoute);
 router.use('/route', RouteRoute);
 
 router.use('/favorite', FavoriteRoute);
+
+router.use('/saved-cart', SavedCartRoute);
 
 module.exports = router;
 

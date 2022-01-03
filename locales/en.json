@@ -8,7 +8,8 @@
     "_store": "Store created",
     "_product": "Product created",
     "_route": "Route created",
-    "_favorite": "Favorite created"
+    "_favorite": "Favorite created",
+    "_saved_cart": "Saved cart created"
   },
 
   "_updated": {
@@ -29,7 +30,8 @@
   "_deleted": {
     "_product": "Product deleted",
     "_route": "Route deleted",
-    "_favorite": "Favorite deleted"
+    "_favorite": "Favorite deleted",
+    "_saved_cart": "Saved cart deleted"
   },
 
   "_fetched": {
@@ -40,7 +42,8 @@
     "_store": "Store fetched",
     "_delivery_firm": "Delivery firm fetched",
     "_product": "Product fetched",
-    "_route": "Route fetched"
+    "_route": "Route fetched",
+    "_saved_cart": "Saved cart fetched"
   },
 
   "_list_fetched": {
@@ -52,7 +55,8 @@
     "_product": "Product list fetched",
     "_location": "Location list fetched",
     "_favorite": "Favorite list fetched",
-    "_route": "Route list fetched"
+    "_route": "Route list fetched",
+    "_saved_cart": "Saved cart list fetched"
   },
 
   "_login": "Login successfully",

@@ -18,6 +18,7 @@ const FileUploadValidationMiddleware = require('../middlewares/FileUploadValidat
 const CustomerFetchMiddleware = require('../middlewares/fetch/CustomerFetchMiddleware');
 const PaginationMiddleware = require('../middlewares/PaginationMiddleware');
 const AdministratorPermissionMiddleware = require('../middlewares/permissions/AdministratorPermissionMiddleware');
+const SavedCartController = require('../controllers/SavedCartController');
 
 const router = express.Router();
 
@@ -26,6 +27,8 @@ const controller = new CustomerController();
 const addressController = new AddressController();
 
 const favoriteController = new FavoriteController();
+
+const savedCartController = new SavedCartController();
 
 router.post(
   '/register', 
@@ -94,6 +97,15 @@ router.get(
   CustomerPermissionMiddleware,
   PaginationMiddleware,
   favoriteController.getListByCustomer
+);
+
+router.get(
+  '/:id(\\d+)/saved-cart/list', 
+  CustomerFetchMiddleware,
+  AuthMiddleware, 
+  CustomerPermissionMiddleware,
+  PaginationMiddleware,
+  savedCartController.getListByCustomer
 );
 
 router.get(

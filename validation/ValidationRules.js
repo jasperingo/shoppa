@@ -21,6 +21,7 @@ module.exports = {
     const errs = errors.array();
     //TODO
     // for (let i of errs) {
+    // TODO: check if message is an array
     //   if (i.message === InternalServerException.TAG) 
     //     return true;
     // }
