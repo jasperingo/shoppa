@@ -200,7 +200,7 @@ module.exports = {
 
         ProductVariant.update(
           { deleted_at }, 
-          { where: { product_id: product.id }, transaction }
+          { where: { product_id: product.id, deleted_at: { [Op.is]: null } }, transaction }
         )
       ]);
     });

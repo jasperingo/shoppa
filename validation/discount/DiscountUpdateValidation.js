@@ -1,7 +1,6 @@
 const InternalServerException = require("../../http/exceptions/InternalServerException");
 const Discount = require("../../models/Discount");
 const DiscountRepository = require("../../repository/DiscountRepository");
-const ProductRepository = require("../../repository/ProductRepository");
 const ValidationRules = require("../ValidationRules");
 
 
@@ -12,7 +11,7 @@ module.exports = {
     custom: {
       options: async (value, { req })=> {
         try {
-          if (await DiscountRepository.titleExists(value, req.body.store_id))
+          if (await DiscountRepository.updateTitleExists(value, req.data.discount))
             return Promise.reject(req.__('_error._form._title_exists'));
         } catch (err) {
           return Promise.reject(InternalServerException.TAG);
@@ -63,10 +62,10 @@ module.exports = {
 
         const date = new Date(value);
 
-        if (isNaN(date.getTime()) || (date.getTime() < Date.now())) 
+        if (isNaN(date.getTime()) || (date.getTime() < new Date(req.data.discount.created_at).getTime())) 
           throw req.__('_error._form._field_invalid');
 
-        req.data = { startDate: true };
+        req.data.startDate = true;
 
         return true;
       }
@@ -101,9 +100,10 @@ module.exports = {
         ValidationRules.discountProductsCheck(
           value,
           err,
-          req.body.store_id,
+          req.data.discount.store_id,
           req.__('_error._form._field_invalid'),
-          false
+          true,
+          req.__('_error._form._id_invalid')
         );
         
         if (err.length > 0) throw err;
@@ -113,7 +113,7 @@ module.exports = {
           err,
           req.__('_error._form._field_duplicated')
         );
-
+        
         if (err.length > 0) throw err;
 
         return true;
@@ -122,4 +122,3 @@ module.exports = {
   }
 
 };
-

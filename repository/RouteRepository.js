@@ -210,12 +210,12 @@ module.exports = {
 
         RouteWeight.update(
           { deleted_at }, 
-          { where: { route_id: route.id }, transaction }
+          { where: { route_id: route.id, deleted_at: { [Op.is]: null } }, transaction }
         ),
 
         RouteDuration.update(
           { deleted_at }, 
-          { where: { route_id: route.id }, transaction }
+          { where: { route_id: route.id, deleted_at: { [Op.is]: null } }, transaction }
         )
       ]);
     });

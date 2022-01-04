@@ -25,14 +25,16 @@
     "_delivery_firm": "Delivery firm updated",
     "_route": "Route updated",
     "_working_hours": "Working hours updated",
-    "_withdrawal_account": "Withdrawal account updated"
+    "_withdrawal_account": "Withdrawal account updated",
+    "_discount": "Discount updated"
   },
 
   "_deleted": {
     "_product": "Product deleted",
     "_route": "Route deleted",
     "_favorite": "Favorite deleted",
-    "_saved_cart": "Saved cart deleted"
+    "_saved_cart": "Saved cart deleted",
+    "_discount": "Discount deleted"
   },
 
   "_fetched": {
@@ -44,7 +46,8 @@
     "_delivery_firm": "Delivery firm fetched",
     "_product": "Product fetched",
     "_route": "Route fetched",
-    "_saved_cart": "Saved cart fetched"
+    "_saved_cart": "Saved cart fetched",
+    "_discount": "Discount fetched"
   },
 
   "_list_fetched": {
@@ -57,7 +60,9 @@
     "_location": "Location list fetched",
     "_favorite": "Favorite list fetched",
     "_route": "Route list fetched",
-    "_saved_cart": "Saved cart list fetched"
+    "_saved_cart": "Saved cart list fetched",
+    "_discount": "Discount list fetched",
+    "_discount_product": "Discount product list fetched"
   },
 
   "_login": "Login successfully",

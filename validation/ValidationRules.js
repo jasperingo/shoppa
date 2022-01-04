@@ -5,6 +5,7 @@ const Category = require("../models/Category");
 const RouteDuration = require("../models/RouteDuration");
 const CustomerRepository = require("../repository/CustomerRepository");
 const LocationRepository = require('../repository/LocationRepository');
+const ProductRepository = require("../repository/ProductRepository");
 const Hash = require("../security/Hash");
 
 module.exports = {
@@ -331,7 +332,50 @@ module.exports = {
         }
       }
     }
-  }
+  },
+
+  async discountProductsCheck(value, err, store_id, invalidMessage, checkID, invalidIDMessage) {
+    for (let [i, product] of value.entries()) {
+
+      if (typeof product === 'object' && product !== null) {
+
+        if (isNaN(parseInt(product.product_id)) || 
+          ! (await ProductRepository.idExistsForStore(product.product_id, store_id))) {
+          err.push({ name: 'poduct_id', message: invalidMessage, index: i });
+        }
+
+        if (checkID && product.id !== undefined && ! (await DiscountRepository.discountProductIdExists(product.id)))
+          err.push({ name: 'id', message: invalidIDMessage, index: i });
+
+      } else {
+        err.push({ message: invalidMessage, index: i });
+      }
+    }
+  },
+
+  discountProductsAreUnique(value, err, duplicateMessage) {
+
+    const errIndex = [];
+
+    for (let i = 0; i < value.length; i++) {
+      for (let j = i; j < value.length-1; j++) {
+        let v1 = value[i];
+        let v2 = value[j+1];
+        if (v1.product_id === v2.product_id) {
+          
+          if (!errIndex.includes(i)) {
+            errIndex.push(i);
+            err.push({ message: duplicateMessage, index: i });
+          }
+  
+          if (!errIndex.includes(j+1)) {
+            errIndex.push(j+1);
+            err.push({ message: duplicateMessage, index: j+1 });
+          }
+        }
+      }
+    }
+  },
 
 };
 
