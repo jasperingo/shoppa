@@ -9,7 +9,8 @@
     "_product": "Product created",
     "_route": "Route created",
     "_favorite": "Favorite created",
-    "_saved_cart": "Saved cart created"
+    "_saved_cart": "Saved cart created",
+    "_discount": "Discount created"
   },
 
   "_updated": {
