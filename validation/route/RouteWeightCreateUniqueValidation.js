@@ -1,6 +1,6 @@
 const { validationResult } = require("express-validator");
 const InternalServerException = require("../../http/exceptions/InternalServerException");
-const RouteRepository = require("../../repository/RouteRepository");
+const RouteWeightRepository = require("../../repository/RouteWeightRepository");
 const RouteCustomErrors = require("./RouteCustomErrors");
 
 
@@ -10,15 +10,15 @@ module.exports = async (req, res, next)=> {
     return next();
   }
 
-  if (RouteCustomErrors.cityInvalid(req)) {
-    await RouteCustomErrors.city(req);
+  if (!RouteCustomErrors.minimiumIsValid(req)) {
+    await RouteCustomErrors.minimiumInvalid(req);
     return next();
   }
 
   try {
     
-    if (await RouteRepository.routeExists(req.auth.deliveryFirm.id, req.body)) {
-      await RouteCustomErrors.cityAndState(req);
+    if (await RouteWeightRepository.routeWeightExists(req.body)) {
+      await RouteCustomErrors.weightExists(req);
     }
     
     next();

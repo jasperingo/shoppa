@@ -7,10 +7,14 @@
     "_sub_category": "Sub-category created",
     "_store": "Store created",
     "_product": "Product created",
+    "_product_variant": "Product variant created",
     "_route": "Route created",
+    "_route_weight": "Route weight created",
+    "_route_duration": "Route duration created",
     "_favorite": "Favorite created",
     "_saved_cart": "Saved cart created",
-    "_discount": "Discount created"
+    "_discount": "Discount created",
+    "_discount_product": "Discount product created"
   },
 
   "_updated": {
@@ -22,8 +26,11 @@
     "_sub_category": "Sub-category updated",
     "_store": "Store updated",
     "_product": "Product updated",
+    "_product_variant": "Product variant updated",
     "_delivery_firm": "Delivery firm updated",
     "_route": "Route updated",
+    "_route_weight": "Route weight updated",
+    "_route_duration": "Route duration updated",
     "_working_hours": "Working hours updated",
     "_withdrawal_account": "Withdrawal account updated",
     "_discount": "Discount updated"
@@ -31,10 +38,14 @@
 
   "_deleted": {
     "_product": "Product deleted",
+    "_product_variant": "Product variant deleted",
     "_route": "Route deleted",
+    "_route_weight": "Route weight deleted",
+    "_route_duration": "Route duration deleted",
     "_favorite": "Favorite deleted",
     "_saved_cart": "Saved cart deleted",
-    "_discount": "Discount deleted"
+    "_discount": "Discount deleted",
+    "_discount_product": "Discount product deleted"
   },
 
   "_fetched": {
@@ -45,9 +56,13 @@
     "_store": "Store fetched",
     "_delivery_firm": "Delivery firm fetched",
     "_product": "Product fetched",
+    "_product_variant": "Product variant fetched",
     "_route": "Route fetched",
+    "_route_weight": "Route weight fetched",
+    "_route_duration": "Route duration fetched",
     "_saved_cart": "Saved cart fetched",
-    "_discount": "Discount fetched"
+    "_discount": "Discount fetched",
+    "_discount_product": "Discount product fetched"
   },
 
   "_list_fetched": {
@@ -77,12 +92,14 @@
 
     "_form": {
       "_id_invalid": "This ID is invalid",
+      "_id_exists": "This ID already exists",
       
       "_title_exists": "This title already exists",
       "_code_exists": "This code already exists",
 
-      
       "_route_exists": "This route already exists",
+      "_route_weight_exists": "This route weight already exists",
+      "_route_duration_exists": "This route duration already exists",
       
       "_favorite_exists": "This favorite already exists",
 

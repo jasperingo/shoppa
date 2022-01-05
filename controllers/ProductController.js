@@ -95,6 +95,26 @@ module.exports = class ProductController {
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
+      console.error(error)
+      next(new InternalServerException(error));
+    }
+  }
+
+  async getListByStoreWithDiscount(req, res, next) {
+    
+    try {
+
+      const { pager, store } = req.data;
+
+      const { count, rows } = await ProductRepository.getListByStoreWithDiscount(store, req.params.discountId, pager.page_offset, pager.page_limit);
+
+      const pagination = new Pagination(req, pager.page, pager.page_limit, count);
+
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._product'), rows, pagination);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
       next(new InternalServerException(error));
     }
   }

@@ -1,7 +1,6 @@
 const InternalServerException = require("../../http/exceptions/InternalServerException");
 const Discount = require("../../models/Discount");
 const DiscountRepository = require("../../repository/DiscountRepository");
-const ProductRepository = require("../../repository/ProductRepository");
 const ValidationRules = require("../ValidationRules");
 
 
@@ -31,29 +30,17 @@ module.exports = {
 
   value: {
     notEmpty: ValidationRules.notEmpty,
-    isFloat: {
-      options: { gt: 0 },
-      bail: true,
-      errorMessage: (value, { req })=> req.__('_error._form._field_invalid')
-    }
+    isFloat: ValidationRules.isFloatGTZero
   },
 
   minimium_required_amount: {
     optional: { options: { nullable: true } },
-    isFloat: {
-      options: { gt: 0 },
-      bail: true,
-      errorMessage: (value, { req })=> req.__('_error._form._field_invalid')
-    }
+    isFloat: ValidationRules.isFloatGTZero
   },
   
   minimium_required_quantity: {
     optional: { options: { nullable: true } },
-    isFloat: {
-      options: { gt: 0 },
-      bail: true,
-      errorMessage: (value, { req })=> req.__('_error._form._field_invalid')
-    }
+    isFloat: ValidationRules.isFloatGTZero
   },
 
   start_date: {
@@ -90,36 +77,6 @@ module.exports = {
       }
     }
   },
-
-  discount_products: {
-    isArray: ValidationRules.isArray,
-    custom: {
-      options: async (value, { req })=> {
-
-        const err = [];
-
-        ValidationRules.discountProductsCheck(
-          value,
-          err,
-          req.body.store_id,
-          req.__('_error._form._field_invalid'),
-          false
-        );
-        
-        if (err.length > 0) throw err;
-
-        ValidationRules.discountProductsAreUnique(
-          value,
-          err,
-          req.__('_error._form._field_duplicated')
-        );
-
-        if (err.length > 0) throw err;
-
-        return true;
-      }
-    }
-  }
 
 };
 

@@ -52,35 +52,6 @@ module.exports = {
   description: {
     notEmpty: ValidationRules.notEmpty,
   },
-  
-  product_variants: {
-    isArray: ValidationRules.isArray,
-    custom: {
-      options: (value, { req })=> {
-
-        const err = [];
-        
-        ValidationRules.productVarientCheck(
-          value,
-          err,
-          req.__('_error._form._field_invalid')
-        )
-
-        if (err.length > 0) throw err;
-
-        ValidationRules.productVariantIsUnique(
-          value,
-          err,
-          req.__('_error._form._field_duplicated')
-        );
-
-        if (err.length > 0) throw err;
-
-        return true;
-      }
-    }
-  },
-
 
 };
 

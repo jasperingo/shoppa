@@ -1,10 +1,14 @@
 const { Op } = require("sequelize");
 const Discount = require("../models/Discount");
 const DiscountProduct = require("../models/DiscountProduct");
-const Product = require("../models/Product");
 const sequelize = require("./DB");
 
 module.exports = {
+
+  async idExistsForStore(id, store_id) {
+    const discount = await Discount.findOne({ attributes: ['id'], where: { id, store_id } });
+    return discount !== null;
+  },
 
   async titleExists(title, store_id) {
     const discount = await Discount.findOne({ attributes: ['id'], where: { title, store_id } });
@@ -22,28 +26,23 @@ module.exports = {
     });
     return dc !== null;
   },
-
-  async discountProductIdExists(id) {
-    const discount = await DiscountProduct.findOne({ attributes: ['id'], where: { id } });
-    return discount !== null;
-  },
   
-  async productOnDiscount(product_id) {
-    const discount = await DiscountProduct.findOne({ 
-      attributes: ['id'],
-      where: { 
-        product_id,
-        '$discount.end_date$': {
-          [Op.gt]: sequelize.fn('now')
-        }
-      },
-      include: {
-        model: Discount,
-        attributes: ['id']
-      }
-    });
-    return discount !== null;
-  },
+  // async productOnDiscount(product_id) {
+  //   const discount = await DiscountProduct.findOne({ 
+  //     attributes: ['id'],
+  //     where: { 
+  //       product_id,
+  //       '$discount.end_date$': {
+  //         [Op.gt]: sequelize.fn('now')
+  //       }
+  //     },
+  //     include: {
+  //       model: Discount,
+  //       attributes: ['id']
+  //     }
+  //   });
+  //   return discount !== null;
+  // },
 
   get(id) {
     return Discount.findOne({
@@ -70,94 +69,36 @@ module.exports = {
     });
   },
 
-  getDiscountProductList(discount, offset, limit) {
-    return DiscountProduct.findAndCountAll({
-      where: { 
-        discount_id: discount.id,
-        deleted_at: {
-          [Op.is]: null
-        }
-      },
-      include: {
-        model: Product,
-        attributes: Product.GET_ATTR
-      },
-      order: [['created_at', 'DESC']],
-      offset,
-      limit,
-    });
+  create({ store_id, title, type, value, minimium_required_amount, minimium_required_quantity, start_date, end_date }) {
+
+    const values = { store_id, title, type, value, start_date, end_date };
+
+    if (minimium_required_amount !== undefined || minimium_required_amount !== null) {
+      values.minimium_required_amount = minimium_required_amount;
+    }
+
+    if (minimium_required_quantity !== undefined || minimium_required_quantity !== null) {
+      values.minimium_required_quantity = minimium_required_quantity;
+    }
+
+    return Discount.create(values);
   },
 
-  create({ store_id, title, type, value, minimium_required_amount, minimium_required_quantity, start_date, end_date, discount_products }) {
-    return sequelize.transaction(async (transaction)=> {
+  update(discount, { title, type, value, minimium_required_amount, minimium_required_quantity, start_date, end_date }) {
+    
+    const values = { title, type, value, start_date, end_date };
 
-      const values = { store_id, title, type, value, start_date, end_date };
+    if (minimium_required_amount !== undefined || minimium_required_amount !== null) {
+      values.minimium_required_amount = minimium_required_amount;
+    }
 
-      if (minimium_required_amount !== undefined || minimium_required_amount !== null) {
-        values.minimium_required_amount = minimium_required_amount;
-      }
+    if (minimium_required_quantity !== undefined || minimium_required_quantity !== null) {
+      values.minimium_required_quantity = minimium_required_quantity;
+    }
 
-      if (minimium_required_quantity !== undefined || minimium_required_quantity !== null) {
-        values.minimium_required_quantity = minimium_required_quantity;
-      }
-
-      const discount = await Discount.create(values, { transaction });
-      
-      for (let { product_id } of discount_products) {
-        await DiscountProduct.create(
-          { discount_id: discount.id, product_id },
-          { transaction }
-        );
-      }
-
-      return discount;
-    });
+    return Discount.update(values, { where: { id: discount.id } });
   },
-
-  update(discount, { title, type, value, minimium_required_amount, minimium_required_quantity, start_date, end_date, discount_products }) {
-    return sequelize.transaction(async (transaction)=> {
-
-      const values = { title, type, value, start_date, end_date };
-
-      if (minimium_required_amount !== undefined || minimium_required_amount !== null) {
-        values.minimium_required_amount = minimium_required_amount;
-      }
-
-      if (minimium_required_quantity !== undefined || minimium_required_quantity !== null) {
-        values.minimium_required_quantity = minimium_required_quantity;
-      }
-
-      const result = await Discount.update(values, { where: { id: discount.id }, transaction });
-
-      const IDs = [];
-      
-      for (let { id, product_id } of discount_products) {
-        if (id === undefined) {
-          let dp = await DiscountProduct.create(
-            { discount_id: discount.id, product_id },
-            { transaction }
-          );
-          IDs.push(dp.id);
-        } else {
-          IDs.push(id);
-        }
-      }
-      
-      await DiscountProduct.update({ deleted_at: Date.now() }, { 
-        where: { 
-          discount_id: discount.id, 
-          id: {
-            [Op.notIn]: IDs
-          }
-        },
-        transaction
-      });
-      
-
-      return result;
-    });
-  },
-
+  
   delete(discount) {
     return sequelize.transaction(async (transaction)=> {
 

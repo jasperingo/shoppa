@@ -20,7 +20,6 @@ module.exports = class DiscountController {
       res.status(StatusCodes.CREATED).send(response);
 
     } catch (error) {
-      console.error(error)
       next(new InternalServerException(error));
     }
   }
@@ -75,25 +74,6 @@ module.exports = class DiscountController {
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
       const response = new Response(Response.SUCCESS, req.__('_list_fetched._discount'), rows, pagination);
-
-      res.status(StatusCodes.OK).send(response);
-
-    } catch(error) {
-      next(new InternalServerException(error));
-    }
-  }
-
-  async getDiscountProductList(req, res, next) {
-    
-    try {
-
-      const { pager, discount } = req.data;
-
-      const { count, rows } = await DiscountRepository.getDiscountProductList(discount, pager.page_offset, pager.page_limit);
-
-      const pagination = new Pagination(req, pager.page, pager.page_limit, count);
-
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._discount_product'), rows, pagination);
 
       res.status(StatusCodes.OK).send(response);
 

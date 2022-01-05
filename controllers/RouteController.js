@@ -20,6 +20,7 @@ module.exports = class RouteController {
       res.status(StatusCodes.CREATED).send(response);
 
     } catch (error) {
+      console.log(error)
       next(new InternalServerException(error));
     }
   }

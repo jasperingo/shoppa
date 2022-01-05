@@ -121,6 +121,13 @@ router.get(
 );
 
 router.get(
+  '/:id(\\d+)/product/discount/:discountId(\\d+)',
+  StoreFetchMiddleware,
+  PaginationMiddleware,
+  productController.getListByStoreWithDiscount
+);
+
+router.get(
   '/:id(\\d+)/saved-cart/list', 
   StoreFetchMiddleware,
   AuthMiddleware, 

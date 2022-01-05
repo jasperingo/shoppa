@@ -6,11 +6,10 @@ const AuthMiddleware = require('../middlewares/AuthMiddleware');
 const RouteAddPermissionMiddleware = require('../middlewares/permissions/route/RouteAddPermissionMiddleware');
 const RouteUpdatePermissionMiddleware = require('../middlewares/permissions/route/RouteUpdatePermissionMiddleware');
 const ValidationMiddleware = require('../middlewares/ValidationMiddleware');
-const RouteAddValidation = require('../validation/route/RouteAddValidation');
-const RouteUpdateValidation = require('../validation/route/RouteUpdateValidation');
-const RouteAddValidationMiddleware = require('../validation/route/RouteAddValidationMiddleware');
+const RouteValidation = require('../validation/route/RouteValidation');
+const RouteAddUniqueValidation = require('../validation/route/RouteAddUniqueValidation');
 const RouteFetchMiddleware = require('../middlewares/fetch/RouteFetchMiddleware');
-const RouteUpdateValidationMiddleware = require('../validation/route/RouteUpdateValidationMiddleware');
+const RouteUpdateUniqueValidation = require('../validation/route/RouteUpdateUniqueValidation');
 
 const router = express.Router();
 
@@ -20,8 +19,8 @@ router.post(
   '/add',
   AuthMiddleware,
   RouteAddPermissionMiddleware,
-  checkSchema(RouteAddValidation),
-  RouteAddValidationMiddleware,
+  checkSchema(RouteValidation),
+  RouteAddUniqueValidation,
   ValidationMiddleware(),
   controller.add
 );
@@ -31,8 +30,8 @@ router.put(
   RouteFetchMiddleware,
   AuthMiddleware,
   RouteUpdatePermissionMiddleware,
-  checkSchema(RouteUpdateValidation),
-  RouteUpdateValidationMiddleware,
+  checkSchema(RouteValidation),
+  RouteUpdateUniqueValidation,
   ValidationMiddleware(),
   controller.update
 );

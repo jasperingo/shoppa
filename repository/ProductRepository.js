@@ -1,5 +1,7 @@
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const Category = require("../models/Category");
+const Discount = require("../models/Discount");
+const DiscountProduct = require("../models/DiscountProduct");
 const Product = require("../models/Product");
 const ProductVariant = require("../models/ProductVariant");
 const Store = require("../models/Store");
@@ -11,43 +13,74 @@ const sequelize = require("./DB");
 module.exports = {
 
   async idExists(id) {
-    const product = await Product.findOne({ attributes: ['id'], where: { id } });
+    const product = await Product.findOne({ 
+      attributes: ['id'], 
+      where: { 
+        id, 
+        deleted_at: { [Op.is]: null } 
+      } 
+    });
     return product !== null;
   },
 
   async idExistsForStore(id, store_id) {
-    const product = await Product.findOne({ attributes: ['id'], where: { id, store_id } });
+    const product = await Product.findOne({ 
+      attributes: ['id'], 
+      where: { 
+        id, 
+        store_id, 
+        deleted_at: { [Op.is]: null } 
+      } 
+    });
     return product !== null;
   },
 
   async variantIdExists(id) {
-    const productVariant = await ProductVariant.findOne({ attributes: ['id'], where: { id } });
+    const productVariant = await ProductVariant.findOne({ attributes: ['id'], where: { id, deleted_at: { [Op.is]: null } } });
     return productVariant !== null;
   },
 
   async codeExists(code) {
-    const product = await Product.findOne({ attributes: ['id'], where: { code } });
+    const product = await Product.findOne({ attributes: ['id'], where: { code, deleted_at: { [Op.is]: null } } });
     return product !== null;
   },
 
   async titleExists(title) {
-    const product = await Product.findOne({ attributes: ['id'], where: { title } });
+    const product = await Product.findOne({ attributes: ['id'], where: { title, deleted_at: { [Op.is]: null } } });
     return product !== null;
   },
 
   async updateCodeExists(code, id) {
-    const product = await Product.findOne({ attributes: ['id'], where: { code, [Op.not]: { id } } });
+    const product = await Product.findOne({ 
+      attributes: ['id'], 
+      where: { 
+        code, 
+        [Op.not]: { id },
+        deleted_at: { [Op.is]: null }
+      } 
+    });
     return product !== null;
   },
 
   async updateTitleExists(title, id) {
-    const product = await Product.findOne({ attributes: ['id'], where: { title, [Op.not]: { id } } });
+    const product = await Product.findOne({ 
+      attributes: ['id'], 
+      where: { 
+        title, 
+        [Op.not]: { id },
+        deleted_at: { [Op.is]: null }
+      } 
+    });
     return product !== null;
   },
 
   get(id) {
     return Product.findOne({
-      where: { id },
+      where: { 
+        id,
+        deleted_at: { [Op.is]: null },
+        '$product_variants.deleted_at$': { [Op.is]: null }
+      },
       include: [
         {
           model: Store,
@@ -59,11 +92,6 @@ module.exports = {
         },
         {
           model: ProductVariant,
-          where: {
-            deleted_at: {
-              [Op.is]: null
-            }
-          }
         },
         {
           model: SubCategory,
@@ -77,110 +105,86 @@ module.exports = {
     });
   },
   
-  getListByStore(store, offset, limit) {
-    return sequelize.transaction(async (transaction)=> {
-
-      const count = await Product.count({
-        where: { store_id: store.id },
-        transaction
-      });
+  async getListByStore(store, offset, limit) {
       
-      const rows = await Product.findAll({
-        where: { store_id: store.id },
-        include: [
-          {
-            model: Store,
-            include: {
-              model: User,
-              attributes: User.GET_ATTR
-            }
-          },
-          {
-            model: ProductVariant,
-            attributes: ['price'],
-            where: {
-              deleted_at: {
-                [Op.is]: null
-              }
-            }
-          },
-          {
-            model: SubCategory,
-            attributes: SubCategory.GET_ATTR,
-            include: {
-              model: Category,
-              attributes: Category.GET_ATTR,
-            }
-          },
-        ],
-        order: [['created_at', 'DESC']],
-        offset,
-        limit,
-        transaction
-      });
-      
-      return { count, rows };
-    });
-  },
-
-  add({ store_id, sub_category_id, code, title, description, product_variants }) {
-    return sequelize.transaction(async (transaction)=> {
-
-      const product = await Product.create(
-        { store_id, sub_category_id, code, title, description },
-        { transaction }
-      );
-      
-      for (let { name, price, quantity, weight, available } of product_variants) {
-        await ProductVariant.create(
-          { product_id: product.id, name, price, quantity, weight, available },
-          { transaction }
-        );
-      }
-
-      return product;
-    });
-  },
-
-  update(product, { sub_category_id, code, title, description, product_variants }) {
-    return sequelize.transaction(async (transaction)=> {
-
-      const result = await Product.update(
-        { sub_category_id, code, title, description },
-        { where: { id: product.id }, transaction }
-      );
-
-      const variantIDs = [];
-      
-      for (let { id, name, price, quantity, weight, available } of product_variants) {
-
-        if (id === undefined) {
-          let variant = await ProductVariant.create(
-            { product_id: product.id, name, price, quantity, weight, available },
-            { transaction }
-          );
-          variantIDs.push(variant.id);
-        } else {
-          variantIDs.push(id);
-          await ProductVariant.update(
-            { name, price, quantity, weight, available },
-            { where: { id }, transaction }
-          );
-        }
-      }
-
-      await ProductVariant.update({ deleted_at: Date.now() }, { 
-        where: { 
-          product_id: product.id, 
-          id: {
-            [Op.notIn]: variantIDs
+    const { count, rows } = await Product.findAndCountAll({
+      where: { 
+        store_id: store.id,
+        deleted_at: { [Op.is]: null }
+      },
+      include: [
+        {
+          model: Store,
+          include: {
+            model: User,
+            attributes: User.GET_ATTR
           }
         },
-        transaction
-      });
-      
-      return result;
+        {
+          model: SubCategory,
+          attributes: SubCategory.GET_ATTR,
+          include: {
+            model: Category,
+            attributes: Category.GET_ATTR,
+          }
+        },
+      ],
+      order: [['created_at', 'DESC']],
+      offset,
+      limit
     });
+    
+    for (let [i, product] of rows.entries()) {
+      let variant = await ProductVariant.findOne({
+        attributes: ['id', 'price'],
+        where: {
+          product_id: product.id,
+          deleted_at: { [Op.is]: null }
+        },
+        order: [['price', 'ASC']],
+      });
+
+      rows[i].setDataValue('product_variants', (variant === null ? [] : [variant]));
+    }
+    
+    return { count, rows };
+  },
+  
+  async getListByStoreWithDiscount(store, discount_id, offset, limit) {
+    const { count, rows } = await Product.findAndCountAll({
+      where: { 
+        store_id: store.id,
+        deleted_at: { [Op.is]: null }
+      },
+      order: [['created_at', 'DESC']],
+      offset,
+      limit,
+    });
+
+    for (let [i, product] of rows.entries()) {
+      let discountProduct = await DiscountProduct.findOne({
+        where: {
+          discount_id,
+          product_id: product.id,
+          deleted_at: { [Op.is]: null }
+        }
+      });
+
+      rows[i].setDataValue('discount_products', (discountProduct === null ? [] : [discountProduct]));
+    }
+
+    return { count, rows };
+  },
+
+  add({ store_id, sub_category_id, code, title, description }) {
+    return Product.create({ store_id, sub_category_id, code, title, description });
+  },
+
+  update(product, { sub_category_id, code, title, description }) {
+    return Product.update(
+      { sub_category_id, code, title, description },
+      { where: { id: product.id } }
+    );
   },
 
   updatePhoto(product, photo) {

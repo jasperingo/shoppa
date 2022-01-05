@@ -7,12 +7,16 @@ const CategoryRoute = require('./CategoryRoute');
 const SubCategoryRoute = require('./SubCategoryRoute');
 const StoreRoute = require('./StoreRoute');
 const ProductRoute = require('./ProductRoute');
+const ProductVariantRoute = require('./ProductVariantRoute');
 const DeliveryFirmRoute = require('./DeliveryFirmRoute');
 const LocationRoute = require('./LocationRoute');
 const RouteRoute = require('./RouteRoute');
+const RouteWeightRoute = require('./RouteWeightRoute');
+const RouteDurationRoute = require('./RouteDurationRoute');
 const FavoriteRoute = require('./FavoriteRoute');
 const SavedCartRoute = require('./SavedCartRoute');
 const DiscountRoute = require('./DiscountRoute');
+const DiscountProductRoute = require('./DiscountProductRoute');
 
 const router = express.Router();
 
@@ -30,17 +34,25 @@ router.use('/store', StoreRoute);
 
 router.use('/product', ProductRoute);
 
+router.use('/product-variant', ProductVariantRoute);
+
 router.use('/delivery-firm', DeliveryFirmRoute);
 
 router.use('/location', LocationRoute);
 
 router.use('/route', RouteRoute);
 
+router.use('/route-weight', RouteWeightRoute);
+
+router.use('/route-duration', RouteDurationRoute);
+
 router.use('/favorite', FavoriteRoute);
 
 router.use('/saved-cart', SavedCartRoute);
 
 router.use('/discount', DiscountRoute);
+
+router.use('/discount-product', DiscountProductRoute);
 
 module.exports = router;
 
