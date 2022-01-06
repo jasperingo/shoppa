@@ -18,20 +18,6 @@ OrderItem.init({
     autoIncrement: true
   },
 
-  product_title: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-
-  product_variant_title: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-
-  discount_amount: {
-    type: DataTypes.DOUBLE
-  },
-
   quantity: {
     type: DataTypes.DOUBLE,
     allowNull: false
@@ -47,6 +33,10 @@ OrderItem.init({
   },
 
   delivery_duration_fee: {
+    type: DataTypes.DOUBLE
+  },
+  
+  discount_amount: {
     type: DataTypes.DOUBLE
   },
 

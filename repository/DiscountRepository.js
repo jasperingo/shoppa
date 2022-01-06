@@ -26,23 +26,6 @@ module.exports = {
     });
     return dc !== null;
   },
-  
-  // async productOnDiscount(product_id) {
-  //   const discount = await DiscountProduct.findOne({ 
-  //     attributes: ['id'],
-  //     where: { 
-  //       product_id,
-  //       '$discount.end_date$': {
-  //         [Op.gt]: sequelize.fn('now')
-  //       }
-  //     },
-  //     include: {
-  //       model: Discount,
-  //       attributes: ['id']
-  //     }
-  //   });
-  //   return discount !== null;
-  // },
 
   get(id) {
     return Discount.findOne({

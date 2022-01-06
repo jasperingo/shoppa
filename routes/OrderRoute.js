@@ -1,6 +1,11 @@
 
 const express = require('express');
+const { checkSchema } = require('express-validator');
 const OrderController = require('../controllers/OrderController');
+const AuthMiddleware = require('../middlewares/AuthMiddleware');
+const OrderRouteSuggestPermissionMiddleware = require('../middlewares/permissions/order/OrderRouteSuggestPermissionMiddleware');
+const ValidationMiddleware = require('../middlewares/ValidationMiddleware');
+const OrderRouteSuggestValidation = require('../validation/order/OrderRouteSuggestValidation');
 
 const router = express.Router();
 
@@ -12,19 +17,19 @@ router.post(
 );
 
 router.post(
-  '/delivery-firm/suggest',
-  controller.create
+  '/route/suggest',
+  AuthMiddleware,
+  OrderRouteSuggestPermissionMiddleware,
+  checkSchema(OrderRouteSuggestValidation),
+  ValidationMiddleware(),
+  controller.getRouteSuggestions
 );
 
 router.post(
   '/discount/suggest',
-  controller.create
+  controller.getDiscountSuggestions
 );
 
-router.post(
-  '/paymnet-method/suggest',
-  controller.create
-);
 
 module.exports = router;
 

@@ -45,6 +45,15 @@ module.exports = {
 
   delete(routeDuration) {
     return RouteDuration.update({ deleted_at: Date.now() }, { where: { id: routeDuration.id } });
+  },
+
+  getListByRoute(route_id) {
+    return RouteDuration.findAll({
+      where: {
+        route_id,
+        deleted_at: { [Op.is]: null }
+      }
+    })
   }
 
 };

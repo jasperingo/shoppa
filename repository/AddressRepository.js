@@ -5,6 +5,11 @@ const sequelize = require("./DB");
 
 module.exports = {
 
+  async idExists(id) {
+    const address = await Address.findOne({ attributes: ['id'], where: { id } });
+    return address !== null;
+  },
+
   async titleExistsForUser(title, user_id) {
     const addr = await Address.findOne({ 
       attributes: ['id'], 

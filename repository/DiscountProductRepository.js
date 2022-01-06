@@ -1,6 +1,8 @@
 const { Op } = require("sequelize");
+const Discount = require("../models/Discount");
 const DiscountProduct = require("../models/DiscountProduct");
 const Product = require("../models/Product");
+const sequelize = require("./DB");
 
 module.exports = {
 
@@ -33,9 +35,7 @@ module.exports = {
     return DiscountProduct.findAndCountAll({
       where: { 
         discount_id: discount.id,
-        deleted_at: {
-          [Op.is]: null
-        }
+        deleted_at: { [Op.is]: null }
       },
       include: {
         model: Product,
@@ -44,6 +44,31 @@ module.exports = {
       order: [['created_at', 'DESC']],
       offset,
       limit,
+    });
+  },
+
+  getListByNotExpiredAndProductAndQuantityAndAmount(product_id, quantity, amount) {
+    return DiscountProduct.findAll({
+      where: { 
+        product_id,
+        deleted_at: { [Op.is]: null },
+        '$discount.end_date$': { [Op.gt]: sequelize.fn('now') },
+        '$discount.minimium_required_amount$': {
+          [Op.or]: {
+            [Op.is]: null,
+            [Op.lte]: amount
+          }
+        },
+        '$discount.minimium_required_quantity$': {
+          [Op.or]: {
+            [Op.is]: null,
+            [Op.lte]: quantity
+          }
+        }
+      },
+      include: {
+        model: Discount
+      }
     });
   },
 

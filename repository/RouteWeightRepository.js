@@ -43,6 +43,17 @@ module.exports = {
 
   delete(routeWeight) {
     return RouteWeight.update({ deleted_at: Date.now() }, { where: { id: routeWeight.id } });
+  },
+
+  getByRouteAndWeight(route_id, weight) {
+    return RouteWeight.findOne({
+      where: {
+        route_id,
+        minimium: { [Op.lte]: weight },
+        maximium: { [Op.gte]: weight },
+        deleted_at: { [Op.is]: null }
+      }
+    });
   }
 
 };

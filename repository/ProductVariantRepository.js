@@ -4,6 +4,17 @@ const ProductVariant = require("../models/ProductVariant");
 
 module.exports = {
 
+  async idExists(id) {
+    const product = await ProductVariant.findOne({ 
+      attributes: ['id'], 
+      where: { 
+        id, 
+        deleted_at: { [Op.is]: null } 
+      } 
+    });
+    return product !== null;
+  },
+
   async nameExists(name, product_id) {
     const product = await ProductVariant.findOne({ 
       attributes: ['id'], 
@@ -39,9 +50,7 @@ module.exports = {
     return ProductVariant.findOne({ 
       where: { 
         id,
-        deleted_at: {
-          [Op.is]: null
-        }
+        deleted_at: { [Op.is]: null }
       } 
     });
   },

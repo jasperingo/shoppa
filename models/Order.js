@@ -115,33 +115,6 @@ Order.init({
     allowNull: false
   },
 
-  store_street_address: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-
-  store_city_address: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-
-  store_state_address: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-
-  customer_street_address: {
-    type: DataTypes.STRING
-  },
-
-  customer_city_address: {
-    type: DataTypes.STRING
-  },
-
-  customer_state_address: {
-    type: DataTypes.STRING
-  },
-
   payment_method: {
     type: DataTypes.ENUM(Order.getPaymentMethods()),
     allowNull: false

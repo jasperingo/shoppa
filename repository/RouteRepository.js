@@ -1,7 +1,9 @@
 const { Op } = require("sequelize");
+const DeliveryFirm = require("../models/DeliveryFirm");
 const Route = require("../models/Route");
 const RouteDuration = require("../models/RouteDuration");
 const RouteWeight = require("../models/RouteWeight");
+const User = require("../models/User");
 const sequelize = require("./DB");
 
 module.exports = {
@@ -130,6 +132,54 @@ module.exports = {
           { where: { route_id: route.id, deleted_at: { [Op.is]: null } }, transaction }
         )
       ]);
+    });
+  },
+
+  getListByCityAndState(state_1, state_2, city_1, city_2) {
+    return Route.findAll({
+      include: {
+        model: DeliveryFirm,
+        include: {
+          model: User,
+          attributes: User.GET_ATTR
+        }
+      },
+      where: {
+        '$delivery_firm.user.status$': User.STATUS_ACTIVE,
+        deleted_at: { [Op.is]: null },
+        [Op.or]: [
+
+          { 
+            location_1_state: state_1,
+            location_2_state: state_2,
+            [Op.or]: [
+              {
+                location_1_city: city_1,
+                location_2_city: city_2,
+              },
+              {
+                location_1_city: { [Op.is]: null },
+                location_2_city: { [Op.is]: null }
+              }
+            ]
+          },
+
+          { 
+            location_1_state: state_2,
+            location_2_state: state_1,
+            [Op.or]: [
+              {
+                location_1_city: city_2,
+                location_2_city: city_1,
+              },
+              {
+                location_1_city: { [Op.is]: null },
+                location_2_city: { [Op.is]: null }
+              }
+            ]
+          }
+        ]
+      }
     });
   }
 
