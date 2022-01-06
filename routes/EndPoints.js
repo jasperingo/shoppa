@@ -17,6 +17,7 @@ const FavoriteRoute = require('./FavoriteRoute');
 const SavedCartRoute = require('./SavedCartRoute');
 const DiscountRoute = require('./DiscountRoute');
 const DiscountProductRoute = require('./DiscountProductRoute');
+const OrderRoute = require('./OrderRoute');
 
 const router = express.Router();
 
@@ -53,6 +54,8 @@ router.use('/saved-cart', SavedCartRoute);
 router.use('/discount', DiscountRoute);
 
 router.use('/discount-product', DiscountProductRoute);
+
+router.use('/order', OrderRoute);
 
 module.exports = router;
 
