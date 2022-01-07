@@ -24,7 +24,7 @@ module.exports = async (req, res, next)=> {
     next();
 
   } catch (error) {
-    next(new InternalServerException(error))
+    next(new InternalServerException(error));
   }
 }
 

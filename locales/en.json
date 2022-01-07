@@ -14,7 +14,8 @@
     "_favorite": "Favorite created",
     "_saved_cart": "Saved cart created",
     "_discount": "Discount created",
-    "_discount_product": "Discount product created"
+    "_discount_product": "Discount product created",
+    "_order": "Order created"
   },
 
   "_updated": {
@@ -89,6 +90,9 @@
     "_not_found": "Resource could not be found",
     "_forbidden": "Permission not granted",
     "_unauthorized": "Authorization failed",
+    
+    "_generate_code": "Code generation failed",
+    "_generate_number": "Number generation failed",
 
     "_form": {
       "_id_invalid": "This ID is invalid",
@@ -107,6 +111,7 @@
       "_name_invalid": "This name is invalid",
 
       "_field_required": "This field is required",
+      "_field_not_required": "This field is not required",
       "_field_invalid": "This field is invalid",
 
       "_email_invalid": "This email is invalid",
@@ -125,6 +130,8 @@
       "_maximium_is_lte": "Maximium cannot be less than or equal to minimium",
 
       "_field_duplicated": "This field has duplicates",
+
+      "_field_not_duplicated": "This field has different values",
 
       "_field_pair": "This field should be sent with the {{ pair }} field"
       

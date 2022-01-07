@@ -30,7 +30,16 @@ module.exports = {
 
   value: {
     notEmpty: ValidationRules.notEmpty,
-    isFloat: ValidationRules.isFloatGTZero
+    isFloat: ValidationRules.isFloatGTZero,
+    custom: {
+      options: (value, { req })=> {
+        if (req.body.type === Discount.TYPE_PERCENTAGE && value > 99.99) {
+          throw req.__('_error._form._field_invalid');
+        } 
+
+        return true;
+      }
+    }
   },
 
   minimium_required_amount: {

@@ -4,6 +4,7 @@ const sequelize = require('../repository/DB');
 const Address = require("./Address");
 const Customer = require("./Customer");
 const DeliveryFirm = require("./DeliveryFirm");
+const Route = require("./Route");
 const Store = require("./Store");
 
 class Order extends Model {
@@ -106,8 +107,7 @@ Order.init({
   },
 
   delivery_firm_status: {
-    type: DataTypes.ENUM(Order.getDeliveryFirmStatuses()),
-    allowNull: false
+    type: DataTypes.ENUM(Order.getDeliveryFirmStatuses())
   },
 
   delivery_method: {
@@ -170,6 +170,16 @@ const dForeignKey = {
 DeliveryFirm.hasMany(Order, { foreignKey: dForeignKey });
 
 Order.belongsTo(DeliveryFirm, { foreignKey: dForeignKey });
+
+
+const rForeignKey = {
+  name: 'route_id',
+  type: DataTypes.BIGINT
+};
+
+Route.hasMany(Order, { foreignKey: rForeignKey });
+
+Order.belongsTo(Route, { foreignKey: rForeignKey });
 
 
 const aForeignKey = {

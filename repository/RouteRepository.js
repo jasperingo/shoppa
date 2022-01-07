@@ -8,6 +8,11 @@ const sequelize = require("./DB");
 
 module.exports = {
 
+  async idExists(id) {
+    const res = await Route.findOne({ attributes: ['id'], where: { id, deleted_at: { [Op.is]: null } } });
+    return res !== null;
+  },
+
   async idExistsForDeliveryFirm(id, delivery_firm_id) {
     const route = await Route.findOne({ attributes: ['id'], where: { id, delivery_firm_id, deleted_at: { [Op.is]: null } } });
     return route !== null;

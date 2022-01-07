@@ -1,8 +1,14 @@
 const { Op } = require("sequelize");
+const Route = require("../models/Route");
 const RouteDuration = require("../models/RouteDuration");
 
 
 module.exports = {
+
+  async idExists(id) {
+    const duration = await RouteDuration.findOne({ attributes: ['id'], where: { id, deleted_at: { [Op.is]: null } } });
+    return duration !== null;
+  },
 
   async routeDurationExists({ route_id, minimium, maximium, unit }) {
     const duration = await RouteDuration.findOne({where: { route_id, minimium, maximium, unit, deleted_at: { [Op.is]: null } } });
@@ -28,9 +34,19 @@ module.exports = {
     return RouteDuration.findOne({
       where: { 
         id,
-        deleted_at: {
-          [Op.is]: null
-        }
+        deleted_at: { [Op.is]: null }
+      }
+    });
+  },
+
+  getWithRoute(id) {
+    return RouteDuration.findOne({
+      where: { 
+        id,
+        deleted_at: { [Op.is]: null }
+      },
+      include: {
+        model: Route
       }
     });
   },

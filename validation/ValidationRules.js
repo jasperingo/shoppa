@@ -2,10 +2,8 @@
 const InternalServerException = require("../http/exceptions/InternalServerException");
 const Address = require("../models/Address");
 const Category = require("../models/Category");
-const RouteDuration = require("../models/RouteDuration");
 const CustomerRepository = require("../repository/CustomerRepository");
 const LocationRepository = require('../repository/LocationRepository');
-const ProductRepository = require("../repository/ProductRepository");
 const Hash = require("../security/Hash");
 
 module.exports = {
@@ -47,6 +45,8 @@ module.exports = {
     bail: true,
     errorMessage: (value, { req })=> req.__('_error._form._phone_number_invalid')
   },
+  
+  isOptional: { options: { nullable: true } },
 
   notEmpty: {
     bail: true,
@@ -208,5 +208,29 @@ module.exports = {
     }
   },
   
+  orderItemProductVariantDuplicate(value, err, duplicateMessage) {
+
+    const errIndex = [];
+
+    for (let i = 0; i < value.length; i++) {
+      for (let j = i; j < value.length-1; j++) {
+        let v1 = value[i];
+        let v2 = value[j+1];
+        if (v1.product_variant_id === v2.product_variant_id) {
+          
+          if (!errIndex.includes(i)) {
+            errIndex.push(i);
+            err.push({ message: duplicateMessage, index: i });
+          }
+  
+          if (!errIndex.includes(j+1)) {
+            errIndex.push(j+1);
+            err.push({ message: duplicateMessage, index: j+1 });
+          }
+        }
+      }
+    }
+  }
+
 };
 

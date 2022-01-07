@@ -1,4 +1,5 @@
 const { Op } = require("sequelize");
+const Product = require("../models/Product");
 const ProductVariant = require("../models/ProductVariant");
 
 
@@ -52,6 +53,18 @@ module.exports = {
         id,
         deleted_at: { [Op.is]: null }
       } 
+    });
+  },
+  
+  getWithProduct(id) {
+    return ProductVariant.findOne({ 
+      where: { 
+        id,
+        deleted_at: { [Op.is]: null }
+      },
+      include: {
+        model: Product
+      }
     });
   },
   

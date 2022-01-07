@@ -3,6 +3,7 @@ const randomstring = require("randomstring");
 const InternalServerException = require("../http/exceptions/InternalServerException");
 const Pagination = require("../http/Pagination");
 const Response = require("../http/Response");
+const SavedCart = require("../models/SavedCart");
 const SavedCartRepository = require("../repository/SavedCartRepository");
 
 
@@ -23,11 +24,13 @@ module.exports = class SavedCartController {
 
         count++;
 
-      } while(count < 3 && await SavedCartRepository.codeExists(code));
+        if (await SavedCartRepository.codeExists(`${SavedCart.CODE_PREFIX}${code}`)) {
+          code = undefined;
+        }
 
-      if (code === undefined) {
-        throw { reason: 'Code not generated' };
-      }
+      } while(count < 3);
+      
+      if (code === undefined) throw { reason: req.__('_error._generate_code') };
 
       const _savedCart = await SavedCartRepository.create(req.body, code);
 

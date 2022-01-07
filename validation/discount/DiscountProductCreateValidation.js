@@ -14,7 +14,7 @@ module.exports = {
           if (! (await ProductRepository.idExistsForStore(value, req.auth.store.id)))
             return Promise.reject(req.__('_error._form._id_invalid'));
           
-          if (await DiscountProductRepository.idExists(value, req.body.discount_id)) 
+          if (await DiscountProductRepository.idExistsForProduct(value, req.body.discount_id)) 
             return Promise.reject(req.__('_error._form._id_exists'));
         } catch (err) {
           return Promise.reject(InternalServerException.TAG);

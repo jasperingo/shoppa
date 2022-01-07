@@ -11,6 +11,11 @@ const sequelize = require("./DB");
 
 module.exports = {
 
+  async idExists(id) {
+    const res = await DeliveryFirm.findOne({ attributes: ['id'], where: { id } });
+    return res !== null;
+  },
+
   async nameExists(name) {
     const res = await User.findOne({ attributes: ['id'], where: { type: User.TYPE_DELIVERY_FIRM, name } });
     return res !== null;

@@ -6,15 +6,24 @@ const sequelize = require("./DB");
 
 module.exports = {
 
-  async idExists(product_id, discount_id) {
+  async idExists(id) {
+    const product = await DiscountProduct.findOne({ 
+      attributes: ['id'], 
+      where: { 
+        id, 
+        deleted_at: { [Op.is]: null }
+      } 
+    });
+    return product !== null;
+  },
+
+  async idExistsForProduct(product_id, discount_id) {
     const product = await DiscountProduct.findOne({ 
       attributes: ['id'], 
       where: { 
         product_id, 
         discount_id,
-        deleted_at: {
-          [Op.is]: null
-        }
+        deleted_at: { [Op.is]: null }
       } 
     });
     return product !== null;
@@ -24,9 +33,19 @@ module.exports = {
     return DiscountProduct.findOne({
       where: { 
         id,
-        deleted_at: {
-          [Op.is]: null
-        }
+        deleted_at: { [Op.is]: null }
+      }
+    });
+  },
+
+  getWithDiscount(id) {
+    return DiscountProduct.findOne({
+      where: { 
+        id,
+        deleted_at: { [Op.is]: null }
+      },
+      include: {
+        model: Discount
       }
     });
   },

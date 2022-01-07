@@ -1,8 +1,14 @@
 const { Op } = require("sequelize");
+const Route = require("../models/Route");
 const RouteWeight = require("../models/RouteWeight");
 
 
 module.exports = {
+
+  async idExists(id) {
+    const weight = await RouteWeight.findOne({ attributes: ['id'], where: { id, deleted_at: { [Op.is]: null } } });
+    return weight !== null;
+  },
 
   async routeWeightExists({ route_id, minimium, maximium }) {
     const weight = await RouteWeight.findOne({where: { route_id, minimium, maximium, deleted_at: { [Op.is]: null } } });
@@ -26,9 +32,19 @@ module.exports = {
     return RouteWeight.findOne({
       where: { 
         id,
-        deleted_at: {
-          [Op.is]: null
-        }
+        deleted_at: { [Op.is]: null }
+      }
+    });
+  },
+
+  getWithRoute(id) {
+    return RouteWeight.findOne({
+      where: { 
+        id,
+        deleted_at: { [Op.is]: null }
+      },
+      include: {
+        model: Route
       }
     });
   },
