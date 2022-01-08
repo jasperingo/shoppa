@@ -1,9 +1,8 @@
 const { StatusCodes } = require("http-status-codes");
-const randomstring = require("randomstring");
 const InternalServerException = require("../http/exceptions/InternalServerException");
 const Pagination = require("../http/Pagination");
 const Response = require("../http/Response");
-const SavedCart = require("../models/SavedCart");
+const StringGenerator = require("../http/StringGenerator");
 const SavedCartRepository = require("../repository/SavedCartRepository");
 
 
@@ -13,24 +12,7 @@ module.exports = class SavedCartController {
 
     try {
 
-      let code, count = 0;
-
-      do {
-
-        code = randomstring.generate({
-          length: 5,
-          capitalization: 'uppercase'
-        });
-
-        count++;
-
-        if (await SavedCartRepository.codeExists(`${SavedCart.CODE_PREFIX}${code}`)) {
-          code = undefined;
-        }
-
-      } while(count < 3);
-      
-      if (code === undefined) throw { reason: req.__('_error._generate_code') };
+      const code = await StringGenerator.savedCartCode(SavedCartRepository.codeExists);
 
       const _savedCart = await SavedCartRepository.create(req.body, code);
 

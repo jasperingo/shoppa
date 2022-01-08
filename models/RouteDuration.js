@@ -52,13 +52,7 @@ RouteDuration.init({
   },
 
   unit: {
-    type: DataTypes.ENUM(
-      RouteDuration.UNIT_MINUTE,
-      RouteDuration.UNIT_HOUR,
-      RouteDuration.UNIT_DAY,
-      RouteDuration.UNIT_WEEK,
-      RouteDuration.UNIT_MONTH
-    ),
+    type: DataTypes.ENUM(...RouteDuration.getUnits()),
     allowNull: false
   },
 

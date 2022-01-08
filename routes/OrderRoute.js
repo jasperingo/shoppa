@@ -46,6 +46,11 @@ router.post(
   controller.getDiscountSuggestions
 );
 
+router.put(
+  '/:id(\\d+)/customer/cancel',
+  controller.cancel
+);
+
 
 module.exports = router;
 

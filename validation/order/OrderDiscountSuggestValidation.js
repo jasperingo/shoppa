@@ -26,11 +26,6 @@ module.exports = {
             else if (isNaN(parseFloat(item.quantity)) || item.quantity <= 0)
               err.push({ name: 'quantity', message: invalidMessage, index: i });
 
-            if (item.amount === undefined || item.amount === null)
-              err.push({ name: 'amount', message: requiredMessage, index: i });
-            else if (isNaN(parseFloat(item.amount)) || item.amount <= 0)
-              err.push({ name: 'amount', message: invalidMessage, index: i });
-
             if (item.product_variant_id === undefined || item.product_variant_id === null)
               err.push({ name: 'product_variant_id', message: requiredMessage, index: i });
             else if (isNaN(parseInt(item.product_variant_id)) || ! (await ProductVariantRepository.idExists(item.product_variant_id)))

@@ -111,7 +111,7 @@ module.exports = async function(req, res, next) {
 
             let productVariant = await ProductVariantRepository.get(item.product_variant_id);
 
-            let weight = productVariant.weight * item.quatity;
+            let weight = productVariant.weight * item.quantity;
 
             if (routeWeight.minimium > weight || routeWeight.maximium < weight) {
               err.push({ name: 'route_weight_id', message: invalidIDMessage, index: i });

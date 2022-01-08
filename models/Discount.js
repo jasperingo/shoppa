@@ -32,7 +32,7 @@ Discount.init({
   },
 
   type: {
-    type: DataTypes.ENUM(Discount.TYPE_PERCENTAGE, Discount.TYPE_AMOUNT),
+    type: DataTypes.ENUM(...Discount.getTypes()),
     allowNull: false
   },
 

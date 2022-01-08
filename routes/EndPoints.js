@@ -18,6 +18,7 @@ const SavedCartRoute = require('./SavedCartRoute');
 const DiscountRoute = require('./DiscountRoute');
 const DiscountProductRoute = require('./DiscountProductRoute');
 const OrderRoute = require('./OrderRoute');
+const TransactionRoute = require('./TransactionRoute');
 
 const router = express.Router();
 
@@ -56,6 +57,8 @@ router.use('/discount', DiscountRoute);
 router.use('/discount-product', DiscountProductRoute);
 
 router.use('/order', OrderRoute);
+
+router.use('/transaction', TransactionRoute);
 
 module.exports = router;
 

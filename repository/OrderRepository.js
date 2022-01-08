@@ -1,7 +1,9 @@
+const Customer = require("../models/Customer");
 const Order = require("../models/Order");
 const OrderItem = require("../models/OrderItem");
 const Product = require("../models/Product");
 const ProductVariant = require("../models/ProductVariant");
+const Transaction = require("../models/Transaction");
 const sequelize = require("./DB");
 
 module.exports = {
@@ -27,8 +29,31 @@ module.exports = {
     });
   },
 
-  create({ store_id, customer_id, customer_address_id, delivery_firm_id, route_id, number, delivery_method, payment_method, note, order_items }) {
+  getWithTransactions(id) {
+    return Order.findOne({
+      where: { id },
+      include: [
+        {
+          model: OrderItem,
+          include: {
+            model: ProductVariant,
+            include: {
+              model: Product,
+              attributes: Product.GET_ATTR
+            }
+          }
+        },
+        {
+          model: Transaction
+        }
+      ]
+    });
+  },
+
+  create({ store_id, customer_id, customer_address_id, delivery_firm_id, route_id, number, delivery_method, payment_method, note, order_items, transaction_reference }) {
     return sequelize.transaction(async (transaction)=> {
+
+      let total = 0;
 
       const order = await Order.create({
         store_id, customer_id, customer_address_id, delivery_firm_id, route_id, number, delivery_method, payment_method, note,
@@ -57,7 +82,40 @@ module.exports = {
           },
           { transaction }
         );
+
+        total += amount;
+
+        if (delivery_weight_fee !== undefined && delivery_weight_fee !== null) {
+          total += delivery_weight_fee;
+        }
+
+        if (delivery_duration_fee !== undefined && delivery_duration_fee !== null) {
+          total += delivery_duration_fee;
+        }
+
+        if (discount_amount !== undefined && discount_amount !== null) {
+          total -= discount_amount;
+        }
       }
+
+      const customer = await Customer.findOne({
+        attributes: ['user_id'],
+        where: { id: customer_id },
+        transaction
+      });
+
+      await Transaction.create(
+        { 
+          application: false, 
+          order_id: order.id,
+          user_id: customer.user_id, 
+          reference: transaction_reference,
+          amount: Number(total.toFixed(2)),
+          status: Transaction.STATUS_PENDING,
+          type: Transaction.TYPE_PAYMENT
+        }, 
+        { transaction }
+      );
 
       return order;
     });

@@ -97,31 +97,31 @@ Order.init({
   },
 
   status: {
-    type: DataTypes.ENUM(Order.getStatuses()),
+    type: DataTypes.ENUM(...Order.getStatuses()),
     allowNull: false
   },
 
   store_status: {
-    type: DataTypes.ENUM(Order.getStoreStatuses()),
+    type: DataTypes.ENUM(...Order.getStoreStatuses()),
     allowNull: false
   },
 
   delivery_firm_status: {
-    type: DataTypes.ENUM(Order.getDeliveryFirmStatuses())
+    type: DataTypes.ENUM(...Order.getDeliveryFirmStatuses())
   },
 
   delivery_method: {
-    type: DataTypes.ENUM(Order.getDeliveryMethods()),
+    type: DataTypes.ENUM(...Order.getDeliveryMethods()),
     allowNull: false
   },
 
   payment_method: {
-    type: DataTypes.ENUM(Order.getPaymentMethods()),
+    type: DataTypes.ENUM(...Order.getPaymentMethods()),
     allowNull: false
   },
 
   payment_status: {
-    type: DataTypes.ENUM(Order.getPaymentStatuses()),
+    type: DataTypes.ENUM(...Order.getPaymentStatuses()),
     allowNull: false
   },
   

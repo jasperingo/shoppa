@@ -41,7 +41,7 @@ module.exports = {
     return sequelize.transaction(async (transaction)=> {
       
       const cart = await SavedCart.create(
-        { user_id, title, code: `${SavedCart.CODE_PREFIX}${code}` },
+        { user_id, title, code },
         { transaction }
       );
       

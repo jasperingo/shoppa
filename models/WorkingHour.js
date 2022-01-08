@@ -45,15 +45,7 @@ WorkingHour.init({
   },
 
   day: {
-    type: DataTypes.ENUM(
-      WorkingHour.DAY_SUNDAY, 
-      WorkingHour.DAY_MONDAY, 
-      WorkingHour.DAY_TUESDAY, 
-      WorkingHour.DAY_WEDNESDAY, 
-      WorkingHour.DAY_THURSDAY,
-      WorkingHour.DAY_FRIDAY,
-      WorkingHour.DAY_SATURDAY
-    ),
+    type: DataTypes.ENUM(...WorkingHour.getDays()),
     allowNull: false
   },
 

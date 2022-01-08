@@ -1,7 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
-const randomstring = require("randomstring");
 const InternalServerException = require("../http/exceptions/InternalServerException");
 const Response = require("../http/Response");
+const StringGenerator = require("../http/StringGenerator");
 const Discount = require("../models/Discount");
 const AddressRepository = require("../repository/AddressRepository");
 const DiscountProductRepository = require("../repository/DiscountProductRepository");
@@ -11,6 +11,7 @@ const RouteDurationRepository = require("../repository/RouteDurationRepository")
 const RouteRepository = require("../repository/RouteRepository");
 const RouteWeightRepository = require("../repository/RouteWeightRepository");
 const StoreRepository = require("../repository/StoreRepository");
+const TransactionRepository = require("../repository/TransactionRepository");
 
 
 module.exports = class OrderController {
@@ -21,27 +22,10 @@ module.exports = class OrderController {
 
       const data = req.body;
 
-      let number, count = 0;
+      data.number = await StringGenerator.orderNumber(OrderRepository.numberExists);
 
-      do {
-
-        number = randomstring.generate({
-          length: 10,
-          charset: 'numeric',
-          capitalization: 'uppercase'
-        });
-
-        count++;
-
-        if (await OrderRepository.numberExists(number)) {
-          number = undefined;
-        }
-
-      } while(count < 3);
-
-      if (number === undefined) throw { reason: req.__('_error._generate_number') };
-
-      data.number = number;
+      data.transaction_reference = await StringGenerator.transactionReference(TransactionRepository.referenceExists);
+      
 
       for (let [i, item] of data.order_items.entries()) {
 
@@ -82,6 +66,10 @@ module.exports = class OrderController {
 
       for (let product of products) {
 
+        if (product.product_variants[0].discount_product_id === undefined || product.product_variants[0].discount_product_id === null) {
+          continue;
+        }
+
         let discountProduct = await DiscountProductRepository.getWithDiscount(product.product_variants[0].discount_product_id);
 
         let discountTotal = 0;
@@ -103,7 +91,7 @@ module.exports = class OrderController {
       
       const _order = await OrderRepository.create(data);
 
-      const order = await OrderRepository.get(_order.id);
+      const order = await OrderRepository.getWithTransactions(_order.id);
 
       const response = new Response(Response.SUCCESS, req.__('_created._order'), order);
 
@@ -133,7 +121,11 @@ module.exports = class OrderController {
 
         for (let item of data.order_items) {
 
-          const routeWeight = await RouteWeightRepository.getByRouteAndWeight(routes[i].id, item.weight);
+          let productVariant = await ProductVariantRepository.get(item.product_variant_id);
+  
+          let weight = productVariant.weight * item.quantity;
+
+          const routeWeight = await RouteWeightRepository.getByRouteAndWeight(routes[i].id, weight);
 
           if (routeWeight === null) break;
 
@@ -174,6 +166,8 @@ module.exports = class OrderController {
       for (let item of data.order_items) {
 
         let productVariant = await ProductVariantRepository.get(item.product_variant_id);
+
+        item.amount = productVariant.price * item.quantity;
   
         let index = products.findIndex(product=> product.id === productVariant.product_id);
 
@@ -190,12 +184,17 @@ module.exports = class OrderController {
 
         let amount = product.product_variants.reduce((prev, variant)=> prev + variant.amount, 0);
 
+        product.product_variants =  product.product_variants.map(v=> {
+          v.amount = undefined;
+          return v;
+        });
+
         let discountProducts = await DiscountProductRepository.getListByNotExpiredAndProductAndQuantityAndAmount(product.id, quantity, amount);
 
         products[i].discount_products = discountProducts;
 
       }
-     
+      
       const response = new Response(Response.SUCCESS, req.__('_list_fetched._discount'), products);
 
       res.status(StatusCodes.OK).send(response);
@@ -203,6 +202,10 @@ module.exports = class OrderController {
     } catch(error) {
       next(new InternalServerException(error));
     }
+  }
+
+  async cancel(req, res, next) {
+    res.send({ k:4 });
   }
 
 }

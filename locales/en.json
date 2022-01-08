@@ -93,6 +93,7 @@
     
     "_generate_code": "Code generation failed",
     "_generate_number": "Number generation failed",
+    "_generate_reference": "Reference generation failed",
 
     "_form": {
       "_id_invalid": "This ID is invalid",
