@@ -11,6 +11,13 @@ const OrderCreateValidation = require('../validation/order/OrderCreateValidation
 const OrderCreateStoreProductsValidation = require('../validation/order/OrderCreateStoreProductsValidation');
 const OrderCreateDeliveryFirmRoutesValidation = require('../validation/order/OrderCreateDeliveryFirmRoutesValidation');
 const OrderCreateDiscountsValidation = require('../validation/order/OrderCreateDiscountsValidation');
+const OrderStatusUpdateValidation = require('../validation/order/OrderStatusUpdateValidation');
+const OrderStoreStatusUpdateValidation = require('../validation/order/OrderStoreStatusUpdateValidation');
+const OrderFetchMiddleware = require('../middlewares/fetch/OrderFetchMiddleware');
+const OrderCustomerPermissionMiddleware = require('../middlewares/permissions/order/OrderCustomerPermissionMiddleware');
+const OrderStorePermissionMiddleware = require('../middlewares/permissions/order/OrderStorePermissionMiddleware');
+const OrderDeliveryFirmPermissionMiddleware = require('../middlewares/permissions/order/OrderDeliveryFirmPermissionMiddleware');
+const OrderDeliveryFirmStatusUpdateValidation = require('../validation/order/OrderDeliveryFirmStatusUpdateValidation');
 
 const router = express.Router();
 
@@ -47,8 +54,33 @@ router.post(
 );
 
 router.put(
-  '/:id(\\d+)/customer/cancel',
-  controller.cancel
+  '/:id(\\d+)/status/update',
+  OrderFetchMiddleware,
+  AuthMiddleware,
+  OrderCustomerPermissionMiddleware,
+  checkSchema(OrderStatusUpdateValidation),
+  ValidationMiddleware(),
+  controller.updateStatus
+);
+
+router.put(
+  '/:id(\\d+)/store-status/update',
+  OrderFetchMiddleware,
+  AuthMiddleware,
+  OrderStorePermissionMiddleware,
+  checkSchema(OrderStoreStatusUpdateValidation),
+  ValidationMiddleware(),
+  controller.storeStatusUpdate
+);
+
+router.put(
+  '/:id(\\d+)/delivery-firm-status/update',
+  OrderFetchMiddleware,
+  AuthMiddleware,
+  OrderDeliveryFirmPermissionMiddleware,
+  checkSchema(OrderDeliveryFirmStatusUpdateValidation),
+  ValidationMiddleware(),
+  controller.deliveryFirmStatusUpdate
 );
 
 

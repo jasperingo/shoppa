@@ -12,7 +12,7 @@ module.exports = class SavedCartController {
 
     try {
 
-      const code = await StringGenerator.savedCartCode(SavedCartRepository.codeExists);
+      const code = await StringGenerator.savedCartCode();
 
       const _savedCart = await SavedCartRepository.create(req.body, code);
 

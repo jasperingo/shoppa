@@ -1,9 +1,13 @@
+const Address = require("../models/Address");
 const Customer = require("../models/Customer");
+const DeliveryFirm = require("../models/DeliveryFirm");
 const Order = require("../models/Order");
 const OrderItem = require("../models/OrderItem");
 const Product = require("../models/Product");
 const ProductVariant = require("../models/ProductVariant");
+const Store = require("../models/Store");
 const Transaction = require("../models/Transaction");
+const User = require("../models/User");
 const sequelize = require("./DB");
 
 module.exports = {
@@ -16,16 +20,43 @@ module.exports = {
   get(id) {
     return Order.findOne({
       where: { id },
-      include: {
-        model: OrderItem,
-        include: {
-          model: ProductVariant,
+      include: [
+        {
+          model: Customer,
+          attributes: Customer.GET_ATTR,
           include: {
-            model: Product,
-            attributes: Product.GET_ATTR
+            model: User,
+            attributes: User.GET_ATTR
+          }
+        },
+        {
+          model: Store,
+          include: {
+            model: User,
+            attributes: User.GET_ATTR
+          }
+        },
+        {
+          model: DeliveryFirm,
+          include: {
+            model: User,
+            attributes: User.GET_ATTR
+          }
+        },
+        {
+          model: Address,
+        },
+        {
+          model: OrderItem,
+          include: {
+            model: ProductVariant,
+            include: {
+              model: Product,
+              attributes: Product.GET_ATTR
+            }
           }
         }
-      }
+      ]
     });
   },
 
@@ -33,6 +64,31 @@ module.exports = {
     return Order.findOne({
       where: { id },
       include: [
+        {
+          model: Customer,
+          attributes: Customer.GET_ATTR,
+          include: {
+            model: User,
+            attributes: User.GET_ATTR
+          }
+        },
+        {
+          model: Store,
+          include: {
+            model: User,
+            attributes: User.GET_ATTR
+          }
+        },
+        {
+          model: DeliveryFirm,
+          include: {
+            model: User,
+            attributes: User.GET_ATTR
+          }
+        },
+        {
+          model: Address,
+        },
         {
           model: OrderItem,
           include: {
@@ -50,13 +106,35 @@ module.exports = {
     });
   },
 
-  create({ store_id, customer_id, customer_address_id, delivery_firm_id, route_id, number, delivery_method, payment_method, note, order_items, transaction_reference }) {
+  create({ 
+    store_id, 
+    customer_id, 
+    customer_address_id, 
+    delivery_firm_id, route_id, 
+    number, delivery_method, 
+    payment_method, 
+    note, 
+    sub_total, 
+    delivery_total,
+    discount_total,
+    order_items, 
+    transaction_reference 
+  }) {
     return sequelize.transaction(async (transaction)=> {
 
-      let total = 0;
-
       const order = await Order.create({
-        store_id, customer_id, customer_address_id, delivery_firm_id, route_id, number, delivery_method, payment_method, note,
+        store_id, 
+        customer_id, 
+        customer_address_id, 
+        delivery_firm_id, 
+        route_id, 
+        number, 
+        delivery_method, 
+        payment_method, 
+        sub_total, 
+        delivery_total,
+        discount_total,
+        note,
         status: Order.STATUS_PENDING,
         store_status: Order.STORE_STATUS_PENDING,
         delivery_firm_status: (delivery_method === Order.DELIVERY_METHOD_DOOR ? Order.DELIVERY_FIRM_STATUS_PENDING : undefined),
@@ -65,7 +143,18 @@ module.exports = {
       { transaction }
       );
 
-      for (let { product_variant_id, route_weight_id, route_duration_id, discount_product_id, quantity, amount, weight, discount_amount, delivery_duration_fee, delivery_weight_fee } of order_items) {
+      for (let { 
+        product_variant_id, 
+        route_weight_id, 
+        route_duration_id, 
+        discount_product_id, 
+        quantity, 
+        amount, 
+        weight, 
+        discount_amount, 
+        delivery_duration_fee, 
+        delivery_weight_fee 
+      } of order_items) {
         await OrderItem.create(
           { 
             order_id: order.id, 
@@ -82,20 +171,6 @@ module.exports = {
           },
           { transaction }
         );
-
-        total += amount;
-
-        if (delivery_weight_fee !== undefined && delivery_weight_fee !== null) {
-          total += delivery_weight_fee;
-        }
-
-        if (delivery_duration_fee !== undefined && delivery_duration_fee !== null) {
-          total += delivery_duration_fee;
-        }
-
-        if (discount_amount !== undefined && discount_amount !== null) {
-          total -= discount_amount;
-        }
       }
 
       const customer = await Customer.findOne({
@@ -110,7 +185,7 @@ module.exports = {
           order_id: order.id,
           user_id: customer.user_id, 
           reference: transaction_reference,
-          amount: Number(total.toFixed(2)),
+          amount: -order.total,
           status: Transaction.STATUS_PENDING,
           type: Transaction.TYPE_PAYMENT
         }, 
@@ -119,7 +194,107 @@ module.exports = {
 
       return order;
     });
-  }
+  },
+  
+  updateStatusToCancel(order, referenceGenerator) {
+    return sequelize.transaction(async (transaction)=> {
+
+      const orderUpdate = await Order.update(
+        { status: Order.STATUS_CANCELLED }, 
+        { where: { id: order.id }, transaction }
+      );
+
+      if (order.payment_status === Order.PAYMENT_STATUS_APPROVED) {
+        await Transaction.create(await Transaction.issueOrderRefund(order, referenceGenerator), { transaction });  
+      }
+
+      return orderUpdate;
+    });
+  },
+
+  updateStoreStatusToAccepted(order, referenceGenerator) {
+    return sequelize.transaction(async (transaction)=> {
+
+      let orderUpdate;
+
+      if (order.delivery_firm_id === null || order.delivery_firm_status === Order.DELIVERY_FIRM_STATUS_ACCEPTED) {
+        orderUpdate = await Order.update(
+          { store_status: Order.STORE_STATUS_ACCEPTED, status: Order.STATUS_PROCESSING }, 
+          { where: { id: order.id }, transaction }
+        );
+        
+        if (order.payment_status === Order.PAYMENT_STATUS_APPROVED) {
+          await Transaction.bulkCreate(await Transaction.distributeOrderPayment(order, referenceGenerator), { transaction });
+        }
+      } else {
+
+        orderUpdate = await Order.update(
+          { store_status: Order.STORE_STATUS_ACCEPTED }, 
+          { where: { id: order.id }, transaction }
+        );
+      }
+
+      return orderUpdate;
+    });
+  },
+
+  updateStoreStatusToDeclined(order, referenceGenerator) {
+    return sequelize.transaction(async (transaction)=> {
+
+      const orderUpdate = await Order.update(
+        { store_status: Order.STORE_STATUS_DECLINED, status: Order.STATUS_DECLINED }, 
+        { where: { id: order.id }, transaction }
+      );
+      
+      if (order.payment_status === Order.PAYMENT_STATUS_APPROVED) {
+        await Transaction.create(await Transaction.issueOrderRefund(order, referenceGenerator), { transaction });
+      }
+      
+      return orderUpdate;
+    });
+  },
+
+  updateDeliveryFirmStatusToAccepted(order, referenceGenerator) {
+    return sequelize.transaction(async (transaction)=> {
+
+      let orderUpdate;
+
+      if (order.store_status === Order.STORE_STATUS_ACCEPTED) {
+        orderUpdate = await Order.update(
+          { delivery_firm_status: Order.DELIVERY_FIRM_STATUS_ACCEPTED, status: Order.STATUS_PROCESSING }, 
+          { where: { id: order.id }, transaction }
+        );
+        
+        if (order.payment_status === Order.PAYMENT_STATUS_APPROVED) {
+          await Transaction.bulkCreate(await Transaction.distributeOrderPayment(order, referenceGenerator), { transaction });
+        }
+      } else {
+
+        orderUpdate = await Order.update(
+          { delivery_firm_status: Order.DELIVERY_FIRM_STATUS_ACCEPTED, }, 
+          { where: { id: order.id }, transaction }
+        );
+      }
+
+      return orderUpdate;
+    });
+  },
+
+  updateDeliveryFirmStatusToDeclined(order, referenceGenerator) {
+    return sequelize.transaction(async (transaction)=> {
+
+      const orderUpdate = await Order.update(
+        { delivery_firm_status: Order.DELIVERY_FIRM_STATUS_DECLINED, status: Order.STATUS_DECLINED }, 
+        { where: { id: order.id }, transaction }
+      );
+      
+      if (order.payment_status === Order.PAYMENT_STATUS_APPROVED) {
+        await Transaction.create(await Transaction.issueOrderRefund(order, referenceGenerator), { transaction });
+      }
+      
+      return orderUpdate;
+    });
+  },
 
 
 };

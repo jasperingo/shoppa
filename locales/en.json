@@ -34,7 +34,13 @@
     "_route_duration": "Route duration updated",
     "_working_hours": "Working hours updated",
     "_withdrawal_account": "Withdrawal account updated",
-    "_discount": "Discount updated"
+    "_discount": "Discount updated",
+    "_order_status": "Order status updated",
+    "_order_store_status": "Order store status updated",
+    "_order_delivery_firm_status": "Order delivery firm status updated",
+    "_order_item_processing_date": "Order item processing date updated",
+    "_order_item_transporting_date": "Order item transporting date updated",
+    "_order_item_delivery_date": "Order item delivery date updated"
   },
 
   "_deleted": {
@@ -134,7 +140,19 @@
 
       "_field_not_duplicated": "This field has different values",
 
-      "_field_pair": "This field should be sent with the {{ pair }} field"
+      "_field_pair": "This field should be sent with the {{ pair }} field",
+
+      "_order_status_not_pending": "Order status must be pending for you to update it to {{ status }}",
+      
+      "_order_payment_pending": "Order payment must be approved before you can accept this order",
+
+      "_order_item_cant_update_date": "This order item {{ date }} cannot be updated",
+
+      "_order_item_date_updated": "Order item {{ date }} has already been updated",
+
+      "_withdrawal_minimium_amount": "Withdrawal amount cannot be less than {{ amount }}",
+
+      "_withdrawal_amount_gt_balance": "Withdrawal amount cannot be greater than your balance"
       
     }
 

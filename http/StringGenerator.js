@@ -1,12 +1,15 @@
 const randomstring = require("randomstring");
 const SavedCart = require("../models/SavedCart");
 const Transaction = require("../models/Transaction");
+const OrderRepository = require("../repository/OrderRepository");
+const SavedCartRepository = require("../repository/SavedCartRepository");
+const TransactionRepository = require("../repository/TransactionRepository");
 
 const ALLOWED_ATTEMPTS = 3;
 
 module.exports = {
 
-  async savedCartCode(callback) {
+  async savedCartCode() {
 
     let code, count = 0;
 
@@ -21,7 +24,7 @@ module.exports = {
 
       count++;
 
-      if (await callback(code)) {
+      if (await SavedCartRepository.codeExists(code)) {
         code = undefined;
       }
 
@@ -32,7 +35,7 @@ module.exports = {
     return code;
   },
 
-  async orderNumber(callback) {
+  async orderNumber() {
 
     let number, count = 0;
 
@@ -46,7 +49,7 @@ module.exports = {
 
       count++;
 
-      if (await callback(number)) {
+      if (await OrderRepository.numberExists(number)) {
         number = undefined;
       }
 
@@ -57,7 +60,7 @@ module.exports = {
     return number;
   },
 
-  async transactionReference(callback) {
+  async transactionReference() {
 
     let number, count = 0;
 
@@ -72,7 +75,7 @@ module.exports = {
 
       count++;
 
-      if (await callback(number)) {
+      if (await TransactionRepository.referenceExists(number)) {
         number = undefined;
       }
 

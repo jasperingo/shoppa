@@ -6,7 +6,7 @@ const sequelize = require("./DB");
 module.exports = {
 
   async idExists(id) {
-    const res = await User.findOne({ attributes: ['id'], where: { id } });
+    const res = await Customer.findOne({ attributes: ['id'], where: { id } });
     return res !== null;
   },
 

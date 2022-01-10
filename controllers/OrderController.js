@@ -3,6 +3,7 @@ const InternalServerException = require("../http/exceptions/InternalServerExcept
 const Response = require("../http/Response");
 const StringGenerator = require("../http/StringGenerator");
 const Discount = require("../models/Discount");
+const Order = require("../models/Order");
 const AddressRepository = require("../repository/AddressRepository");
 const DiscountProductRepository = require("../repository/DiscountProductRepository");
 const OrderRepository = require("../repository/OrderRepository");
@@ -11,7 +12,6 @@ const RouteDurationRepository = require("../repository/RouteDurationRepository")
 const RouteRepository = require("../repository/RouteRepository");
 const RouteWeightRepository = require("../repository/RouteWeightRepository");
 const StoreRepository = require("../repository/StoreRepository");
-const TransactionRepository = require("../repository/TransactionRepository");
 
 
 module.exports = class OrderController {
@@ -21,11 +21,18 @@ module.exports = class OrderController {
     try {
 
       const data = req.body;
-
-      data.number = await StringGenerator.orderNumber(OrderRepository.numberExists);
-
-      data.transaction_reference = await StringGenerator.transactionReference(TransactionRepository.referenceExists);
       
+      const products = [];
+
+      data.sub_total = 0;
+
+      data.delivery_total = 0;
+
+      data.discount_total = 0;
+
+      data.number = await StringGenerator.orderNumber();
+
+      data.transaction_reference = await StringGenerator.transactionReference();
 
       for (let [i, item] of data.order_items.entries()) {
 
@@ -39,19 +46,21 @@ module.exports = class OrderController {
 
         data.order_items[i].amount = productVariant.price * item.quantity;
 
+        data.sub_total += productVariant.price * item.quantity; 
+
         if (item.route_weight_id !== undefined && item.route_weight_id !== null) {
           let routeWeight = await RouteWeightRepository.get(item.route_weight_id);
           data.order_items[i].delivery_weight_fee = routeWeight.price;
+          data.delivery_total += routeWeight.price;
         }
 
         if (item.route_duration_id !== undefined && item.route_duration_id !== null) {
           let routeDuration = await RouteDurationRepository.get(item.route_duration_id);
           data.order_items[i].delivery_duration_fee = routeDuration.fee;
+          data.delivery_total += routeDuration.fee;
         }
 
       }
-
-      const products = [];
 
       for (let item of data.order_items) {
 
@@ -70,9 +79,9 @@ module.exports = class OrderController {
           continue;
         }
 
-        let discountProduct = await DiscountProductRepository.getWithDiscount(product.product_variants[0].discount_product_id);
-
         let discountTotal = 0;
+
+        let discountProduct = await DiscountProductRepository.getWithDiscount(product.product_variants[0].discount_product_id);
 
         let amountTotal = product.product_variants.reduce((prev, variant)=> prev + variant.amount, 0);
 
@@ -81,6 +90,8 @@ module.exports = class OrderController {
         } else if (discountProduct.discount.type === Discount.TYPE_PERCENTAGE) {
           discountTotal = (discountProduct.discount.value / 100) * amountTotal;
         }
+
+        data.discount_total += discountTotal;
 
         for (let variant of product.product_variants) {
           let percentage = (variant.amount * 100) / amountTotal;
@@ -98,7 +109,6 @@ module.exports = class OrderController {
       res.status(StatusCodes.CREATED).send(response);
 
     } catch (error) {
-      console.error(error)
       next(new InternalServerException(error));
     }
   }
@@ -204,8 +214,70 @@ module.exports = class OrderController {
     }
   }
 
-  async cancel(req, res, next) {
-    res.send({ k:4 });
+  async updateStatus(req, res, next) {
+    
+    try {
+      
+      if (req.body.status === Order.STATUS_CANCELLED)
+        await OrderRepository.updateStatusToCancel(req.data.order, StringGenerator.transactionReference);
+
+      const order = await OrderRepository.get(req.data.order.id);
+
+      const response = new Response(Response.SUCCESS, req.__('_updated._order_status'), order);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch (error) {
+      next(new InternalServerException(error));
+    }
+  }
+
+  async storeStatusUpdate(req, res, next) {
+    
+    try {
+      
+      switch (req.body.store_status) {
+        case Order.STORE_STATUS_ACCEPTED:
+          await OrderRepository.updateStoreStatusToAccepted(req.data.order, StringGenerator.transactionReference);
+          break;
+        case Order.STORE_STATUS_DECLINED:
+          await OrderRepository.updateStoreStatusToDeclined(req.data.order, StringGenerator.transactionReference);
+          break;
+      }
+      
+      const order = await OrderRepository.get(req.data.order.id);
+
+      const response = new Response(Response.SUCCESS, req.__('_updated._order_store_status'), order);
+
+      res.status(StatusCodes.OK).send(response);
+      
+    } catch (error) {
+      next(new InternalServerException(error));
+    }
+  }
+
+  async deliveryFirmStatusUpdate(req, res, next) {
+    
+    try {
+      
+      switch (req.body.delivery_firm_status) {
+        case Order.DELIVERY_FIRM_STATUS_ACCEPTED:
+          await OrderRepository.updateDeliveryFirmStatusToAccepted(req.data.order, StringGenerator.transactionReference);
+          break;
+        case Order.DELIVERY_FIRM_STATUS_DECLINED:
+          await OrderRepository.updateDeliveryFirmStatusToDeclined(req.data.order, StringGenerator.transactionReference);
+          break;
+      }
+
+      const order = await OrderRepository.get(req.data.order.id);
+
+      const response = new Response(Response.SUCCESS, req.__('_updated._order_delivery_firm_status'), order);
+
+      res.status(StatusCodes.OK).send(response);
+      
+    } catch (error) {
+      next(new InternalServerException(error));
+    }
   }
 
 }

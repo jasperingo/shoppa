@@ -124,6 +124,35 @@ Order.init({
     type: DataTypes.ENUM(...Order.getPaymentStatuses()),
     allowNull: false
   },
+
+  sub_total: {
+    type: DataTypes.DOUBLE,
+    allowNull: false
+  },
+
+  delivery_total: {
+    type: DataTypes.DOUBLE,
+    allowNull: false
+  },
+
+  discount_total: {
+    type: DataTypes.DOUBLE,
+    allowNull: false
+  },
+
+  total: {
+    type: DataTypes.VIRTUAL,
+    get() {
+      return (this.sub_total + this.delivery_total - this.discount_total).toFixed(2);
+    }
+  },
+
+  sub_total_discounted: {
+    type: DataTypes.VIRTUAL,
+    get() {
+      return (this.sub_total - this.discount_total).toFixed(2);
+    }
+  },
   
   note: {
     type: DataTypes.STRING

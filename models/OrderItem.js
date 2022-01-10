@@ -56,6 +56,10 @@ OrderItem.init({
     type: DataTypes.DATE
   },
 
+  created_at: {
+    type: DataTypes.DATE
+  },
+
 },
 {
   sequelize,

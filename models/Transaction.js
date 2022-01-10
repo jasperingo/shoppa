@@ -1,4 +1,5 @@
 const { Model, DataTypes } = require("sequelize");
+const StringGenerator = require("../http/StringGenerator");
 const sequelize = require('../repository/DB');
 const Order = require("./Order");
 const User = require("./User");
@@ -7,6 +8,7 @@ class Transaction extends Model {
 
   static STORE_CHARGE = 10;
   static DELIVERY_FIRM_CHARGE = 5;
+  static WITHDRAWAL_MINIMIUM_LIMIT = 1000;
 
   static REFERENCE_PREFIX = 'DNTX_';
 
@@ -52,6 +54,88 @@ class Transaction extends Model {
 
   static getDeliveryFirmCharge(amount) {
     return ((Transaction.DELIVERY_FIRM_CHARGE / 100) * amount).toFixed(2);
+  }
+
+  static async issueOrderRefund(order, referenceGenerator) {
+    return { 
+      application: false, 
+      order_id: order.id,
+      user_id: order.customer.user_id, 
+      reference: await referenceGenerator(),
+      amount: order.total,
+      status: Transaction.STATUS_PENDING,
+      type: Transaction.TYPE_REFUND
+    };
+  }
+
+  static async distributeOrderPayment(order, referenceGenerator) {
+
+    const storeCharge = Transaction.getStoreCharge(order.sub_total_discounted);
+
+    const deliveryCharge = Transaction.getDeliveryFirmCharge(order.delivery_total);
+
+    const rows = [
+      { 
+        application: false, 
+        order_id: order.id, 
+        user_id: order.store.user_id, 
+        reference: await referenceGenerator(),
+        amount: order.sub_total_discounted,
+        status: Transaction.STATUS_APPROVED,
+        type: Transaction.TYPE_INCOME
+      },
+      { 
+        application: false, 
+        order_id: order.id, 
+        user_id: order.store.user_id, 
+        reference: await referenceGenerator(),
+        amount: -storeCharge,
+        status: Transaction.STATUS_APPROVED,
+        type: Transaction.TYPE_CHARGE
+      },
+      {
+        application: true, 
+        order_id: order.id, 
+        user_id: null, 
+        reference: await referenceGenerator(),
+        amount: storeCharge,
+        status: Transaction.STATUS_APPROVED,
+        type: Transaction.TYPE_INCOME
+      },
+    ];
+
+    if (order.delivery_firm_id !== null) {
+
+      rows.push({
+        application: false, 
+        order_id: order.id, 
+        user_id: order.delivery_firm.user_id, 
+        reference: await referenceGenerator(),
+        amount: order.delivery_total,
+        status: Transaction.STATUS_APPROVED,
+        type: Transaction.TYPE_INCOME
+      },
+      {
+        application: false, 
+        order_id: order.id, 
+        user_id: order.delivery_firm.user_id, 
+        reference: await referenceGenerator(),
+        amount: -deliveryCharge,
+        status: Transaction.STATUS_APPROVED,
+        type: Transaction.TYPE_CHARGE
+      },
+      {
+        application: true, 
+        order_id: order.id, 
+        user_id: null, 
+        reference: await referenceGenerator(),
+        amount: deliveryCharge,
+        status: Transaction.STATUS_APPROVED,
+        type: Transaction.TYPE_INCOME
+      });
+    }
+
+    return rows;
   }
 
 }
