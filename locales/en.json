@@ -15,7 +15,8 @@
     "_saved_cart": "Saved cart created",
     "_discount": "Discount created",
     "_discount_product": "Discount product created",
-    "_order": "Order created"
+    "_order": "Order created",
+    "_transaction": "Transaction created"
   },
 
   "_updated": {
@@ -40,7 +41,8 @@
     "_order_delivery_firm_status": "Order delivery firm status updated",
     "_order_item_processing_date": "Order item processing date updated",
     "_order_item_transporting_date": "Order item transporting date updated",
-    "_order_item_delivery_date": "Order item delivery date updated"
+    "_order_item_delivery_date": "Order item delivery date updated",
+    "_transaction_status": "Transaction status updated"
   },
 
   "_deleted": {
@@ -152,7 +154,13 @@
 
       "_withdrawal_minimium_amount": "Withdrawal amount cannot be less than {{ amount }}",
 
-      "_withdrawal_amount_gt_balance": "Withdrawal amount cannot be greater than your balance"
+      "_withdrawal_amount_gt_balance": "Withdrawal amount cannot be greater than your balance",
+      
+      "_transaction_cant_update_status": "This transaction status cannot be updated",
+
+      "_transaction_status_not_pending": "Transaction status must be pending for you to update it to {{ status }}",
+
+      "_user_withdrawal_account_do_not_exist": "User do not have a withdrawal account"
       
     }
 

@@ -31,6 +31,13 @@ class Order extends Model {
 
   static PAYMENT_STATUS_PENDING = 'pending';
   static PAYMENT_STATUS_APPROVED = 'approved';
+  static PAYMENT_STATUS_FAILED = 'failed';
+
+  static REFUND_STATUS_PENDING = 'pending';
+  static REFUND_STATUS_APPROVED = 'approved';
+  static REFUND_STATUS_FAILED = 'failed';
+  static REFUND_STATUS_DECLINED = 'declined';
+  static REFUND_STATUS_CANCELLED = 'cancelled';
 
 
   static getStatuses() {
@@ -78,6 +85,16 @@ class Order extends Model {
       Order.PAYMENT_STATUS_PENDING,
       Order.PAYMENT_STATUS_APPROVED
     ];
+  }
+
+  static getRefundStatus() {
+    return [
+      Order.REFUND_STATUS_PENDING,
+      Order.REFUND_STATUS_APPROVED,
+      Order.REFUND_STATUS_FAILED,
+      Order.REFUND_STATUS_DECLINED,
+      Order.REFUND_STATUS_CANCELLED
+    ]
   }
 
 }

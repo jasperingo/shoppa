@@ -3,6 +3,10 @@ const WithdrawalAccount = require("../models/WithdrawalAccount");
 
 module.exports = {
 
+  async getByUser(user_id) {
+    return WithdrawalAccount.findOne({ where: { user_id } });
+  },
+
   async addOrUpdate(user, { bank_name, account_name, account_number, account_type }) {
         
     let account = await WithdrawalAccount.findOne({ where: { user_id: user.id } });

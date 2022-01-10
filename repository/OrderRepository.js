@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const Address = require("../models/Address");
 const Customer = require("../models/Customer");
 const DeliveryFirm = require("../models/DeliveryFirm");
@@ -14,6 +15,32 @@ module.exports = {
 
   async numberExists(number) {
     const order = await Order.findOne({ attributes: ['id'], where: { number } });
+    return order !== null;
+  },
+
+  async idExistsForCustomer(id, customer_id) {
+    const order = await Order.findOne({ 
+      attributes: ['id'],
+      where: { id, customer_id }
+    });
+    return order !== null;
+  },
+  
+  async customerCanGetRefund(id, customer_id) {
+    const order = await Order.findOne({ 
+      attributes: ['id'],
+      where: {
+        id,
+        customer_id,
+        status: Order.STATUS_CANCELLED,
+        refund_status: {
+          [Op.or]: {
+            [Op.is]: null,
+            [Op.notIn]: [Order.REFUND_STATUS_APPROVED, Order.REFUND_STATUS_PENDING]
+          }
+        }
+      }
+    });
     return order !== null;
   },
 
