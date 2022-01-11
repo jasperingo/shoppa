@@ -66,6 +66,20 @@ module.exports = {
     });
     return res !== null;
   },
+  
+  async statusIsActiveOrActivating(id) {
+    const res = await User.findOne({ 
+      attributes: ['id'], 
+      where: {
+        id, 
+        type: User.TYPE_DELIVERY_FIRM, 
+        status: {
+          [Op.or]: [User.STATUS_ACTIVE, User.STATUS_ACTIVATING]
+        }
+      } 
+    });
+    return res !== null;
+  },
 
   get(id) {
     return DeliveryFirm.findOne({
@@ -114,43 +128,6 @@ module.exports = {
           }
         ]
       }
-    });
-  },
-
-  getWithAdministrator(id, administrator_id) {
-    return DeliveryFirm.findOne({
-      where: { 
-        id,
-        '$administrators.id$': administrator_id
-      },
-      include: [
-        {
-          model: User,
-          attributes: User.GET_ATTR,
-          include: [
-            {
-              model: Address,
-              attributes: Address.GET_ATTR
-            },
-            {
-              model: WorkingHour,
-              attributes: WorkingHour.GET_ATTR
-            },
-            {
-              model: WithdrawalAccount,
-              attributes: WithdrawalAccount.GET_ATTR
-            }
-          ]
-        },
-        {
-          model: Administrator,
-          attributes: Administrator.GET_ATTR,
-          include: {
-            model: Customer,
-            attributes: Customer.GET_ATTR
-          }
-        },
-      ]
     });
   },
 

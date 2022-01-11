@@ -1,5 +1,5 @@
-const UnauthorizedException = require("../http/exceptions/UnauthorizedException")
-const { verifyJWT } = require("../security/JWT")
+const UnauthorizedException = require("../http/exceptions/UnauthorizedException");
+const { verifyJWT } = require("../security/JWT");
 
 module.exports = async (req, res, next)=> {
 

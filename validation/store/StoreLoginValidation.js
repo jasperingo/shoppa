@@ -31,7 +31,7 @@ module.exports = {
           if (!req.data || !req.data.store)
             return Promise.reject(req.__('_error._form._email_invalid'));
           
-          const administrator = await AdministratorRepository.getByEmailAndStoreName(value, req.body.name);
+          const administrator = await AdministratorRepository.getByEmailAndStore(value, req.data.store.id);
           if (administrator === null)
             return Promise.reject(req.__('_error._form._email_invalid'));
           else 

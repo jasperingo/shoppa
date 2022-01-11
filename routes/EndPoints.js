@@ -43,11 +43,11 @@ router.use('/delivery-firm', DeliveryFirmRoute);
 
 router.use('/location', LocationRoute);
 
-router.use('/route', RouteRoute);
+router.use('/delivery-route', RouteRoute);
 
-router.use('/route-weight', RouteWeightRoute);
+router.use('/delivery-route-weight', RouteWeightRoute);
 
-router.use('/route-duration', RouteDurationRoute);
+router.use('/delivery-route-duration', RouteDurationRoute);
 
 router.use('/favorite', FavoriteRoute);
 

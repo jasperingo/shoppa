@@ -11,7 +11,7 @@ module.exports = class FavoriteController {
 
     try {
 
-      const _favorite = await FavoriteRepository.create(req.body);
+      const _favorite = await FavoriteRepository.create(req.body, req.auth.customerId);
 
       const favorite = await FavoriteRepository.get(_favorite.id);
 

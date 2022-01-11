@@ -7,7 +7,9 @@ const AuthMiddleware = require('../middlewares/AuthMiddleware');
 const ProductFetchMiddleware = require('../middlewares/fetch/ProductFetchMiddleware');
 const FileUploadMiddleware = require('../middlewares/FileUploadMiddleware');
 const FileUploadValidationMiddleware = require('../middlewares/FileUploadValidationMiddleware');
+const OptionalAuthMiddleware = require('../middlewares/OptionalAuthMiddleware');
 const ProductAddPermissionMiddleware = require('../middlewares/permissions/product/ProductAddPermissionMiddleware');
+const ProductFetchPermissionMiddleware = require('../middlewares/permissions/product/ProductFetchPermissionMiddleware');
 const ProductUpdatePermissionMiddleware = require('../middlewares/permissions/product/ProductUpdatePermissionMiddleware');
 const ValidationMiddleware = require('../middlewares/ValidationMiddleware');
 const ProductAddValidation = require('../validation/product/ProductAddValidation');
@@ -18,12 +20,12 @@ const router = express.Router();
 const controller = new ProductController();
 
 router.post(
-  '/add', 
+  '/create', 
   AuthMiddleware,
   ProductAddPermissionMiddleware,
   checkSchema(ProductAddValidation),
   ValidationMiddleware(),
-  controller.add
+  controller.create
 );
 
 router.put(
@@ -57,6 +59,8 @@ router.delete(
 router.get(
   '/:id(\\d+)',
   ProductFetchMiddleware, 
+  OptionalAuthMiddleware,
+  ProductFetchPermissionMiddleware,
   controller.get
 );
 

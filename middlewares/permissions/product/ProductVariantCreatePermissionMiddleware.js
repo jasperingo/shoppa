@@ -1,14 +1,22 @@
 const ForbiddenException = require("../../../http/exceptions/ForbiddenException");
-const Administrator = require("../../../models/Administrator");
+const InternalServerException = require("../../../http/exceptions/InternalServerException");
 const ProductRepository = require("../../../repository/ProductRepository");
-const { AUTH_STORE_ADMIN } = require("../../../security/JWT");
+const StoreRepository = require("../../../repository/StoreRepository");
+const JWT = require("../../../security/JWT");
 
 module.exports = async function permit(req, res, next) {
-  if (req.auth.authType === AUTH_STORE_ADMIN && req.auth.role === Administrator.ROLE_SUPER && 
-      req.body.product_id && (await ProductRepository.idExistsForStore(req.body.product_id, req.auth.store.id))) {
-    next();
-  } else {
-    next(new ForbiddenException());
+  try {
+    if (req.auth.authType === JWT.AUTH_STORE_ADMIN && 
+      await StoreRepository.statusIsActiveOrActivating(req.auth.userId) &&
+      req.body.product_id !== undefined && 
+      await ProductRepository.idExistsForStore(req.body.product_id, req.auth.storeId)) 
+    {
+      next();
+    } else {
+      next(new ForbiddenException());
+    }
+  } catch (error) {
+    next(new InternalServerException(error));
   }
 };
 

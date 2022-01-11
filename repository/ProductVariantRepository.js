@@ -16,6 +16,22 @@ module.exports = {
     return product !== null;
   },
 
+  async idExistsForStore(id, store_id) {
+    const product = await ProductVariant.findOne({ 
+      attributes: ['id'], 
+      where: { 
+        id, 
+        deleted_at: { [Op.is]: null },
+        '$product.store_id$': store_id
+      },
+      include: {
+        model: Product,
+        attributes: ['id']
+      }
+    });
+    return product !== null;
+  },
+
   async nameExists(name, product_id) {
     const product = await ProductVariant.findOne({ 
       attributes: ['id'], 

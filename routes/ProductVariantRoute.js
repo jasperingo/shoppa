@@ -41,11 +41,6 @@ router.delete(
   controller.delete
 );
 
-router.get(
-  '/:id(\\d+)',
-  ProductVariantFetchMiddleware,
-  controller.get
-);
 
 module.exports = router;
 

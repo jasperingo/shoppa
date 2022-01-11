@@ -36,9 +36,13 @@ module.exports = class StoreController {
 
     try {
 
-      const store = await StoreRepository.getWithAdministrator(req.data.store.id, req.data.administrator.id);
+      const { store, administrator } = req.data;
 
-      const token = await JWT.signStoreJWT(store);
+      administrator.hidePassword();
+
+      store.setDataValue('administrators', [administrator]);
+
+      const token = await JWT.signStoreJWT(store.toJSON());
 
       const response = new Response(Response.SUCCESS, req.__('_login'), {
         store,

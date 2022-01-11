@@ -1,7 +1,5 @@
 const Administrator = require("../models/Administrator");
 const Customer = require("../models/Customer");
-const DeliveryFirm = require("../models/DeliveryFirm");
-const Store = require("../models/Store");
 const User = require("../models/User");
 
 module.exports = {
@@ -20,75 +18,51 @@ module.exports = {
 
   getByEmail(email) {
     return Administrator.findOne({   
+      where: { '$customer.user.email$': email },
       include: {
         model: Customer,
         include: {
           model: User,
-          where: { email }
         } 
       } 
     });
   },
 
-  getByEmailAndStoreName(email, name) {
+  getByEmailAndStore(email, store_id) {
     return Administrator.findOne({ 
-      attributes:['id', 'password', 'role', 'type'], 
+      attributes: [...Administrator.GET_ATTR, 'password'], 
       where: { 
+        store_id,
         type: Administrator.TYPE_STORE,
-        '$customer.user.email$': email,
-        '$customer.user.type$': User.TYPE_CUSTOMER,
-        '$store.user.name$': name,
-        '$store.user.type$': User.TYPE_STORE
+        '$customer.user.email$': email
       },
-      include: [
-        {
-          model: Store,
-          attributes: ['id'],
-          include: {
-            model: User,
-            attributes: ['id']
-          }
-        },
-        {
-          model: Customer,
-          attributes: ['id'],
-          include: {
-            model: User,
-            attributes: ['id']
-          } 
+      include: {
+        model: Customer,
+        attributes: Customer.GET_ATTR,
+        include: {
+          model: User,
+          attributes: User.GET_ATTR
         } 
-      ]
+      }
     });
   },
-
-  getByEmailAndDeliveryFirmName(email, name) {
+  
+  getByEmailAndDeliveryFirm(email, delivery_firm_id) {
     return Administrator.findOne({ 
-      attributes:['id', 'password', 'role', 'type'], 
+      attributes: [...Administrator.GET_ATTR, 'password'],
       where: { 
+        delivery_firm_id,
         type: Administrator.TYPE_DELIVERY_FIRM,
         '$customer.user.email$': email,
-        '$customer.user.type$': User.TYPE_CUSTOMER,
-        '$delivery_firm.user.name$': name,
-        '$delivery_firm.user.type$': User.TYPE_DELIVERY_FIRM
       },
-      include: [
-        {
-          model: DeliveryFirm,
-          attributes: ['id'],
-          include: {
-            model: User,
-            attributes: ['id']
-          }
-        },
-        {
-          model: Customer,
-          attributes: ['id'],
-          include: {
-            model: User,
-            attributes: ['id']
-          } 
-        } 
-      ]
+      include: {
+        model: Customer,
+        attributes: Customer.GET_ATTR,
+        include: {
+          model: User,
+          attributes: User.GET_ATTR
+        }
+      } 
     });
   },
 

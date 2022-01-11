@@ -21,20 +21,6 @@ module.exports = {
     }
   },
 
-  code: {
-    notEmpty: ValidationRules.notEmpty,
-    custom: {
-      options: async (value, { req })=> {
-        try {
-          if (await ProductRepository.codeExists(value))
-            return Promise.reject(req.__('_error._form._code_exists'));
-        } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
-        }
-      }
-    }
-  },
-
   title: {
     notEmpty: ValidationRules.notEmpty,
     custom: {

@@ -10,13 +10,15 @@ const RouteValidation = require('../validation/route/RouteValidation');
 const RouteAddUniqueValidation = require('../validation/route/RouteAddUniqueValidation');
 const RouteFetchMiddleware = require('../middlewares/fetch/RouteFetchMiddleware');
 const RouteUpdateUniqueValidation = require('../validation/route/RouteUpdateUniqueValidation');
+const OptionalAuthMiddleware = require('../middlewares/OptionalAuthMiddleware');
+const RouteFetchPermissionMiddleware = require('../middlewares/permissions/route/RouteFetchPermissionMiddleware');
 
 const router = express.Router();
 
 const controller = new RouteController();
 
 router.post(
-  '/add',
+  '/create',
   AuthMiddleware,
   RouteAddPermissionMiddleware,
   checkSchema(RouteValidation),
@@ -47,6 +49,8 @@ router.delete(
 router.get(
   '/:id(\\d+)',
   RouteFetchMiddleware,
+  OptionalAuthMiddleware,
+  RouteFetchPermissionMiddleware,
   controller.get
 );
 

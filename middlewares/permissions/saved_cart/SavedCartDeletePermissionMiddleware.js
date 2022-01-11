@@ -1,14 +1,25 @@
 
 const ForbiddenException = require("../../../http/exceptions/ForbiddenException");
-const Administrator = require("../../../models/Administrator");
-const { AUTH_STORE_ADMIN, AUTH_CUSTOMER } = require("../../../security/JWT");
+const InternalServerException = require("../../../http/exceptions/InternalServerException");
+const CustomerRepository = require("../../../repository/CustomerRepository");
+const StoreRepository = require("../../../repository/StoreRepository");
+const JWT = require("../../../security/JWT");
 
-module.exports = function permit(req, res, next) {
-  if ((req.auth.authType === AUTH_STORE_ADMIN && req.auth.role === Administrator.ROLE_SUPER && req.data.savedCart.user_id === req.auth.store.user_id) ||
-      (req.auth.authType === AUTH_CUSTOMER && req.data.savedCart.user_id === req.auth.user_id)) {
-    next();
-  } else {
-    next(new ForbiddenException());
+module.exports = async function permit(req, res, next) {
+
+  try {
+    if (req.data.savedCart.user_id === req.auth.userId && 
+      (req.auth.authType === JWT.AUTH_STORE_ADMIN && 
+      await StoreRepository.statusIsActiveOrActivating(req.auth.userId)) ||
+      (req.auth.authType === JWT.AUTH_CUSTOMER && 
+      await CustomerRepository.statusIsActive(req.auth.userId))) 
+    {
+      next();
+    } else {
+      next(new ForbiddenException());
+    }
+  } catch (error) {
+    next(new InternalServerException(error));
   }
 };
 

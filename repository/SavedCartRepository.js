@@ -27,6 +27,22 @@ module.exports = {
       }
     });
   },
+  
+  getByCode(code) {
+    return SavedCart.findOne({
+      where: { code },
+      include: {
+        model: SavedCartItem,
+        include: {
+          model: ProductVariant,
+          include: {
+            model: Product,
+            attributes: Product.GET_ATTR
+          }
+        }
+      }
+    });
+  },
 
   getListByUser(user, offset, limit) {
     return SavedCart.findAndCountAll({
@@ -36,8 +52,8 @@ module.exports = {
       limit
     });
   },
-
-  create({ user_id, title, saved_cart_items }, code) {
+  
+  create({ title, saved_cart_items }, code, user_id) {
     return sequelize.transaction(async (transaction)=> {
       
       const cart = await SavedCart.create(

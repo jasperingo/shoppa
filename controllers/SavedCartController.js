@@ -14,7 +14,7 @@ module.exports = class SavedCartController {
 
       const code = await StringGenerator.savedCartCode();
 
-      const _savedCart = await SavedCartRepository.create(req.body, code);
+      const _savedCart = await SavedCartRepository.create(req.body, code, req.auth.userId);
 
       const savedCart = await SavedCartRepository.get(_savedCart.id);
 

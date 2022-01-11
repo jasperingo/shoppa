@@ -31,12 +31,13 @@ module.exports = {
           if (!req.data || !req.data.deliveryFirm)
             return Promise.reject(req.__('_error._form._email_invalid'));
           
-          const administrator = await AdministratorRepository.getByEmailAndDeliveryFirmName(value, req.body.name);
+          const administrator = await AdministratorRepository.getByEmailAndDeliveryFirm(value, req.data.deliveryFirm.id);
           if (administrator === null)
             return Promise.reject(req.__('_error._form._email_invalid'));
           else 
             req.data.administrator = administrator;
         } catch (err) {
+          console.error(err)
           return Promise.reject(InternalServerException.TAG);
         }
       }

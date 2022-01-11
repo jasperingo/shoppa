@@ -15,7 +15,7 @@ const router = express.Router();
 const controller = new AddressController();
 
 router.post(
-  '/add', 
+  '/create', 
   AuthMiddleware, 
   AddressAddPermissionMiddleware,
   checkSchema(CustomerAddressAddValidation), 

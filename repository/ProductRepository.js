@@ -1,6 +1,5 @@
-const { Op, where } = require("sequelize");
+const { Op } = require("sequelize");
 const Category = require("../models/Category");
-const Discount = require("../models/Discount");
 const DiscountProduct = require("../models/DiscountProduct");
 const Product = require("../models/Product");
 const ProductVariant = require("../models/ProductVariant");
@@ -35,30 +34,8 @@ module.exports = {
     return product !== null;
   },
 
-  async variantIdExists(id) {
-    const productVariant = await ProductVariant.findOne({ attributes: ['id'], where: { id, deleted_at: { [Op.is]: null } } });
-    return productVariant !== null;
-  },
-
-  async codeExists(code) {
-    const product = await Product.findOne({ attributes: ['id'], where: { code, deleted_at: { [Op.is]: null } } });
-    return product !== null;
-  },
-
   async titleExists(title) {
     const product = await Product.findOne({ attributes: ['id'], where: { title, deleted_at: { [Op.is]: null } } });
-    return product !== null;
-  },
-
-  async updateCodeExists(code, id) {
-    const product = await Product.findOne({ 
-      attributes: ['id'], 
-      where: { 
-        code, 
-        [Op.not]: { id },
-        deleted_at: { [Op.is]: null }
-      } 
-    });
     return product !== null;
   },
 
@@ -176,13 +153,13 @@ module.exports = {
     return { count, rows };
   },
 
-  add({ store_id, sub_category_id, code, title, description }) {
-    return Product.create({ store_id, sub_category_id, code, title, description });
+  create({ sub_category_id, title, description }, store_id) {
+    return Product.create({ store_id, sub_category_id, title, description });
   },
-
-  update(product, { sub_category_id, code, title, description }) {
+  
+  update(product, { sub_category_id, title, description }) {
     return Product.update(
-      { sub_category_id, code, title, description },
+      { sub_category_id, title, description },
       { where: { id: product.id } }
     );
   },

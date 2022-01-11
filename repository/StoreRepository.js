@@ -2,7 +2,6 @@ const { Op } = require("sequelize");
 const Address = require("../models/Address");
 const Administrator = require("../models/Administrator");
 const Category = require("../models/Category");
-const Customer = require("../models/Customer");
 const Store = require("../models/Store");
 const SubCategory = require("../models/SubCategory");
 const User = require("../models/User");
@@ -67,6 +66,21 @@ module.exports = {
     });
     return res !== null;
   },
+  
+  async statusIsActiveOrActivating(id) {
+    const res = await User.findOne({ 
+      attributes: ['id'], 
+      where: {
+        id, 
+        type: User.TYPE_STORE, 
+        status: {
+          [Op.or]: [User.STATUS_ACTIVE, User.STATUS_ACTIVATING]
+        }
+      } 
+    });
+    return res !== null;
+  },
+
 
   get(id) {
     return Store.findOne({
@@ -125,51 +139,6 @@ module.exports = {
       order: [[User, 'created_at', 'DESC']],
       offset,
       limit
-    });
-  },
-
-  getWithAdministrator(id, administrator_id) {
-    return Store.findOne({
-      where: { 
-        id,
-        '$administrators.id$': administrator_id
-      },
-      include: [
-        {
-          model: User,
-          attributes: User.GET_ATTR,
-          include: [
-            {
-              model: Address,
-              attributes: Address.GET_ATTR
-            },
-            {
-              model: WorkingHour,
-              attributes: WorkingHour.GET_ATTR
-            },
-            {
-              model: WithdrawalAccount,
-              attributes: WithdrawalAccount.GET_ATTR
-            }
-          ]
-        },
-        {
-          model: SubCategory,
-          attributes: SubCategory.GET_ATTR,
-          include: {
-            model: Category,
-            attributes: Category.GET_ATTR,
-          }
-        },
-        {
-          model: Administrator,
-          attributes: Administrator.GET_ATTR,
-          include: {
-            model: Customer,
-            attributes: Customer.GET_ATTR
-          }
-        },
-      ]
     });
   },
 

@@ -4,8 +4,8 @@ const JWT = require("../../../security/JWT");
 
 module.exports = function permit(req, res, next) {
   if (req.auth.authType === JWT.AUTH_STORE_ADMIN && 
-    req.data.product.store.id === req.auth.storeId && 
-    (req.data.product.store.user.status === User.STATUS_ACTIVE || req.data.product.store.user.status === User.STATUS_ACTIVATING)) 
+    req.data.store.id === req.auth.storeId && 
+    (req.data.store.user.status === User.STATUS_ACTIVE || req.data.store.user.status === User.STATUS_ACTIVATING)) 
   {
     next();
   } else {

@@ -23,7 +23,11 @@ module.exports = {
       include: [
         {
           model: Customer,
-          attributes: Customer.GET_ATTR
+          attributes: Customer.GET_ATTR,
+          include: {
+            model: User,
+            attributes: User.GET_ATTR
+          }
         },
         {
           model: Product,
@@ -82,10 +86,10 @@ module.exports = {
     });
   },
 
-  create({ product_id, customer_id }) {
+  create({ product_id }, customer_id) {
     return Favorite.create({ product_id, customer_id });
   },
-
+  
   delete(favorite) {
     return Favorite.destroy({ where: { id: favorite.id } });
   }

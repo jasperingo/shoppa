@@ -14,7 +14,7 @@ const FileUploadMiddleware = require('../middlewares/FileUploadMiddleware');
 const FileUploadValidationMiddleware = require('../middlewares/FileUploadValidationMiddleware');
 const PaginationMiddleware = require('../middlewares/PaginationMiddleware');
 const AdministratorPermissionMiddleware = require('../middlewares/permissions/AdministratorPermissionMiddleware');
-const StorePermissionMiddleware = require('../middlewares/permissions/StorePermissionMiddleware');
+const StorePermissionMiddleware = require('../middlewares/permissions/store/StorePermissionMiddleware');
 const ValidationMiddleware = require('../middlewares/ValidationMiddleware');
 const AddressUpdateValidation = require('../validation/address/AddressUpdateValidation');
 const StoreLoginValidation = require('../validation/store/StoreLoginValidation');
@@ -24,6 +24,10 @@ const WithdrawalAccountUpdateValidation = require('../validation/withdrawal_acco
 const WorkingHourUpdateValidation = require('../validation/working_hour/WorkingHourUpdateValidation');
 const SavedCartController = require('../controllers/SavedCartController');
 const DiscountController = require('../controllers/DiscountController');
+const StoreLoginPermissionMiddleware = require('../middlewares/permissions/store/StoreLoginPermissionMiddleware');
+const OptionalAuthMiddleware = require('../middlewares/OptionalAuthMiddleware');
+const StoreFetchPermissionMiddleware = require('../middlewares/permissions/store/StoreFetchPermissionMiddleware');
+const StoreAndAdminPermissionMiddleware = require('../middlewares/permissions/store/StoreAndAdminPermissionMiddleware');
 
 const router = express.Router();
 
@@ -52,6 +56,7 @@ router.post(
   '/login',
   checkSchema(StoreLoginValidation),
   ValidationMiddleware(UnauthorizedException),
+  StoreLoginPermissionMiddleware,
   controller.login
 );
 
@@ -116,6 +121,8 @@ router.put(
 router.get(
   '/:id(\\d+)/product/list',
   StoreFetchMiddleware,
+  OptionalAuthMiddleware,
+  StoreFetchPermissionMiddleware,
   PaginationMiddleware,
   productController.getListByStore
 );
@@ -123,6 +130,8 @@ router.get(
 router.get(
   '/:id(\\d+)/product/discount/:discountId(\\d+)',
   StoreFetchMiddleware,
+  AuthMiddleware,
+  StorePermissionMiddleware,
   PaginationMiddleware,
   productController.getListByStoreWithDiscount
 );
@@ -131,7 +140,7 @@ router.get(
   '/:id(\\d+)/saved-cart/list', 
   StoreFetchMiddleware,
   AuthMiddleware, 
-  StorePermissionMiddleware,
+  StoreAndAdminPermissionMiddleware,
   PaginationMiddleware,
   savedCartController.getListByStore
 );
@@ -139,8 +148,8 @@ router.get(
 router.get(
   '/:id(\\d+)/discount/list', 
   StoreFetchMiddleware,
-  AuthMiddleware, 
-  StorePermissionMiddleware,
+  OptionalAuthMiddleware,
+  StoreFetchPermissionMiddleware,
   PaginationMiddleware,
   discountController.getListByStore
 );
@@ -148,6 +157,8 @@ router.get(
 router.get(
   '/:id(\\d+)',
   StoreFetchMiddleware,
+  OptionalAuthMiddleware,
+  StoreFetchPermissionMiddleware,
   controller.get
 );
 

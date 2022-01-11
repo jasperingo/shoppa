@@ -55,12 +55,5 @@ module.exports = class ProductVariantController {
     }
   }
 
-  get(req, res) {
-
-    const response = new Response(Response.SUCCESS, req.__('_fetched._product_variant'), req.data.productVariant);
-
-    res.status(StatusCodes.OK).send(response);
-  }
-
 }
 

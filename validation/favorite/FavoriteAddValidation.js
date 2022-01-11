@@ -15,7 +15,7 @@ module.exports = {
           if (! (await ProductRepository.idExists(value)))
             return Promise.reject(req.__('_error._form._id_invalid'));
 
-          if (await FavoriteRepository.exists(value, req.body.customer_id))
+          if (await FavoriteRepository.exists(value, req.auth.customerId))
             return Promise.reject(req.__('_error._form._favorite_exists'));
         } catch (err) {
           return Promise.reject(InternalServerException.TAG);

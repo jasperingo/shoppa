@@ -22,30 +22,31 @@ module.exports = class DeliveryFirmController {
       const token = await JWT.signDeliveryFirmJWT(deliveryFirm);
 
       const response = new Response(Response.SUCCESS, req.__('_created._store'), {
-        deliveryFirm,
+        delivery_firm: deliveryFirm,
         api_token: token
       });
 
       res.status(StatusCodes.CREATED).send(response);
 
     } catch (error) {
-      console.log(error)
       next(new InternalServerException(error));
     }
   }
-
+  
   async login(req, res, next) {
 
     try {
 
-      const { data } = req;
+      const { deliveryFirm, administrator } = req.data;
 
-      const deliveryFirm = await DeliveryFirmRepository.getWithAdministrator(data.deliveryFirm.id, data.administrator.id);
+      administrator.hidePassword();
 
-      const token = await JWT.signDeliveryFirmJWT(deliveryFirm);
+      deliveryFirm.setDataValue('administrators', [administrator]);
+
+      const token = await JWT.signDeliveryFirmJWT(deliveryFirm.toJSON());
 
       const response = new Response(Response.SUCCESS, req.__('_login'), {
-        deliveryFirm,
+        delivery_firm: deliveryFirm,
         api_token: token
       });
 

@@ -15,13 +15,16 @@ const DeliveryFirmRegisterValidation = require('../validation/delivery_firm/Deli
 const DeliveryFirmLoginValidation = require('../validation/delivery_firm/DeliveryFirmLoginValidation');
 const DeliveryFirmUpdateValidation = require('../validation/delivery_firm/DeliveryFirmUpdateValidation');
 const DeliveryFirmFetchMiddleware = require('../middlewares/fetch/DeliveryFirmFetchMiddleware');
-const DeliveryFirmPermissionMiddleware = require('../middlewares/permissions/DeliveryFirmPermissionMiddleware');
+const DeliveryFirmPermissionMiddleware = require('../middlewares/permissions/delivery_firm/DeliveryFirmPermissionMiddleware');
 const AddressUpdateValidation = require('../validation/address/AddressUpdateValidation');
 const WorkingHourUpdateValidation = require('../validation/working_hour/WorkingHourUpdateValidation');
 const WithdrawalAccountUpdateValidation = require('../validation/withdrawal_account/WithdrawalAccountUpdateValidation');
 const PaginationMiddleware = require('../middlewares/PaginationMiddleware');
 const AdministratorPermissionMiddleware = require('../middlewares/permissions/AdministratorPermissionMiddleware');
 const RouteController = require('../controllers/RouteController');
+const DeliveryFirmLoginPermissionMiddleware = require('../middlewares/permissions/delivery_firm/DeliveryFirmLoginPermissionMiddleware');
+const DeliveryFirmFetchPermissionMiddleware = require('../middlewares/permissions/delivery_firm/DeliveryFirmFetchPermissionMiddleware');
+const OptionalAuthMiddleware = require('../middlewares/OptionalAuthMiddleware');
 
 const router = express.Router();
 
@@ -46,6 +49,7 @@ router.post(
   '/login', 
   checkSchema(DeliveryFirmLoginValidation),
   ValidationMiddleware(UnauthorizedException),
+  DeliveryFirmLoginPermissionMiddleware,
   controller.login
 );
 
@@ -108,10 +112,10 @@ router.put(
 );
 
 router.get(
-  '/:id(\\d+)/route/list', 
+  '/:id(\\d+)/delivery-route/list', 
   DeliveryFirmFetchMiddleware,
-  AuthMiddleware, 
-  DeliveryFirmPermissionMiddleware,
+  OptionalAuthMiddleware,
+  DeliveryFirmFetchPermissionMiddleware,
   PaginationMiddleware,
   routeController.getListByDeliveryFirm
 );
@@ -119,6 +123,8 @@ router.get(
 router.get(
   '/:id(\\d+)',
   DeliveryFirmFetchMiddleware,
+  OptionalAuthMiddleware,
+  DeliveryFirmFetchPermissionMiddleware,
   controller.get
 );
 

@@ -10,14 +10,9 @@ module.exports = async (req, res, next)=> {
     return next();
   }
 
-  if (!RouteCustomErrors.cityIsValid(req)) {
-    await RouteCustomErrors.cityInvalid(req);
-    return next();
-  }
-
   try {
     
-    if (await RouteRepository.updateRouteExists(req.auth.deliveryFirm.id, req.body, req.params.id)) {
+    if (await RouteRepository.updateRouteExists(req.data.route, req.body)) {
       await RouteCustomErrors.cityAndStateExists(req);
     }
     

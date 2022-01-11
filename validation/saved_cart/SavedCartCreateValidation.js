@@ -1,5 +1,5 @@
 const InternalServerException = require("../../http/exceptions/InternalServerException");
-const ProductRepository = require("../../repository/ProductRepository");
+const ProductVariantRepository = require("../../repository/ProductVariantRepository");
 const ValidationRules = require("../ValidationRules");
 
 
@@ -23,10 +23,14 @@ module.exports = {
 
             if (typeof item === 'object' && item !== null) {
 
-              if (item.product_variant_id === undefined || isNaN(parseFloat(item.product_variant_id)) || 
-                  ! (await ProductRepository.variantIdExists(item.product_variant_id))) 
+              if (item.product_variant_id === undefined || 
+                isNaN(parseFloat(item.product_variant_id)) || 
+                (req.auth.customerId !== undefined && ! (await ProductVariantRepository.idExists(item.product_variant_id))) ||
+                (req.auth.storeId !== undefined && ! (await ProductVariantRepository.idExistsForStore(item.product_variant_id, req.auth.storeId)))) 
+              {
                 err.push({ name: 'product_variant_id', message: invalidMessage, index: i });
-
+              }
+              
               if (item.quantity === undefined || isNaN(parseFloat(item.quantity)) || item.quantity < 0.00) 
                 err.push({ name: 'quantity', message: invalidMessage, index: i });
 

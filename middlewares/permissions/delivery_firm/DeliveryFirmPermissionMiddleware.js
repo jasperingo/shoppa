@@ -3,9 +3,9 @@ const User = require("../../../models/User");
 const JWT = require("../../../security/JWT");
 
 module.exports = function permit(req, res, next) {
-  if (req.auth.authType === JWT.AUTH_STORE_ADMIN && 
-    req.data.product.store.id === req.auth.storeId && 
-    (req.data.product.store.user.status === User.STATUS_ACTIVE || req.data.product.store.user.status === User.STATUS_ACTIVATING)) 
+  if (req.auth.authType === JWT.AUTH_DELIVERY_ADMIN && 
+    req.data.deliveryFirm.id === req.auth.deliveryFirmId && 
+    (req.data.deliveryFirm.user.status === User.STATUS_ACTIVE || req.data.deliveryFirm.user.status === User.STATUS_ACTIVATING)) 
   {
     next();
   } else {

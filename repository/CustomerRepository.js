@@ -44,6 +44,18 @@ module.exports = {
     });
     return res !== null;
   },
+  
+  async statusIsActive(id) {
+    const res = await User.findOne({ 
+      attributes: ['id'], 
+      where: {
+        id, 
+        type: User.TYPE_CUSTOMER, 
+        status: User.STATUS_ACTIVE
+      } 
+    });
+    return res !== null;
+  },
 
   getByEmail(email) {
     return Customer.findOne({   

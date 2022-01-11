@@ -13,13 +13,11 @@ Route.init({
   },
 
   state: {
-    type: DataTypes.STRING,
-    allowNull: false
+    type: DataTypes.STRING
   },
 
   city: {
-    type: DataTypes.STRING,
-    allowNull: false
+    type: DataTypes.STRING
   },
 
   door_delivery: {
@@ -63,8 +61,10 @@ const dForeignKey = {
 };
 
 Route.hasOne(Route, { as: 'origin_route', foreignKey: oForeignKey });
+Route.belongsTo(Route, { foreignKey: oForeignKey });
+
 Route.hasOne(Route, { as: 'destination_route', foreignKey: dForeignKey });
-Route.belongsTo(Route);
+Route.belongsTo(Route, { foreignKey: dForeignKey });
 
 
 module.exports = Route;

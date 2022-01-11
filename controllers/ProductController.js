@@ -7,11 +7,11 @@ const ProductRepository = require("../repository/ProductRepository");
 
 module.exports = class ProductController {
 
-  async add(req, res, next) {
+  async create(req, res, next) {
 
     try {
 
-      const _product = await ProductRepository.add(req.body);
+      const _product = await ProductRepository.create(req.body, req.auth.storeId);
 
       const product = await ProductRepository.get(_product.id);
 

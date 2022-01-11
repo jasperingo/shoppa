@@ -11,7 +11,7 @@ module.exports = class RouteController {
     
     try {
 
-      const _route = await RouteRepository.add(req.body);
+      const _route = await RouteRepository.add(req.body, req.auth.deliveryFirmId);
 
       const route = await RouteRepository.get(_route.id);
 
@@ -20,7 +20,6 @@ module.exports = class RouteController {
       res.status(StatusCodes.CREATED).send(response);
 
     } catch (error) {
-      console.log(error)
       next(new InternalServerException(error));
     }
   }
