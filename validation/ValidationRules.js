@@ -75,11 +75,13 @@ module.exports = {
   },
 
   addressTypeIsIn: {
+    bail: true,
     options: [[Address.TYPE_DEFAULT, Address.TYPE_SUB, Address.TYPE_PICK_UP]],
     errorMessage: (value, { req })=> req.__('_error._form._field_invalid')
   },
 
   categoryTypeIsIn: {
+    bail: true,
     options: [[Category.TYPE_STORE, Category.TYPE_PRODUCT]],
     errorMessage: (value, { req })=> req.__('_error._form._field_invalid')
   },

@@ -7,7 +7,7 @@ const AddressController = require('../controllers/AddressController');
 const UnauthorizedException = require('../http/exceptions/UnauthorizedException');
 const Files = require('../http/Files');
 const AuthMiddleware = require('../middlewares/AuthMiddleware');
-const CustomerPermissionMiddleware = require('../middlewares/permissions/CustomerPermissionMiddleware');
+const CustomerPermissionMiddleware = require('../middlewares/permissions/customer/CustomerPermissionMiddleware');
 const ValidationMiddleware = require('../middlewares/ValidationMiddleware');
 const FileUploadMiddleware = require('../middlewares/FileUploadMiddleware');
 const CustomerLoginValidation = require('../validation/customer/CustomerLoginValidation');
@@ -19,12 +19,18 @@ const CustomerFetchMiddleware = require('../middlewares/fetch/CustomerFetchMiddl
 const PaginationMiddleware = require('../middlewares/PaginationMiddleware');
 const AdministratorPermissionMiddleware = require('../middlewares/permissions/AdministratorPermissionMiddleware');
 const SavedCartController = require('../controllers/SavedCartController');
+const WithdrawalAccountController = require('../controllers/WithdrawalAccountController');
+const CustomerAndAdminPermissionMiddleware = require('../middlewares/permissions/customer/CustomerAndAdminPermissionMiddleware');
+const WithdrawalAccountUpdateValidation = require('../validation/withdrawal_account/WithdrawalAccountUpdateValidation');
+const CustomerLoginPermissionMiddleware = require('../middlewares/permissions/customer/CustomerLoginPermissionMiddleware');
 
 const router = express.Router();
 
 const controller = new CustomerController();
 
 const addressController = new AddressController();
+
+const withdrawalAccountController = new WithdrawalAccountController();
 
 const favoriteController = new FavoriteController();
 
@@ -41,6 +47,7 @@ router.post(
   '/login', 
   checkSchema(CustomerLoginValidation), 
   ValidationMiddleware(UnauthorizedException), 
+  CustomerLoginPermissionMiddleware,
   controller.login
 );
 
@@ -74,6 +81,16 @@ router.put(
   controller.updatePassword
 );
 
+router.put(
+  '/:id(\\d+)/withdrawal-account/update', 
+  CustomerFetchMiddleware,
+  AuthMiddleware, 
+  CustomerPermissionMiddleware, 
+  checkSchema(WithdrawalAccountUpdateValidation),
+  ValidationMiddleware(), 
+  withdrawalAccountController.updateCustomerWithdrawalAccount
+);
+
 router.get(
   '/list', 
   AuthMiddleware, 
@@ -86,7 +103,7 @@ router.get(
   '/:id(\\d+)/address/list', 
   CustomerFetchMiddleware,
   AuthMiddleware, 
-  CustomerPermissionMiddleware,
+  CustomerAndAdminPermissionMiddleware,
   addressController.getListByCustomer
 );
 
@@ -94,7 +111,7 @@ router.get(
   '/:id(\\d+)/favorite/list', 
   CustomerFetchMiddleware,
   AuthMiddleware, 
-  CustomerPermissionMiddleware,
+  CustomerAndAdminPermissionMiddleware,
   PaginationMiddleware,
   favoriteController.getListByCustomer
 );
@@ -103,7 +120,7 @@ router.get(
   '/:id(\\d+)/saved-cart/list', 
   CustomerFetchMiddleware,
   AuthMiddleware, 
-  CustomerPermissionMiddleware,
+  CustomerAndAdminPermissionMiddleware,
   PaginationMiddleware,
   savedCartController.getListByCustomer
 );
@@ -112,7 +129,7 @@ router.get(
   '/:id(\\d+)', 
   CustomerFetchMiddleware,
   AuthMiddleware, 
-  CustomerPermissionMiddleware,
+  CustomerAndAdminPermissionMiddleware,
   controller.get
 );
 

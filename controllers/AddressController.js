@@ -8,10 +8,10 @@ const StoreRepository = require("../repository/StoreRepository");
 module.exports = class AddressController {
 
   async add(req, res, next) {
-
+    
     try {
 
-      const _address = await AddressRepository.addForCustomer(req.body);
+      const _address = await AddressRepository.addForCustomer(req.body, req.auth.userId);
 
       const address = await AddressRepository.get(_address.id);
 
@@ -25,7 +25,7 @@ module.exports = class AddressController {
   }
 
   async updateStoreAddress(req, res, next) {
-
+    
     try {
 
       const { store: { user } } = req.data;
@@ -63,14 +63,14 @@ module.exports = class AddressController {
   }
 
   async update(req, res, next) {
-
+    
     try {
 
-      const { address } = req.data;
+      const _address = req.data.address;
 
-      await AddressRepository.updateForCustomer(address, req.body);
+      await AddressRepository.updateForCustomer(_address, req.body);
 
-      //const address = await AddressRepository.get(parseInt(req.params.id));
+      const address = await AddressRepository.get(_address.id);
 
       const response = new Response(Response.SUCCESS, req.__('_updated._address'), address);
 

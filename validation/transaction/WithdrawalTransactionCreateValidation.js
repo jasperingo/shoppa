@@ -15,9 +15,9 @@ module.exports = {
 
           const account = await WithdrawalAccountRepository.getByUser(req.body.user_id);
           
-          if (account === null) {
+          if (account === null)
             return Promise.reject(req.__('_error._form._user_withdrawal_account_do_not_exist'));
-          }
+          
 
           if (Transaction.WITHDRAWAL_MINIMIUM_LIMIT > value)
             return Promise.reject(req.__('_error._form._withdrawal_minimium_amount', { amount: Transaction.WITHDRAWAL_MINIMIUM_LIMIT }));

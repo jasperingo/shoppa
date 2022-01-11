@@ -2,7 +2,11 @@ const { Model, DataTypes } = require("sequelize");
 const sequelize = require('../repository/DB');
 const User = require("./User");
 
-class WithdrawalAccount extends Model {}
+class WithdrawalAccount extends Model {
+
+  static GET_ATTR = ['bank_name', 'account_number', 'account_name', 'account_type'];
+
+}
 
 WithdrawalAccount.init({
 

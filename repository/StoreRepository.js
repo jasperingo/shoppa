@@ -83,6 +83,10 @@ module.exports = {
             {
               model: WorkingHour,
               attributes: WorkingHour.GET_ATTR
+            },
+            {
+              model: WithdrawalAccount,
+              attributes: WithdrawalAccount.GET_ATTR
             }
           ]
         },
@@ -104,16 +108,10 @@ module.exports = {
         {
           model: User,
           attributes: User.GET_ATTR,
-          include: [
-            {
-              model: Address,
-              attributes: Address.GET_ATTR
-            },
-            {
-              model: WorkingHour,
-              attributes: WorkingHour.GET_ATTR
-            }
-          ]
+          include: {
+            model: Address,
+            attributes: Address.GET_ATTR
+          }
         },
         {
           model: SubCategory,
@@ -148,6 +146,10 @@ module.exports = {
             {
               model: WorkingHour,
               attributes: WorkingHour.GET_ATTR
+            },
+            {
+              model: WithdrawalAccount,
+              attributes: WithdrawalAccount.GET_ATTR
             }
           ]
         },
@@ -171,39 +173,6 @@ module.exports = {
     });
   },
 
-  getWithWithdrawalAccount(id) {
-    return Store.findOne({
-      where: { id },
-      include: [
-        {
-          model: User,
-          attributes: User.GET_ATTR,
-          include: [
-            {
-              model: Address,
-              attributes: Address.GET_ATTR
-            },
-            {
-              model: WorkingHour,
-              attributes: WorkingHour.GET_ATTR
-            },
-            {
-              model: WithdrawalAccount
-            }
-          ]
-        },
-        {
-          model: SubCategory,
-          attributes: SubCategory.GET_ATTR,
-          include: {
-            model: Category,
-            attributes: Category.GET_ATTR,
-          }
-        }
-      ]
-    });
-  },
-
   getByName(name) {
     return Store.findOne({
       include: [
@@ -221,6 +190,10 @@ module.exports = {
             {
               model: WorkingHour,
               attributes: WorkingHour.GET_ATTR
+            },
+            {
+              model: WithdrawalAccount,
+              attributes: WithdrawalAccount.GET_ATTR
             }
           ]
         },

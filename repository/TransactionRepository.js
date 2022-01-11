@@ -50,6 +50,31 @@ module.exports = {
       type: Transaction.TYPE_WITHDRAWAL
     });
   },
+  
+  createRefund(order, reference) {
+    return sequelize.transaction(async (transaction)=> {
+
+      const tx = await Transaction.create(
+        { 
+          reference,
+          application: false, 
+          order_id: order.id, 
+          amount: order.total,
+          user_id: order.customer.user.id,
+          status: Transaction.STATUS_PENDING,
+          type: Transaction.TYPE_REFUND
+        }, 
+        { transaction }
+      );
+      
+      await Order.update(
+        { refund_status: Order.REFUND_STATUS_PENDING }, 
+        { where: { id: order.id }, transaction }
+      );
+
+      return tx;
+    });
+  },
 
   updatePaymentVerifed(reference, referenceGenerator) {
 
@@ -82,23 +107,21 @@ module.exports = {
       
       if (tx.order.status === Order.STATUS_PROCESSING || tx.order.status === Order.STATUS_FULFILLED) {
         await Transaction.bulkCreate(await Transaction.distributeOrderPayment(tx.order, referenceGenerator), { transaction });
-      } else if (tx.order.status === Order.STATUS_CANCELLED || tx.order.status === Order.STATUS_DECLINED) {
-        await Transaction.create(await Transaction.issueOrderRefund(tx.order, referenceGenerator), { transaction });
       }
 
       return true;
     });
   },
-
+  
   updateStatusToDeclinedOrCancelled(tx, status) {
     return sequelize.transaction(async (transaction)=> {
 
       const update = await Transaction.update({ status }, { where: { id: tx.id }, transaction });
 
       if (tx.type === Transaction.TYPE_REFUND && status === Transaction.STATUS_CANCELLED) {
-
+        await Order.update({ refund_status: Order.REFUND_STATUS_CANCELLED }, { where: { id: tx.order.id }, transaction });
       } else if (tx.type === Transaction.TYPE_REFUND && status === Transaction.STATUS_DECLINED) {
-
+        await Order.update({ refund_status: Order.REFUND_STATUS_DECLINED }, { where: { id: tx.order.id }, transaction });
       }
 
       return update;
@@ -106,7 +129,7 @@ module.exports = {
   },
 
   updateStatusToProcessing(tx) {
-    return Transaction.findOne({ where: { id: tx.id } });
+    return Transaction.update({ status: Transaction.STATUS_PROCESSING }, { where: { id: tx.id } });
   },
 
 

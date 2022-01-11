@@ -28,20 +28,19 @@ OrderItem.init({
     allowNull: false
   },
 
-  delivery_weight_fee: {
-    type: DataTypes.DOUBLE
-  },
-
-  delivery_duration_fee: {
-    type: DataTypes.DOUBLE
+  delivery_fee: {
+    type: DataTypes.DOUBLE,
+    allowNull: false
   },
   
   discount_amount: {
-    type: DataTypes.DOUBLE
+    type: DataTypes.DOUBLE,
+    allowNull: false
   },
 
   weight: {
-    type: DataTypes.DOUBLE
+    type: DataTypes.DOUBLE,
+    allowNull: false
   },
 
   processed_at: {
@@ -90,7 +89,7 @@ OrderItem.belongsTo(ProductVariant, { foreignKey: pvForeignKey });
 
 
 const rwForeignKey = {
-  name: 'route_weight_id',
+  name: 'delivery_weight_id',
   type: DataTypes.BIGINT
 };
 
@@ -100,7 +99,7 @@ OrderItem.belongsTo(RouteWeight, { foreignKey: rwForeignKey });
 
 
 const rdForeignKey = {
-  name: 'route_duration_id',
+  name: 'delivery_duration_id',
   type: DataTypes.BIGINT
 };
 

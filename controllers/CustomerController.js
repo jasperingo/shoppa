@@ -8,24 +8,8 @@ const Hash = require("../security/Hash");
 const JWT = require("../security/JWT");
 
 module.exports = class CustomerController {
-
-  generateJWT = (customer)=> {
-    
-    customer.hidePassword();
-
-    const userObj = {
-      id : customer.id,
-      user_id: customer.user.id,
-      first_name: customer.first_name,
-      last_name: customer.last_name,
-      email: customer.user.email,
-      phone_number: customer.user.phone_number
-    };
-
-    return JWT.signCustomerJWT(userObj);
-  }
   
-  register = async (req, res, next)=> {
+  async register(req, res, next) {
     
     try {
       
@@ -35,7 +19,9 @@ module.exports = class CustomerController {
 
       const customer = await CustomerRepository.get(_customer.id);
 
-      const token = await this.generateJWT(customer);
+      customer.hidePassword();
+
+      const token = await JWT.signCustomerJWT(customer);
 
       const response = new Response(Response.SUCCESS, req.__('_created._customer'), {
         customer,
@@ -45,18 +31,19 @@ module.exports = class CustomerController {
       res.status(StatusCodes.CREATED).send(response);
 
     } catch (error) {
-      console.log(error)
       next(new InternalServerException(error));
     }
   }
 
-  login = async (req, res, next)=> {
+  async login(req, res, next) {
 
     try {
       
       const { customer } = req.data;
 
-      const token = await this.generateJWT(customer);
+      const token = await JWT.signCustomerJWT(customer);
+
+      customer.hidePassword();
 
       const response = new Response(Response.SUCCESS, req.__('_login'), {
         customer,

@@ -1,6 +1,7 @@
 const { Op } = require("sequelize");
 const Customer = require("../models/Customer");
 const User = require("../models/User");
+const WithdrawalAccount = require("../models/WithdrawalAccount");
 const sequelize = require("./DB");
 
 module.exports = {
@@ -61,7 +62,11 @@ module.exports = {
       where: { id },
       attributes: { exclude: ['password'] },
       include: {
-        model: User
+        model: User,
+        include: {
+          model: WithdrawalAccount,
+          attributes: WithdrawalAccount.GET_ATTR
+        }
       } 
     });
   },

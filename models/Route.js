@@ -12,22 +12,19 @@ Route.init({
     autoIncrement: true
   },
 
-  location_1_state: {
+  state: {
     type: DataTypes.STRING,
     allowNull: false
   },
 
-  location_2_state: {
+  city: {
     type: DataTypes.STRING,
     allowNull: false
   },
 
-  location_1_city: {
-    type: DataTypes.STRING
-  },
-
-  location_2_city: {
-    type: DataTypes.STRING
+  door_delivery: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false
   },
 
   deleted_at: {
@@ -42,8 +39,8 @@ Route.init({
 {
   sequelize,
   timestamps: false,
-  tableName: 'routes',
-  modelName: 'route'
+  tableName: 'delivery_routes',
+  modelName: 'delivery_route'
 });
 
 const foreignKey = {
@@ -54,6 +51,20 @@ const foreignKey = {
 DeliveryFirm.hasMany(Route, { foreignKey });
 
 Route.belongsTo(DeliveryFirm, { foreignKey });
+
+const oForeignKey = {
+  name: 'origin_route_id',
+  type: DataTypes.BIGINT
+};
+
+const dForeignKey = {
+  name: 'destination_route_id',
+  type: DataTypes.BIGINT
+};
+
+Route.hasOne(Route, { as: 'origin_route', foreignKey: oForeignKey });
+Route.hasOne(Route, { as: 'destination_route', foreignKey: dForeignKey });
+Route.belongsTo(Route);
 
 
 module.exports = Route;

@@ -10,6 +10,11 @@ module.exports = {
     return address !== null;
   },
 
+  async typeDefaultExistsForUser(user_id) {
+    const address = await Address.findOne({ attributes: ['id'], where: { user_id, type: Address.TYPE_DEFAULT } });
+    return address !== null;
+  },
+
   async titleExistsForUser(title, user_id) {
     const addr = await Address.findOne({ 
       attributes: ['id'], 
@@ -22,13 +27,13 @@ module.exports = {
     return addr !== null;
   },
 
-  async updateTitleExistsForUser(title, user_id, id) {
+  async updateTitleExistsForUser(title, address) {
     const addr = await Address.findOne({ 
       attributes: ['id'], 
       where: {
-        user_id,
         title,
-        [Op.not]: { id }
+        user_id: address.user_id,
+        [Op.not]: { id: address.id }
       } 
     });
 
@@ -47,84 +52,52 @@ module.exports = {
   },
 
   addOrUpdate(user, { street, city, state }) {
-    return sequelize.transaction(async (t)=> {
+    return sequelize.transaction(async (transaction)=> {
 
       if (user.addresses.length > 0) {
-        await Address.update({ street, city, state }, { where: { id: user.addresses[0].id }, transaction: t });
+        await Address.update({ street, city, state }, { where: { id: user.addresses[0].id }, transaction });
       } else {
-        await Address.create({ user_id: user.id, street, city, state, type: Address.TYPE_DEFAULT }, { transaction: t });
+        await Address.create({ user_id: user.id, street, city, state, type: Address.TYPE_DEFAULT }, { transaction });
       }
 
       if (user.status === User.STATUS_ACTIVATING && user.working_hours.length > 0) {
-        await User.update({ status: User.STATUS_ACTIVE }, { where : { id: user.id }, transaction: t });
+        await User.update({ status: User.STATUS_ACTIVE }, { where : { id: user.id }, transaction });
       }
     });
   },
 
-  addForCustomer(data) {
+  addForCustomer({ title, type, state, city, street }, user_id) {
     
-    return sequelize.transaction(async (t)=> {
+    return sequelize.transaction(async (transaction)=> {
 
-      if (data.type === Address.TYPE_DEFAULT) {
-        await this.updateTypeDefaultToSubForCustomer(data.user_id, t);
-      } else {
-        const addr = await Address.findOne({ 
-          attributes: ['id'], 
-          where: {
-            [Op.and]: [
-              { user_id: data.user_id },
-              { type: Address.TYPE_DEFAULT }
-            ]
-          } 
-        });
-
-        if (addr === null) data.type = Address.TYPE_DEFAULT;
+      if (type === Address.TYPE_DEFAULT) {
+        await this.updateTypeDefaultToSubForCustomer(user_id, transaction);
       }
 
-      return await Address.create(data, { transaction: t });
+      return await Address.create({ user_id, title, type, state, city, street }, { transaction });
     });
   },
-
-  updateForCustomer(address, data) {
+  
+  updateForCustomer(address, { title, type, state, city, street }) {
     
-    return sequelize.transaction(async (t)=> {
+    return sequelize.transaction(async (transaction)=> {
 
-      if (data.type === Address.TYPE_DEFAULT) {
-        await this.updateTypeDefaultToSubForCustomer(address.user_id, t);
-      } else {
-        const addr = await Address.findOne({ 
-          attributes: ['id'], 
-          where: {
-            [Op.and]: [
-              { id },
-              { type: Address.TYPE_DEFAULT }
-            ]
-          },
-          transaction: t
-        });
-
-        if (addr !== null) data.type = Address.TYPE_DEFAULT;
+      if (address.type !== Address.TYPE_DEFAULT && type === Address.TYPE_DEFAULT) {
+        await this.updateTypeDefaultToSubForCustomer(address.user_id, transaction);
       }
-      
-      address.set({
-        title: data.title,
-        street: data.street,
-        city: data.city,
-        state: data.state,
-        type: data.type
-      });
 
-      return await address.save({ transaction: t });
+      return await Address.update(
+        { title, type, state, city, street }, 
+        { where: { id: address.id }, transaction }
+      );
     });
   },
 
   updateTypeDefaultToSubForCustomer(user_id, transaction) {
     return Address.update({ type: Address.TYPE_SUB }, { 
       where: {
-        [Op.and]: [
-          { user_id },
-          { type: Address.TYPE_DEFAULT }
-        ]
+        user_id,
+        type: Address.TYPE_DEFAULT
       },
       transaction
     });

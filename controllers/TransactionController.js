@@ -26,6 +26,25 @@ module.exports = class TransactionController {
       next(new InternalServerException(error));
     }
   }
+  
+  async createPayment(req, res, next) {
+    res.send({ k:3 });
+    // try {
+
+    //   const reference = await StringGenerator.transactionReference();
+
+    //   const _transaction = await TransactionRepository.createWithdrawal(req.body, reference);
+
+    //   const transaction = await TransactionRepository.get(_transaction.id);
+
+    //   const response = new Response(Response.SUCCESS, req.__('_created._transaction'), transaction);
+
+    //   res.status(StatusCodes.CREATED).send(response);
+
+    // } catch (error) {
+    //   next(new InternalServerException(error));
+    // }
+  }
 
   async createWithdrawal(req, res, next) {
     
@@ -47,7 +66,22 @@ module.exports = class TransactionController {
   }
 
   async createRefund(req, res, next) {
-    res.send({ k:4 });
+
+    try {
+
+      const reference = await StringGenerator.transactionReference();
+
+      const _transaction = await TransactionRepository.createRefund(req.data.order, reference);
+
+      const transaction = await TransactionRepository.get(_transaction.id);
+
+      const response = new Response(Response.SUCCESS, req.__('_created._transaction'), transaction);
+
+      res.status(StatusCodes.CREATED).send(response);
+
+    } catch (error) {
+      next(new InternalServerException(error));
+    }
   }
 
   async updateStatus(req, res, next) {

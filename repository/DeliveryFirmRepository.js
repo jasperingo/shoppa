@@ -81,6 +81,10 @@ module.exports = {
           {
             model: WorkingHour,
             attributes: WorkingHour.GET_ATTR
+          },
+          {
+            model: WithdrawalAccount,
+            attributes: WithdrawalAccount.GET_ATTR
           }
         ]
       }
@@ -103,6 +107,10 @@ module.exports = {
           {
             model: WorkingHour,
             attributes: WorkingHour.GET_ATTR
+          },
+          {
+            model: WithdrawalAccount,
+            attributes: WithdrawalAccount.GET_ATTR
           }
         ]
       }
@@ -127,6 +135,10 @@ module.exports = {
             {
               model: WorkingHour,
               attributes: WorkingHour.GET_ATTR
+            },
+            {
+              model: WithdrawalAccount,
+              attributes: WithdrawalAccount.GET_ATTR
             }
           ]
         },
@@ -142,51 +154,22 @@ module.exports = {
     });
   },
 
-  getWithWithdrawalAccount(id) {
-    return DeliveryFirm.findOne({
-      where: { id },
-      include: {
-        model: User,
-        attributes: User.GET_ATTR,
-        include: [
-          {
-            model: Address,
-            attributes: Address.GET_ATTR
-          },
-          {
-            model: WorkingHour,
-            attributes: WorkingHour.GET_ATTR
-          },
-          {
-            model: WithdrawalAccount
-          }
-        ]
-      }
-    });
-  },
-
   getList(offset, limit) {
     return DeliveryFirm.findAndCountAll({
       include: {
         model: User,
         attributes: User.GET_ATTR,
-        include: [
-          {
-            model: Address,
-            attributes: Address.GET_ATTR
-          },
-          {
-            model: WorkingHour,
-            attributes: WorkingHour.GET_ATTR
-          }
-        ]
+        include: {
+          model: Address,
+          attributes: Address.GET_ATTR
+        }
       },
       order: [[User, 'created_at', 'DESC']],
       offset,
       limit
     });
   },
-
+  
   async add(data, password, customer) {
 
     return sequelize.transaction(async (transaction)=> {

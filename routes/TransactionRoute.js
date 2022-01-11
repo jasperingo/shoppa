@@ -41,6 +41,15 @@ router.post(
   controller.createRefund
 );
 
+router.post(
+  '/payment/create',
+  // AuthMiddleware,
+  // RefundTransactionCreatePermissionMiddleware,
+  // checkSchema(RefundTransactionCreateValidation),
+  // ValidationMiddleware(),
+  controller.createPayment
+);
+
 router.put(
   '/:id(\\d+)/status/update',
   TransactionFetchMiddleware,

@@ -68,13 +68,13 @@ RouteDuration.init({
 {
   sequelize,
   timestamps: false,
-  tableName: 'route_durations',
-  modelName: 'route_duration'
+  tableName: 'delivery_route_durations',
+  modelName: 'delivery_route_duration'
 });
 
 
 const foreignKey = {
-  name: 'route_id',
+  name: 'delivery_route_id',
   type: DataTypes.BIGINT
 };
 

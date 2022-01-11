@@ -22,7 +22,7 @@ RouteWeight.init({
     allowNull: false
   },
 
-  price: {
+  fee: {
     type: DataTypes.DOUBLE,
     allowNull: false
   },
@@ -39,12 +39,12 @@ RouteWeight.init({
 {
   sequelize,
   timestamps: false,
-  tableName: 'route_weights',
-  modelName: 'route_weight'
+  tableName: 'delivery_route_weights',
+  modelName: 'delivery_route_weight'
 });
 
 const foreignKey = {
-  name: 'route_id',
+  name: 'delivery_route_id',
   type: DataTypes.BIGINT
 };
 

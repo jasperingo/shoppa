@@ -9,25 +9,7 @@ const JWT = require("../security/JWT");
 
 module.exports = class DeliveryFirmController {
 
-  generateJWT(delivery) {
-    
-    const admin = delivery.administrators[0];
-
-    const obj = {
-      id : admin.id,
-      role: admin.role,
-      type: admin.type,
-      deliveryFirm: {
-        id: delivery.id,
-        name: delivery.user.name,
-        email: delivery.user.email
-      }
-    };
-
-    return JWT.signDeliveryFirmJWT(obj);
-  }
-
-  register = async (req, res, next)=> {
+  async register(req, res, next) {
     
     try {
       
@@ -37,7 +19,7 @@ module.exports = class DeliveryFirmController {
 
       const deliveryFirm = await DeliveryFirmRepository.getWithAdministrator(result.deliveryFirm.id, result.administrator.id);
 
-      const token = await this.generateJWT(deliveryFirm);
+      const token = await JWT.signDeliveryFirmJWT(deliveryFirm);
 
       const response = new Response(Response.SUCCESS, req.__('_created._store'), {
         deliveryFirm,
@@ -52,7 +34,7 @@ module.exports = class DeliveryFirmController {
     }
   }
 
-  login = async (req, res, next)=> {
+  async login(req, res, next) {
 
     try {
 
@@ -60,7 +42,7 @@ module.exports = class DeliveryFirmController {
 
       const deliveryFirm = await DeliveryFirmRepository.getWithAdministrator(data.deliveryFirm.id, data.administrator.id);
 
-      const token = await this.generateJWT(deliveryFirm);
+      const token = await JWT.signDeliveryFirmJWT(deliveryFirm);
 
       const response = new Response(Response.SUCCESS, req.__('_login'), {
         deliveryFirm,
@@ -70,7 +52,6 @@ module.exports = class DeliveryFirmController {
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      console.log(error)
       next(new InternalServerException(error));
     }
   }

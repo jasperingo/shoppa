@@ -139,7 +139,10 @@ Order.init({
 
   payment_status: {
     type: DataTypes.ENUM(...Order.getPaymentStatuses()),
-    allowNull: false
+  },
+  
+  refund_status: {
+    type: DataTypes.ENUM(...Order.getRefundStatus()),
   },
 
   sub_total: {
@@ -219,7 +222,7 @@ Order.belongsTo(DeliveryFirm, { foreignKey: dForeignKey });
 
 
 const rForeignKey = {
-  name: 'route_id',
+  name: 'delivery_route_id',
   type: DataTypes.BIGINT
 };
 

@@ -26,24 +26,6 @@ module.exports = {
     return order !== null;
   },
   
-  async customerCanGetRefund(id, customer_id) {
-    const order = await Order.findOne({ 
-      attributes: ['id'],
-      where: {
-        id,
-        customer_id,
-        status: Order.STATUS_CANCELLED,
-        refund_status: {
-          [Op.or]: {
-            [Op.is]: null,
-            [Op.notIn]: [Order.REFUND_STATUS_APPROVED, Order.REFUND_STATUS_PENDING]
-          }
-        }
-      }
-    });
-    return order !== null;
-  },
-
   get(id) {
     return Order.findOne({
       where: { id },

@@ -133,6 +133,8 @@
       "_password_length": "Password minimium length is {{min}} and maximum length is {{max}}",
       "_password_confirmation_not_match": "This field do not match with password",
 
+      "_address_type_not_default": "Address type has to be default",
+
       "_opening_hour_is_gte": "Opening hour cannot be greater than or equal to closing hour",
 
       "_minimium_is_gte": "Minimium cannot be greater than or equal to maximium",
@@ -151,6 +153,8 @@
       "_order_item_cant_update_date": "This order item {{ date }} cannot be updated",
 
       "_order_item_date_updated": "Order item {{ date }} has already been updated",
+
+      "_order_cant_get_refund": "A refund cannot be issued for this order",
 
       "_withdrawal_minimium_amount": "Withdrawal amount cannot be less than {{ amount }}",
 

@@ -8,26 +8,7 @@ const JWT = require("../security/JWT");
 
 module.exports = class StoreController {
 
-  generateJWT = (store)=> {
-    
-    const admin = store.administrators[0];
-
-    const obj = {
-      id : admin.id,
-      role: admin.role,
-      type: admin.type,
-      store: {
-        id: store.id,
-        user_id: store.user.id,
-        name: store.user.name,
-        email: store.user.email
-      }
-    };
-
-    return JWT.signStoreJWT(obj);
-  }
-
-  register = async (req, res, next)=> {
+  async register(req, res, next) {
     
     try {
       
@@ -37,7 +18,7 @@ module.exports = class StoreController {
 
       const store = await StoreRepository.getWithAdministrator(result.store.id, result.administrator.id);
 
-      const token = await this.generateJWT(store);
+      const token = await JWT.signStoreJWT(store);
 
       const response = new Response(Response.SUCCESS, req.__('_created._store'), {
         store,
@@ -50,14 +31,14 @@ module.exports = class StoreController {
       next(new InternalServerException(error));
     }
   }
-
-  login = async (req, res, next)=> {
+  
+  async login(req, res, next) {
 
     try {
 
       const store = await StoreRepository.getWithAdministrator(req.data.store.id, req.data.administrator.id);
 
-      const token = await this.generateJWT(store);
+      const token = await JWT.signStoreJWT(store);
 
       const response = new Response(Response.SUCCESS, req.__('_login'), {
         store,

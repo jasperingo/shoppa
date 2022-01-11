@@ -1,6 +1,5 @@
 
 const ForbiddenException = require("../../../http/exceptions/ForbiddenException");
-const Administrator = require("../../../models/Administrator");
 const Transaction = require("../../../models/Transaction");
 const JWT = require("../../../security/JWT");
 

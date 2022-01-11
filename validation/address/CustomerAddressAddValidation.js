@@ -1,31 +1,17 @@
 
 const InternalServerException = require('../../http/exceptions/InternalServerException');
+const Address = require('../../models/Address');
 const AddressRepository = require('../../repository/AddressRepository');
-const CustomerRepository = require('../../repository/CustomerRepository');
 const ValidationRules = require('../ValidationRules');
 
 module.exports = {
-
-  user_id: {
-    isInt: ValidationRules.isInt,
-    custom: {
-      options: async (value, { req })=> {
-        try {
-          if (! (await CustomerRepository.idExists(value)))
-            return Promise.reject(req.__('_error._form._id_invalid'));
-        } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
-        }
-      }
-    }
-  },
 
   title: {
     notEmpty: ValidationRules.notEmpty,
     custom: {
       options: async (value, { req })=> {
         try {
-          if (await AddressRepository.titleExistsForUser(value, req.body.user_id))
+          if (await AddressRepository.titleExistsForUser(value, req.auth.userId))
             return Promise.reject(req.__('_error._form._title_exists'));
         } catch (err) {
           return Promise.reject(InternalServerException.TAG);
@@ -44,7 +30,17 @@ module.exports = {
 
   type: {
     notEmpty: ValidationRules.notEmpty,
-    isIn: ValidationRules.addressTypeIsIn
+    isIn: ValidationRules.addressTypeIsIn,
+    custom: {
+      options: async (value, { req })=> {
+        try {
+          if (value !== Address.TYPE_DEFAULT && ! (await AddressRepository.typeDefaultExistsForUser(req.auth.userId)))
+            return Promise.reject(req.__('_error._form._address_type_not_default'));
+        } catch (err) {
+          return Promise.reject(InternalServerException.TAG);
+        }
+      }
+    }
   }
 
 };
