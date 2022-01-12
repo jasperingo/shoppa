@@ -10,13 +10,6 @@ module.exports = {
     return body('minimium').custom((value, { req })=> { throw req.__('_error._form._minimium_is_gte'); }).run(req);
   },
 
-  cityInvalid(req) {
-    return Promise.all([
-      body('location_1_city').custom((value, { req })=> { throw req.__('_error._form._field_pair', { pair: 'location_2_city' }); }).run(req),
-      body('location_2_city').custom((value, { req })=> { throw req.__('_error._form._field_pair',  { pair: 'location_1_city' }); }).run(req)
-    ]);
-  },
-
   cityAndStateExists(req) {
     return Promise.all([
       body('state').custom((value, { req })=> { throw req.__('_error._form._route_exists'); }).run(req),

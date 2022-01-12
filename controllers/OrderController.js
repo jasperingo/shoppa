@@ -119,10 +119,8 @@ module.exports = class OrderController {
 
       const data = req.body;
 
-      const customerAddress = await AddressRepository.get(data.customer_address_id);
-
-      const storeAddress = (await StoreRepository.get(data.store_id)).user.addresses[0];
-
+      const { customerAddress, storeAddress } = req.data;
+      
       const routes = await RouteRepository.getListByCityAndState(customerAddress.state, storeAddress.state, customerAddress.city, storeAddress.city);
 
       for (let i=0; i<routes.length; i++) {
@@ -161,6 +159,7 @@ module.exports = class OrderController {
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
+      console.error(error)
       next(new InternalServerException(error));
     }
   }

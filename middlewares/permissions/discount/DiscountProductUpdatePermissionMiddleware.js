@@ -1,14 +1,21 @@
 const ForbiddenException = require("../../../http/exceptions/ForbiddenException");
-const Administrator = require("../../../models/Administrator");
+const InternalServerException = require("../../../http/exceptions/InternalServerException");
 const DiscountRepository = require("../../../repository/DiscountRepository");
-const { AUTH_STORE_ADMIN } = require("../../../security/JWT");
+const StoreRepository = require("../../../repository/StoreRepository");
+const JWT = require("../../../security/JWT");
 
 module.exports = async function permit(req, res, next) {
-  if (req.auth.authType === AUTH_STORE_ADMIN && req.auth.role === Administrator.ROLE_SUPER && 
-      (await DiscountRepository.idExistsForStore(req.data.discountProduct.discount_id, req.auth.store.id))) {
-    next();
-  } else {
-    next(new ForbiddenException());
+  try {
+    if (req.auth.authType === JWT.AUTH_STORE_ADMIN && 
+      await StoreRepository.statusIsActiveOrActivating(req.auth.userId) && 
+      await DiscountRepository.idExistsForStore(req.data.discountProduct.discount_id, req.auth.storeId)) 
+    {
+      next();
+    } else {
+      next(new ForbiddenException());
+    }
+  } catch (error) {
+    next(new InternalServerException(error));
   }
 };
 

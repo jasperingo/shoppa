@@ -12,6 +12,7 @@ const ValidationMiddleware = require('../middlewares/ValidationMiddleware');
 const FileUploadMiddleware = require('../middlewares/FileUploadMiddleware');
 const CustomerLoginValidation = require('../validation/customer/CustomerLoginValidation');
 const CustomerRegistrationValidation = require('../validation/customer/CustomerRegistrationValidation');
+const CustomerUpdateStatusValidation = require('../validation/customer/CustomerUpdateStatusValidation');
 const CustomerUpdatePasswordValidation = require('../validation/customer/CustomerUpdatePasswordValidation');
 const CustomerUpdateValidation = require('../validation/customer/CustomerUpdateValidation');
 const FileUploadValidationMiddleware = require('../middlewares/FileUploadValidationMiddleware');
@@ -79,6 +80,16 @@ router.put(
   checkSchema(CustomerUpdatePasswordValidation), 
   ValidationMiddleware(), 
   controller.updatePassword
+);
+
+router.put(
+  '/:id(\\d+)/status/update', 
+  CustomerFetchMiddleware,
+  AuthMiddleware, 
+  AdministratorPermissionMiddleware, 
+  checkSchema(CustomerUpdateStatusValidation),
+  ValidationMiddleware(), 
+  controller.updateStatus
 );
 
 router.put(

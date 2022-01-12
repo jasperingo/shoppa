@@ -11,7 +11,7 @@ module.exports = {
     custom: {
       options: async (value, { req })=> {
         try {
-          if (await DiscountRepository.titleExists(value, req.body.store_id))
+          if (await DiscountRepository.titleExists(value, req.auth.storeId))
             return Promise.reject(req.__('_error._form._title_exists'));
         } catch (err) {
           return Promise.reject(InternalServerException.TAG);

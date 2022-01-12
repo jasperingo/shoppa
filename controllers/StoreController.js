@@ -62,7 +62,7 @@ module.exports = class StoreController {
 
       await StoreRepository.update(req.data.store, req.body);
 
-      const store = await StoreRepository.get(req.params.id);
+      const store = await StoreRepository.get(req.data.store.id);
 
       const response = new Response(Response.SUCCESS, req.__('_updated._store'), store);
 
@@ -79,9 +79,26 @@ module.exports = class StoreController {
 
       await StoreRepository.updatePhoto(req.data.store, req.file.filename);
       
-      const store = await StoreRepository.get(req.params.id);
+      const store = await StoreRepository.get(req.data.store.id);
 
       const response = new Response(Response.SUCCESS, req.__('_updated._photo'), store);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch (error) {
+      next(new InternalServerException(error));
+    }
+  }
+  
+  async updateStatus(req, res, next) {
+    
+    try {
+
+      await StoreRepository.updateStatus(req.data.store, req.body.status);
+      
+      const store = await StoreRepository.get(req.data.store.id);
+
+      const response = new Response(Response.SUCCESS, req.__('_updated._status'), store);
 
       res.status(StatusCodes.OK).send(response);
 

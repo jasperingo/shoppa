@@ -44,11 +44,5 @@ router.delete(
   controller.delete
 );
 
-router.get(
-  '/:id(\\d+)',
-  RouteDurationFetchMiddleware,
-  controller.get
-);
-
 module.exports = router;
 

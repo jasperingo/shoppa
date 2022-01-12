@@ -1,14 +1,22 @@
 const ForbiddenException = require("../../../http/exceptions/ForbiddenException");
-const Administrator = require("../../../models/Administrator");
+const InternalServerException = require("../../../http/exceptions/InternalServerException");
+const DeliveryFirmRepository = require("../../../repository/DeliveryFirmRepository");
 const RouteRepository = require("../../../repository/RouteRepository");
-const { AUTH_DELIVERY_ADMIN } = require("../../../security/JWT");
+const JWT = require("../../../security/JWT");
 
 module.exports = async function permit(req, res, next) {
-  if (req.auth.authType === AUTH_DELIVERY_ADMIN && req.auth.role === Administrator.ROLE_SUPER && 
-      (await RouteRepository.idExistsForDeliveryFirm(req.data.routeDuration.route_id, req.auth.deliveryFirm.id))) {
-    next();
-  } else {
-    next(new ForbiddenException());
+  
+  try {
+    if (req.auth.authType === JWT.AUTH_DELIVERY_ADMIN && 
+      await DeliveryFirmRepository.statusIsActiveOrActivating(req.auth.userId) &&
+      await RouteRepository.idExistsForDeliveryFirm(req.data.routeDuration.delivery_route_id, req.auth.deliveryFirmId)) 
+    {
+      next();
+    } else {
+      next(new ForbiddenException());
+    }
+  } catch (error) {
+    next(new InternalServerException(error));
   }
 };
 

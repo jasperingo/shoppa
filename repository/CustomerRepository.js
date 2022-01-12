@@ -129,13 +129,17 @@ module.exports = {
     });
   },
 
-  updatePassword(id, password) {
-    return Customer.update({ password }, { where: { id } });
+  updatePassword(customer, password) {
+    return Customer.update({ password }, { where: { id: customer.id } });
   },
 
   updatePhoto(customer, photo) {
     return User.update({ photo }, { where : { id: customer.user_id } });
-  }
+  },
+
+  updateStatus(customer, status) {
+    return User.update({ status }, { where : { id: customer.user_id } })
+  },
 
 };
 

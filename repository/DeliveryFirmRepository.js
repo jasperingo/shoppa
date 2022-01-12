@@ -187,6 +187,15 @@ module.exports = {
     return User.update({ photo }, { where : { id: deliveryFirm.user_id } });
   },
 
+  updateStatus(store, status) {
+
+    if (status === User.STATUS_ACTIVE && (store.user.addresses.length === 0 || store.user.working_hours.length === 0)) {
+      status = User.STATUS_ACTIVATING;
+    }
+
+    return User.update({ status }, { where : { id: store.user_id } });
+  },
+
 };
 
 

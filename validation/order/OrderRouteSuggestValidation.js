@@ -1,4 +1,5 @@
 const InternalServerException = require("../../http/exceptions/InternalServerException");
+const User = require("../../models/User");
 const AddressRepository = require("../../repository/AddressRepository");
 const ProductVariantRepository = require("../../repository/ProductVariantRepository");
 const StoreRepository = require("../../repository/StoreRepository");
@@ -13,8 +14,11 @@ module.exports = {
     custom: {
       options: async (value, { req })=> {
         try {
-          if (! (await StoreRepository.idExists(value)))
+          const store = await StoreRepository.get(value);
+          if (store === null || store.user.status !== User.STATUS_ACTIVE)
             return Promise.reject(req.__('_error._form._id_invalid'));
+          else
+            req.data = { storeAddress: store.user.addresses[0] };
         } catch (err) {
           return Promise.reject(InternalServerException.TAG);
         }
@@ -28,8 +32,11 @@ module.exports = {
     custom: {
       options: async (value, { req })=> {
         try {
-          if (! (await AddressRepository.idExists(value)))
+          const customerAddress = await AddressRepository.get(value);
+          if (customerAddress === null)
             return Promise.reject(req.__('_error._form._id_invalid'));
+          else 
+            req.data.customerAddress = customerAddress;
         } catch (err) {
           return Promise.reject(InternalServerException.TAG);
         }

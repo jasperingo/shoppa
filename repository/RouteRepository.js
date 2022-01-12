@@ -96,12 +96,12 @@ module.exports = {
     return { count, rows };
   },
 
-  add({ state, city, door_delivery }, delivery_firm_id) {
-    return Route.create({ delivery_firm_id, state, city, door_delivery });
+  add({ state, city, door_delivery, isolated }, delivery_firm_id) {
+    return Route.create({ delivery_firm_id, state, city, door_delivery, isolated });
   },
 
-  update(route, { city, state, door_delivery }) {
-    return Route.update({ city, state, door_delivery }, { where: { id: route.id } });
+  update(route, { city, state, door_delivery, isolated }) {
+    return Route.update({ city, state, door_delivery, isolated }, { where: { id: route.id } });
   },
 
   delete(route) {
@@ -131,48 +131,21 @@ module.exports = {
 
   getListByCityAndState(state_1, state_2, city_1, city_2) {
     return Route.findAll({
-      include: {
-        model: DeliveryFirm,
-        include: {
-          model: User,
-          attributes: User.GET_ATTR
+      include: [
+        {
+          model: DeliveryFirm,
+          include: {
+            model: User,
+            attributes: User.GET_ATTR
+          }
         }
-      },
+      ],
       where: {
         '$delivery_firm.user.status$': User.STATUS_ACTIVE,
         deleted_at: { [Op.is]: null },
-        [Op.or]: [
+        // [Op.or]: [
 
-          { 
-            location_1_state: state_1,
-            location_2_state: state_2,
-            [Op.or]: [
-              {
-                location_1_city: city_1,
-                location_2_city: city_2,
-              },
-              {
-                location_1_city: { [Op.is]: null },
-                location_2_city: { [Op.is]: null }
-              }
-            ]
-          },
-
-          { 
-            location_1_state: state_2,
-            location_2_state: state_1,
-            [Op.or]: [
-              {
-                location_1_city: city_2,
-                location_2_city: city_1,
-              },
-              {
-                location_1_city: { [Op.is]: null },
-                location_2_city: { [Op.is]: null }
-              }
-            ]
-          }
-        ]
+        // ]
       }
     });
   }

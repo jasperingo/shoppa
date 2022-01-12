@@ -29,7 +29,7 @@ module.exports = class RouteWeightController {
 
       await RouteWeightRepository.update(req.data.routeWeight, req.body);
 
-      const routeWeight = await RouteWeightRepository.get(req.params.id);
+      const routeWeight = await RouteWeightRepository.get(req.data.routeWeight.id);
 
       const response = new Response(Response.SUCCESS, req.__('_updated._route_weight'), routeWeight);
 
@@ -54,14 +54,7 @@ module.exports = class RouteWeightController {
       next(new InternalServerException(error));
     }
   }
-
-  get(req, res) {
-
-    const response = new Response(Response.SUCCESS, req.__('_fetched._route_weight'), req.data.routeWeight);
-
-    res.status(StatusCodes.OK).send(response);
-  }
-
+  
 }
 
 

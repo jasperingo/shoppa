@@ -1,6 +1,8 @@
 const { Op } = require("sequelize");
 const Discount = require("../models/Discount");
 const DiscountProduct = require("../models/DiscountProduct");
+const Store = require("../models/Store");
+const User = require("../models/User");
 const sequelize = require("./DB");
 
 module.exports = {
@@ -31,8 +33,13 @@ module.exports = {
     return Discount.findOne({
       where: { 
         id,
-        deleted_at: {
-          [Op.is]: null
+        deleted_at: { [Op.is]: null }
+      },
+      include: {
+        model: Store,
+        include: {
+          model: User,
+          attributes: User.GET_ATTR
         }
       }
     });
@@ -52,7 +59,7 @@ module.exports = {
     });
   },
 
-  create({ store_id, title, type, value, minimium_required_amount, minimium_required_quantity, start_date, end_date }) {
+  create({ title, type, value, minimium_required_amount, minimium_required_quantity, start_date, end_date }, store_id) {
 
     const values = { store_id, title, type, value, start_date, end_date };
 

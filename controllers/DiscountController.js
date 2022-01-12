@@ -11,7 +11,7 @@ module.exports = class DiscountController {
     
     try {
 
-      const _discount = await DiscountRepository.create(req.body);
+      const _discount = await DiscountRepository.create(req.body, req.auth.storeId);
 
       const discount = await DiscountRepository.get(_discount.id);
 

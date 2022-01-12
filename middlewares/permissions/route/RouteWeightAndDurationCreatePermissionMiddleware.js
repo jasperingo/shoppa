@@ -8,8 +8,8 @@ module.exports = async function permit(req, res, next) {
   try {
     if (req.auth.authType === JWT.AUTH_DELIVERY_ADMIN && 
       await DeliveryFirmRepository.statusIsActiveOrActivating(req.auth.userId) &&
-      req.body.route_id !== undefined && 
-      await RouteRepository.idExistsForDeliveryFirm(req.body.route_id, req.auth.deliveryFirmId)) 
+      req.body.delivery_route_id !== undefined && 
+      await RouteRepository.idExistsForDeliveryFirm(req.body.delivery_route_id, req.auth.deliveryFirmId)) 
     {
       next();
     } else {

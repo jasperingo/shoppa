@@ -25,6 +25,7 @@ const RouteController = require('../controllers/RouteController');
 const DeliveryFirmLoginPermissionMiddleware = require('../middlewares/permissions/delivery_firm/DeliveryFirmLoginPermissionMiddleware');
 const DeliveryFirmFetchPermissionMiddleware = require('../middlewares/permissions/delivery_firm/DeliveryFirmFetchPermissionMiddleware');
 const OptionalAuthMiddleware = require('../middlewares/OptionalAuthMiddleware');
+const CustomerUpdateStatusValidation = require('../validation/customer/CustomerUpdateStatusValidation');
 
 const router = express.Router();
 
@@ -79,6 +80,16 @@ router.put(
   FileUploadMiddleware(Files.USER_PHOTO_PATHS.delivery_firm).single('photo'), 
   FileUploadValidationMiddleware('photo'), 
   controller.updatePhoto
+);
+
+router.put(
+  '/:id(\\d+)/status/update', 
+  DeliveryFirmFetchMiddleware, 
+  AuthMiddleware,
+  AdministratorPermissionMiddleware, 
+  checkSchema(CustomerUpdateStatusValidation),
+  ValidationMiddleware(), 
+  controller.updateStatus
 );
 
 router.put(

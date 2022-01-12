@@ -39,13 +39,6 @@ module.exports = class DiscountProductController {
     }
   }
 
-  get(req, res) {
-
-    const response = new Response(Response.SUCCESS, req.__('_fetched._discount_product'), req.data.discountProduct);
-
-    res.status(StatusCodes.OK).send(response);
-  }
-
   async getListByDiscount(req, res, next) {
     
     try {

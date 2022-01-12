@@ -28,6 +28,7 @@ const StoreLoginPermissionMiddleware = require('../middlewares/permissions/store
 const OptionalAuthMiddleware = require('../middlewares/OptionalAuthMiddleware');
 const StoreFetchPermissionMiddleware = require('../middlewares/permissions/store/StoreFetchPermissionMiddleware');
 const StoreAndAdminPermissionMiddleware = require('../middlewares/permissions/store/StoreAndAdminPermissionMiddleware');
+const CustomerUpdateStatusValidation = require('../validation/customer/CustomerUpdateStatusValidation');
 
 const router = express.Router();
 
@@ -86,6 +87,16 @@ router.put(
   FileUploadMiddleware(Files.USER_PHOTO_PATHS.store).single('photo'), 
   FileUploadValidationMiddleware('photo'), 
   controller.updatePhoto
+);
+
+router.put(
+  '/:id(\\d+)/status/update', 
+  StoreFetchMiddleware, 
+  AuthMiddleware,
+  AdministratorPermissionMiddleware, 
+  checkSchema(CustomerUpdateStatusValidation),
+  ValidationMiddleware(), 
+  controller.updateStatus
 );
 
 router.put(

@@ -30,11 +30,5 @@ router.delete(
   controller.delete
 );
 
-router.get(
-  '/:id(\\d+)',
-  DiscountProductFetchMiddleware,
-  controller.get
-);
-
 module.exports = router;
 

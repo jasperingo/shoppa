@@ -10,8 +10,8 @@ module.exports = {
     return duration !== null;
   },
 
-  async routeDurationExists({ route_id, minimium, maximium, unit }) {
-    const duration = await RouteDuration.findOne({where: { route_id, minimium, maximium, unit, deleted_at: { [Op.is]: null } } });
+  async routeDurationExists({ delivery_route_id, minimium, maximium, unit }) {
+    const duration = await RouteDuration.findOne({where: { delivery_route_id, minimium, maximium, unit, deleted_at: { [Op.is]: null } } });
     return duration !== null;
   },
 
@@ -21,7 +21,7 @@ module.exports = {
         unit,
         minimium, 
         maximium, 
-        route_id: routeDuration.route_id,
+        delivery_route_id: routeDuration.delivery_route_id,
         deleted_at: { [Op.is]: null },
         [Op.not]: { id: routeDuration.id } 
       } 
@@ -51,8 +51,8 @@ module.exports = {
     });
   },
 
-  create({ route_id, minimium, maximium, fee, unit }) {
-    return RouteDuration.create({ route_id, minimium, maximium, fee, unit });
+  create({ delivery_route_id, minimium, maximium, fee, unit }) {
+    return RouteDuration.create({ delivery_route_id, minimium, maximium, fee, unit });
   },
 
   update(routeDuration, { minimium, maximium, price, unit }) {
@@ -63,10 +63,10 @@ module.exports = {
     return RouteDuration.update({ deleted_at: Date.now() }, { where: { id: routeDuration.id } });
   },
 
-  getListByRoute(route_id) {
+  getListByRoute(delivery_route_id) {
     return RouteDuration.findAll({
       where: {
-        route_id,
+        delivery_route_id,
         deleted_at: { [Op.is]: null }
       }
     })

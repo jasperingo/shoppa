@@ -2,6 +2,7 @@
 const InternalServerException = require("../http/exceptions/InternalServerException");
 const Address = require("../models/Address");
 const Category = require("../models/Category");
+const User = require("../models/User");
 const CustomerRepository = require("../repository/CustomerRepository");
 const LocationRepository = require('../repository/LocationRepository');
 const Hash = require("../security/Hash");
@@ -72,6 +73,15 @@ module.exports = {
     bail: true,
     options: { min: 1 },
     errorMessage: (value, { req })=> req.__('_error._form._field_required')
+  },
+  
+  userStatusIsIn: {
+    bail: true,
+    options: [[
+      User.STATUS_ACTIVE,
+      User.STATUS_DEACTIVATED
+    ]],
+    errorMessage: (value, { req })=> req.__('_error._form._field_invalid')
   },
 
   addressTypeIsIn: {

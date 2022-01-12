@@ -10,8 +10,8 @@ module.exports = {
     return weight !== null;
   },
 
-  async routeWeightExists({ route_id, minimium, maximium }) {
-    const weight = await RouteWeight.findOne({where: { route_id, minimium, maximium, deleted_at: { [Op.is]: null } } });
+  async routeWeightExists({ delivery_route_id, minimium, maximium }) {
+    const weight = await RouteWeight.findOne({where: { delivery_route_id, minimium, maximium, deleted_at: { [Op.is]: null } } });
     return weight !== null;
   },
 
@@ -20,7 +20,7 @@ module.exports = {
       where: { 
         minimium, 
         maximium, 
-        route_id: routeWeight.route_id,
+        delivery_route_id: routeWeight.delivery_route_id,
         deleted_at: { [Op.is]: null },
         [Op.not]: { id: routeWeight.id } 
       } 
@@ -49,8 +49,8 @@ module.exports = {
     });
   },
 
-  create({ route_id, minimium, maximium, price }) {
-    return RouteWeight.create({ route_id, minimium, maximium, price });
+  create({ delivery_route_id, minimium, maximium, fee }) {
+    return RouteWeight.create({ delivery_route_id, minimium, maximium, fee });
   },
 
   update(routeWeight, { minimium, maximium, price }) {
@@ -61,10 +61,10 @@ module.exports = {
     return RouteWeight.update({ deleted_at: Date.now() }, { where: { id: routeWeight.id } });
   },
 
-  getByRouteAndWeight(route_id, weight) {
+  getByRouteAndWeight(delivery_route_id, weight) {
     return RouteWeight.findOne({
       where: {
-        route_id,
+        delivery_route_id,
         minimium: { [Op.lte]: weight },
         maximium: { [Op.gte]: weight },
         deleted_at: { [Op.is]: null }

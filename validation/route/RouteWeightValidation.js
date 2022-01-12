@@ -2,7 +2,7 @@ const ValidationRules = require("../ValidationRules");
 
 module.exports = {
 
-  price: {
+  fee: {
     notEmpty: ValidationRules.notEmpty,
     isFloat: ValidationRules.isFloatGTZero
   },

@@ -63,7 +63,7 @@ module.exports = class DeliveryFirmController {
 
       await DeliveryFirmRepository.update(req.data.deliveryFirm, req.body);
 
-      const deliveryFirm = await DeliveryFirmRepository.get(req.params.id);
+      const deliveryFirm = await DeliveryFirmRepository.get(req.data.deliveryFirm.id);
 
       const response = new Response(Response.SUCCESS, req.__('_updated._delivery_firm'), deliveryFirm);
 
@@ -80,9 +80,26 @@ module.exports = class DeliveryFirmController {
 
       await DeliveryFirmRepository.updatePhoto(req.data.deliveryFirm, req.file.filename);
       
-      const deliveryFirm = await DeliveryFirmRepository.get(req.params.id);
+      const deliveryFirm = await DeliveryFirmRepository.get(req.data.deliveryFirm.id);
 
       const response = new Response(Response.SUCCESS, req.__('_updated._delivery_firm'), deliveryFirm);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch (error) {
+      next(new InternalServerException(error));
+    }
+  }
+
+  async updateStatus(req, res, next) {
+    
+    try {
+
+      await DeliveryFirmRepository.updateStatus(req.data.deliveryFirm, req.body.status);
+      
+      const deliveryFirm = await DeliveryFirmRepository.get(req.data.deliveryFirm.id);
+
+      const response = new Response(Response.SUCCESS, req.__('_updated._status'), deliveryFirm);
 
       res.status(StatusCodes.OK).send(response);
 

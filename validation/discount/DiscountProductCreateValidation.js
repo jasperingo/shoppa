@@ -11,7 +11,7 @@ module.exports = {
     custom: {
       options: async (value, { req })=> {
         try {
-          if (! (await ProductRepository.idExistsForStore(value, req.auth.store.id)))
+          if (! (await ProductRepository.idExistsForStore(value, req.auth.storeId)))
             return Promise.reject(req.__('_error._form._id_invalid'));
           
           if (await DiscountProductRepository.idExistsForProduct(value, req.body.discount_id)) 
