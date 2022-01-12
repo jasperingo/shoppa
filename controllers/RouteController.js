@@ -7,11 +7,28 @@ const RouteRepository = require("../repository/RouteRepository");
 
 module.exports = class RouteController {
 
-  async add(req, res, next) {
+  async create(req, res, next) {
     
     try {
 
       const _route = await RouteRepository.add(req.body, req.auth.deliveryFirmId);
+
+      const route = await RouteRepository.get(_route.id);
+
+      const response = new Response(Response.SUCCESS, req.__('_created._route'), route);
+
+      res.status(StatusCodes.CREATED).send(response);
+
+    } catch (error) {
+      next(new InternalServerException(error));
+    }
+  }
+
+  async createLink(req, res, next) {
+    
+    try {
+
+      const _route = await RouteRepository.createLink(req.body, req.auth.deliveryFirmId);
 
       const route = await RouteRepository.get(_route.id);
 
@@ -30,7 +47,7 @@ module.exports = class RouteController {
 
       await RouteRepository.update(req.data.route, req.body);
 
-      const route = await RouteRepository.get(req.params.id);
+      const route = await RouteRepository.get(req.data.route.id);
 
       const response = new Response(Response.SUCCESS, req.__('_updated._route'), route);
 
@@ -41,6 +58,24 @@ module.exports = class RouteController {
     }
   }
   
+  async updateLink(req, res, next) {
+    
+    try {
+
+      await RouteRepository.updateLink(req.data.route, req.body);
+
+      const route = await RouteRepository.get(req.data.route.id);
+
+      const response = new Response(Response.SUCCESS, req.__('_updated._route'), route);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch (error) {
+      next(new InternalServerException(error));
+    }
+  }
+  
+
   async delete(req, res, next) {
 
     try {
@@ -70,6 +105,25 @@ module.exports = class RouteController {
       const { pager, deliveryFirm } = req.data;
 
       const { count, rows } = await RouteRepository.getListByDeliveryFirm(deliveryFirm, pager.page_offset, pager.page_limit);
+
+      const pagination = new Pagination(req, pager.page, pager.page_limit, count);
+
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._route'), rows, pagination);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      next(new InternalServerException(error));
+    }
+  }
+
+  async getListOfBaseByDeliveryFirm(req, res, next) {
+
+    try {
+
+      const { pager, deliveryFirm } = req.data;
+
+      const { count, rows } = await RouteRepository.getListOfBaseByDeliveryFirm(deliveryFirm, pager.page_offset, pager.page_limit);
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 

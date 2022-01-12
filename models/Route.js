@@ -14,23 +14,15 @@ Route.init({
   },
 
   state: {
-    type: DataTypes.STRING,
-    allowNull: false
+    type: DataTypes.STRING
   },
 
   city: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  
-  isolated: {
-    type: DataTypes.BOOLEAN,
-    allowNull: false
+    type: DataTypes.STRING
   },
 
   door_delivery: {
-    type: DataTypes.BOOLEAN,
-    allowNull: false
+    type: DataTypes.BOOLEAN
   },
 
   deleted_at: {
@@ -58,6 +50,21 @@ DeliveryFirm.hasMany(Route, { foreignKey });
 
 Route.belongsTo(DeliveryFirm, { foreignKey });
 
+const oForeignKey = {
+  name: 'origin_route_id',
+  type: DataTypes.BIGINT
+};
+
+Route.belongsTo(Route, { as: 'origin_route', foreignKey: {
+  name: 'origin_route_id',
+  type: DataTypes.BIGINT
+}});
+
+
+Route.belongsTo(Route, { as: 'destination_route', foreignKey: {
+  name: 'destination_route_id',
+  type: DataTypes.BIGINT
+}});
 
 module.exports = Route;
 

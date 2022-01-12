@@ -55,8 +55,8 @@ module.exports = {
     return RouteDuration.create({ delivery_route_id, minimium, maximium, fee, unit });
   },
 
-  update(routeDuration, { minimium, maximium, price, unit }) {
-    return RouteDuration.update({ minimium, maximium, price, unit }, { where: { id: routeDuration.id } });
+  update(routeDuration, { minimium, maximium, fee, unit }) {
+    return RouteDuration.update({ minimium, maximium, fee, unit }, { where: { id: routeDuration.id } });
   },
 
   delete(routeDuration) {

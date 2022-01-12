@@ -12,8 +12,8 @@ module.exports = async (req, res, next)=> {
 
   try {
     
-    if (await RouteRepository.routeExists(req.auth.deliveryFirmId, req.body)) {
-      await RouteCustomErrors.cityAndStateInvalid(req);
+    if (await RouteRepository.linkRouteExists(req.auth.deliveryFirmId, req.body)) {
+      await RouteCustomErrors.linkInvalid(req);
     }
     
     next();

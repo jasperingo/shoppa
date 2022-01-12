@@ -53,8 +53,8 @@ module.exports = {
     return RouteWeight.create({ delivery_route_id, minimium, maximium, fee });
   },
 
-  update(routeWeight, { minimium, maximium, price }) {
-    return RouteWeight.update({ minimium, maximium, price }, { where: { id: routeWeight.id } });
+  update(routeWeight, { minimium, maximium, fee }) {
+    return RouteWeight.update({ minimium, maximium, fee }, { where: { id: routeWeight.id } });
   },
 
   delete(routeWeight) {

@@ -10,11 +10,6 @@ module.exports = {
   door_delivery: {
     notEmpty: ValidationRules.notEmpty,
     isBoolean: ValidationRules.isBoolean
-  },
-
-  isolated: {
-    notEmpty: ValidationRules.notEmpty,
-    isBoolean: ValidationRules.isBoolean
   }
   
 };

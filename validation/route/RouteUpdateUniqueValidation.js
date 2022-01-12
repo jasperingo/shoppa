@@ -11,9 +11,11 @@ module.exports = async (req, res, next)=> {
   }
 
   try {
-    
-    if (await RouteRepository.updateRouteExists(req.data.route, req.body)) {
-      await RouteCustomErrors.cityAndStateExists(req);
+
+    if (req.data.route.origin_route_id !== null) {
+      await RouteCustomErrors.cityAndStateInvalid(req, '_route_cant_have_state_and_city');
+    } else if (await RouteRepository.updateRouteExists(req.data.route, req.body)) {
+      await RouteCustomErrors.cityAndStateInvalid(req);
     }
     
     next();

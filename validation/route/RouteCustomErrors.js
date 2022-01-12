@@ -9,11 +9,18 @@ module.exports = {
   minimiumInvalid(req) {
     return body('minimium').custom((value, { req })=> { throw req.__('_error._form._minimium_is_gte'); }).run(req);
   },
-
-  cityAndStateExists(req) {
+  
+  cityAndStateInvalid(req, txt = '_route_exists') {
     return Promise.all([
-      body('state').custom((value, { req })=> { throw req.__('_error._form._route_exists'); }).run(req),
-      body('city').custom((value, { req })=> { throw req.__('_error._form._route_exists'); }).run(req),
+      body('state').custom((value, { req })=> { throw req.__(`_error._form.${txt}`); }).run(req),
+      body('city').custom((value, { req })=> { throw req.__(`_error._form.${txt}`); }).run(req),
+    ]);
+  },
+  
+  linkInvalid(req, txt = '_route_exists') {
+    return Promise.all([
+      body('origin_route_id').custom((value, { req })=> { throw req.__(`_error._form.${txt}`); }).run(req),
+      body('destination_route_id').custom((value, { req })=> { throw req.__(`_error._form.${txt}`); }).run(req)
     ]);
   },
 

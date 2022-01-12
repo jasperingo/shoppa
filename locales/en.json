@@ -114,6 +114,8 @@
       "_route_exists": "This route already exists",
       "_route_weight_exists": "This route weight already exists",
       "_route_duration_exists": "This route duration already exists",
+      "_route_cant_have_state_and_city": "This route cannot have a state and city",
+      "_route_cant_be_a_link": "This route cannot be made a link route",
       
       "_favorite_exists": "This favorite already exists",
 

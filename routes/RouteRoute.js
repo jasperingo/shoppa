@@ -12,6 +12,9 @@ const RouteFetchMiddleware = require('../middlewares/fetch/RouteFetchMiddleware'
 const RouteUpdateUniqueValidation = require('../validation/route/RouteUpdateUniqueValidation');
 const OptionalAuthMiddleware = require('../middlewares/OptionalAuthMiddleware');
 const RouteFetchPermissionMiddleware = require('../middlewares/permissions/route/RouteFetchPermissionMiddleware');
+const LinkRouteValidation = require('../validation/route/LinkRouteValidation');
+const LinkRouteCreateUniqueValidation = require('../validation/route/LinkRouteCreateUniqueValidation');
+const LinkRouteUpdateUniqueValidation = require('../validation/route/LinkRouteUpdateUniqueValidation');
 
 const router = express.Router();
 
@@ -24,7 +27,17 @@ router.post(
   checkSchema(RouteValidation),
   RouteAddUniqueValidation,
   ValidationMiddleware(),
-  controller.add
+  controller.create
+);
+
+router.post(
+  '/link/create',
+  AuthMiddleware,
+  RouteAddPermissionMiddleware,
+  checkSchema(LinkRouteValidation),
+  LinkRouteCreateUniqueValidation,
+  ValidationMiddleware(),
+  controller.createLink
 );
 
 router.put(
@@ -36,6 +49,17 @@ router.put(
   RouteUpdateUniqueValidation,
   ValidationMiddleware(),
   controller.update
+);
+
+router.put(
+  '/:id(\\d+)/link/update',
+  RouteFetchMiddleware,
+  AuthMiddleware,
+  RouteUpdatePermissionMiddleware,
+  checkSchema(LinkRouteValidation),
+  LinkRouteUpdateUniqueValidation,
+  ValidationMiddleware(),
+  controller.updateLink
 );
 
 router.delete(
