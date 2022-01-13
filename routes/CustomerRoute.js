@@ -25,6 +25,7 @@ const CustomerAndAdminPermissionMiddleware = require('../middlewares/permissions
 const WithdrawalAccountUpdateValidation = require('../validation/withdrawal_account/WithdrawalAccountUpdateValidation');
 const CustomerLoginPermissionMiddleware = require('../middlewares/permissions/customer/CustomerLoginPermissionMiddleware');
 const OrderController = require('../controllers/OrderController');
+const TransactionController = require('../controllers/TransactionController');
 
 const router = express.Router();
 
@@ -39,6 +40,8 @@ const favoriteController = new FavoriteController();
 const savedCartController = new SavedCartController();
 
 const orderController = new OrderController();
+
+const transactionController = new TransactionController();
 
 router.post(
   '/register', 
@@ -146,6 +149,15 @@ router.get(
   CustomerAndAdminPermissionMiddleware,
   PaginationMiddleware,
   orderController.getListByCustomer
+);
+
+router.get(
+  '/:id(\\d+)/transaction/list', 
+  CustomerFetchMiddleware,
+  AuthMiddleware, 
+  CustomerAndAdminPermissionMiddleware,
+  PaginationMiddleware,
+  transactionController.getListByCustomer
 );
 
 router.get(

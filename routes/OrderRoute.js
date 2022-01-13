@@ -19,6 +19,8 @@ const OrderStorePermissionMiddleware = require('../middlewares/permissions/order
 const OrderDeliveryFirmPermissionMiddleware = require('../middlewares/permissions/order/OrderDeliveryFirmPermissionMiddleware');
 const OrderDeliveryFirmStatusUpdateValidation = require('../validation/order/OrderDeliveryFirmStatusUpdateValidation');
 const OrderFetchPermissionMiddleware = require('../middlewares/permissions/order/OrderFetchPermissionMiddleware');
+const AdministratorPermissionMiddleware = require('../middlewares/permissions/AdministratorPermissionMiddleware');
+const PaginationMiddleware = require('../middlewares/PaginationMiddleware');
 
 const router = express.Router();
 
@@ -82,6 +84,14 @@ router.put(
   checkSchema(OrderDeliveryFirmStatusUpdateValidation),
   ValidationMiddleware(),
   controller.deliveryFirmStatusUpdate
+);
+
+router.get(
+  '/list',
+  AuthMiddleware,
+  AdministratorPermissionMiddleware,
+  PaginationMiddleware,
+  controller.getList
 );
 
 router.get(

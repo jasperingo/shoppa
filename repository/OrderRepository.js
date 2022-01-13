@@ -89,6 +89,14 @@ module.exports = {
     });
   },
 
+  getList(offset, limit) {
+    return Order.findAndCountAll({
+      order: [['created_at', 'DESC']],
+      offset,
+      limit
+    });
+  },
+
   getListByCustomer(customer, offset, limit) {
     return Order.findAndCountAll({
       where: { customer_id: customer.id },
@@ -207,6 +215,8 @@ module.exports = {
           { store_status: Order.STORE_STATUS_ACCEPTED, status: Order.STATUS_PROCESSING }, 
           { where: { id: order.id }, transaction }
         );
+
+        await this.reduceOrderItemProductQuantity(order, transaction);
         
         if (order.payment_status === Order.PAYMENT_STATUS_APPROVED) {
           await Transaction.bulkCreate(await Transaction.distributeOrderPayment(order, referenceGenerator), { transaction });
@@ -240,6 +250,8 @@ module.exports = {
           { delivery_firm_status: Order.DELIVERY_FIRM_STATUS_ACCEPTED, status: Order.STATUS_PROCESSING }, 
           { where: { id: order.id }, transaction }
         );
+
+        await this.reduceOrderItemProductQuantity(order, transaction);
         
         if (order.payment_status === Order.PAYMENT_STATUS_APPROVED) {
           await Transaction.bulkCreate(await Transaction.distributeOrderPayment(order, referenceGenerator), { transaction });
@@ -262,5 +274,16 @@ module.exports = {
       { where: { id: order.id } }
     );
   },
+
+  async reduceOrderItemProductQuantity(order, transaction) {
+    for (let item of order.order_items) {
+
+      await ProductVariant.decrement(
+        { quantity: item.quantity }, 
+        { where: { id: item.product_variant_id }, transaction }
+      );
+    }
+  }
   
 };
+

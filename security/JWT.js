@@ -69,8 +69,8 @@ function signJWT(payload) {
 }
 
 function getJWTExpiringDate() {
-  const date = new Date(Date.now() + (1000 * 60 * 60 * 24 * 30));
-  const unix = Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 30);
+  const date = new Date(Date.now() + (1000 * 60 * 60 * 24 * 30)); // 30 days
+  const unix = Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 30); // 30 days
   return { expiring_timestamp: unix, expiring_date: date.toDateString() };
 }
 

@@ -28,6 +28,7 @@ const OptionalAuthMiddleware = require('../middlewares/OptionalAuthMiddleware');
 const CustomerUpdateStatusValidation = require('../validation/customer/CustomerUpdateStatusValidation');
 const OrderController = require('../controllers/OrderController');
 const DeliveryFirmAndAdminPermissionMiddleware = require('../middlewares/permissions/delivery_firm/DeliveryFirmAndAdminPermissionMiddleware');
+const TransactionController = require('../controllers/TransactionController');
 
 const router = express.Router();
 
@@ -42,6 +43,8 @@ const withdrawalAccountController = new WithdrawalAccountController();
 const routeController = new RouteController();
 
 const orderController = new OrderController();
+
+const transactionController = new TransactionController();
 
 router.post(
   '/register', 
@@ -151,6 +154,23 @@ router.get(
   DeliveryFirmAndAdminPermissionMiddleware,
   PaginationMiddleware,
   orderController.getListByDeliveryFirm
+);
+
+router.get(
+  '/:id(\\d+)/transaction/list', 
+  DeliveryFirmFetchMiddleware,
+  AuthMiddleware,
+  DeliveryFirmAndAdminPermissionMiddleware,
+  PaginationMiddleware,
+  transactionController.getListByDeliveryFirm
+);
+
+router.get(
+  '/:id(\\d+)/transaction/balance', 
+  DeliveryFirmFetchMiddleware,
+  AuthMiddleware, 
+  DeliveryFirmAndAdminPermissionMiddleware,
+  transactionController.getBalanceByDeliveryFirm
 );
 
 router.get(

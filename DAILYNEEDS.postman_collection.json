@@ -1,0 +1,3688 @@
+{
+	"info": {
+		"_postman_id": "66322479-e3d5-4917-8eb5-faf1df49462d",
+		"name": "DAILYNEEDS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "CUSTOMER",
+			"item": [
+				{
+					"name": "CUSTOMER/REGISTER",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"Husk\",\r\n    \"last_name\": \"Blue\",\r\n    \"email\": \"huskb@ygmail.com\",\r\n    \"phone_number\": \"09093838722\",\r\n    \"password\": \"22222222\",\r\n    \"password_confirmation\": \"22222222\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3001/api/customer/register",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"customer",
+								"register"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "CUSTOMER/REGISTER (WITH EXISTING EMAIL)",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"first_name\": \"Richard\",\r\n    \"last_name\": \"Chukwu\",\r\n    \"email\": \"richchuks@gmail.com\",\r\n    \"password\": \"111111\",\r\n    \"password_confirmation\": \"111111\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:3001/api/customer/register",
+									"host": [
+										"localhost"
+									],
+									"port": "3001",
+									"path": [
+										"api",
+										"customer",
+										"register"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "166"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"a6-Ut/TaoiLy0jGrWuXFSw9LHESpyk\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 23 Dec 2021 21:12:21 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"error\",\n    \"message\": \"Request parameters could not be processed\",\n    \"data\": [\n        {\n            \"name\": \"email\",\n            \"value\": \"richchuks@gmail.com\",\n            \"message\": \"This email already exists\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "CUSTOMER/LOGIN",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"jasperanels@gmail.com\",\r\n    \"password\": \"111111\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3001/api/customer/login",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"customer",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CUSTOMER/UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"Jasper\",\r\n    \"last_name\": \"Anelechukwu\",\r\n    \"email\": \"jasperanels@gmail.com\",\r\n    \"phone_number\": \"08048490901\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3001/api/customer/1/update",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"customer",
+								"1",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CUSTOMER/PASSWORD/UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\": \"111111\",\r\n    \"new_password\": \"222222\",\r\n    \"new_password_confirmation\": \"222222\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3001/api/customer/1/password/update",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"customer",
+								"1",
+								"password",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CUSTOMER/PHOTO/UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "photo",
+									"type": "file",
+									"src": "/C:/Users/Jasper/Pictures/3f480d0faa1b4e0683f1350a661544a6.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3001/api/customer/3/photo/update",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"customer",
+								"3",
+								"photo",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CUSTOMER/GET",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}customer/1",
+							"host": [
+								"{{BASE_URL}}customer"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CUSTOMER/LIST",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ADMIN_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}customer/list",
+							"host": [
+								"{{BASE_URL}}customer"
+							],
+							"path": [
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CUSTOMER/ADDRESS/LIST",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}customer/1/address/list",
+							"host": [
+								"{{BASE_URL}}customer"
+							],
+							"path": [
+								"1",
+								"address",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CUSTOMER/FAVORITE/LIST",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}customer/1/favorite/list?page=1&page_limit=2",
+							"host": [
+								"{{BASE_URL}}customer"
+							],
+							"path": [
+								"1",
+								"favorite",
+								"list"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "page_limit",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CUSTOMER/SAVED-CART/LIST",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}customer/1/saved-cart/list",
+							"host": [
+								"{{BASE_URL}}customer"
+							],
+							"path": [
+								"1",
+								"saved-cart",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CUSTOMER/WITHDRAWAL-ACCOUNT/UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"bank_name\": \"gtbank\",\r\n  \"account_name\": \"Jasper Anelechukwu\",\r\n  \"account_number\": \"0055907484\",\r\n  \"account_type\": \"savings\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}customer/1/withdrawal-account/update",
+							"host": [
+								"{{BASE_URL}}customer"
+							],
+							"path": [
+								"1",
+								"withdrawal-account",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CUSTOMER/STATUS/UPDATE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ADMIN_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"status\": \"active\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}customer/1/status/update",
+							"host": [
+								"{{BASE_URL}}customer"
+							],
+							"path": [
+								"1",
+								"status",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CUSTOMER/ORDER/LIST",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}customer/1/order/list",
+							"host": [
+								"{{BASE_URL}}customer"
+							],
+							"path": [
+								"1",
+								"order",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CUSTOMER/TRANSACTION/LIST",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}customer/1/transaction/list",
+							"host": [
+								"{{BASE_URL}}customer"
+							],
+							"path": [
+								"1",
+								"transaction",
+								"list"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{CUSTOMER_TOKEN}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "ADDRESS",
+			"item": [
+				{
+					"name": "ADDRESS/CREATE",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"School address\",\r\n    \"street\": \"3 Meat lodge\",\r\n    \"city\": \"Oyigbo\",\r\n    \"state\": \"Rivers\",\r\n    \"type\": \"default\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}address/create",
+							"host": [
+								"{{BASE_URL}}address"
+							],
+							"path": [
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ADDRESS/UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"School address\",\r\n    \"street\": \"3 Meat lodge\",\r\n    \"city\": \"Oyigbo\",\r\n    \"state\": \"Rivers\",\r\n    \"type\": \"default\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}address/10/update",
+							"host": [
+								"{{BASE_URL}}address"
+							],
+							"path": [
+								"10",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ADDRESS/GET",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}address/10",
+							"host": [
+								"{{BASE_URL}}address"
+							],
+							"path": [
+								"10"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{CUSTOMER_TOKEN}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "ADMINISTRATOR",
+			"item": [
+				{
+					"name": "ADMINISTRATOR/LOGIN",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"jasperanels@gmail.com\",\r\n  \"password\": \"111111\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}administrator/login",
+							"host": [
+								"{{BASE_URL}}administrator"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ADMINISTRATOR/PASSWORD/UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\": \"111111\",\r\n    \"new_password\": \"222222\",\r\n    \"new_password_confirmation\": \"222222\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}administrator/1/password/update",
+							"host": [
+								"{{BASE_URL}}administrator"
+							],
+							"path": [
+								"1",
+								"password",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ADMINISTRATOR/TRANSACTION/LIST",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}administrator/transaction/list",
+							"host": [
+								"{{BASE_URL}}administrator"
+							],
+							"path": [
+								"transaction",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ADMINISTRATOR/TRANSACTION/BALANCE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}administrator/transaction/balance",
+							"host": [
+								"{{BASE_URL}}administrator"
+							],
+							"path": [
+								"transaction",
+								"balance"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{ADMIN_TOKEN}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "CATEGORY",
+			"item": [
+				{
+					"name": "SUB-CATEGORY",
+					"item": [
+						{
+							"name": "SUB-CATEGORY/ADD",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"category_id\": 7,\r\n    \"name\": \"Banga\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}sub-category/add",
+									"host": [
+										"{{BASE_URL}}sub-category"
+									],
+									"path": [
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SUB-CATEGORY/UPDATE",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Mini Mart\",\r\n    \"description\": \"Buy all you need\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}sub-category/5/update",
+									"host": [
+										"{{BASE_URL}}sub-category"
+									],
+									"path": [
+										"5",
+										"update"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SUB-CATEGORY/PHOTO/UPDATE",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "photo",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{BASE_URL}}sub-category/5/photo/update",
+									"host": [
+										"{{BASE_URL}}sub-category"
+									],
+									"path": [
+										"5",
+										"photo",
+										"update"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SUB-CATEGORY/GET",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}sub-category/5",
+									"host": [
+										"{{BASE_URL}}sub-category"
+									],
+									"path": [
+										"5"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "CATEGORY/ADD",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Drinks\",\r\n    \"type\": \"product\",\r\n    \"description\": \"Tasty drinks\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}category/add",
+							"host": [
+								"{{BASE_URL}}category"
+							],
+							"path": [
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CATEGORY/UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Restuarant\",\r\n    \"type\": \"store\",\r\n    \"description\": \"Stores to get food\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}category/1/update",
+							"host": [
+								"{{BASE_URL}}category"
+							],
+							"path": [
+								"1",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CATEGORY/PHOTO/UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "photo",
+									"type": "file",
+									"src": "/C:/Users/Jasper/Pictures/drink.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}category/1/photo/update",
+							"host": [
+								"{{BASE_URL}}category"
+							],
+							"path": [
+								"1",
+								"photo",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CATEGORY/GET",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}category/2",
+							"host": [
+								"{{BASE_URL}}category"
+							],
+							"path": [
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CATEGORY/LIST",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}category/list?page_limit=2&page=2",
+							"host": [
+								"{{BASE_URL}}category"
+							],
+							"path": [
+								"list"
+							],
+							"query": [
+								{
+									"key": "page_limit",
+									"value": "2"
+								},
+								{
+									"key": "page",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "STORE",
+			"item": [
+				{
+					"name": "STORE/REGISTER",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Gray Foods\",\r\n    \"sub_category_id\": 4,\r\n    \"email\": \"grayfoods@gmail.com\",\r\n    \"phone_number\": \"09048473888\",\r\n    \"administrator_email\": \"jasperanels@gmail.com\",\r\n    \"administrator_password\": \"111111\",\r\n    \"administrator_password_confirmation\": \"111111\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}store/register",
+							"host": [
+								"{{BASE_URL}}store"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "STORE/LOGIN",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Yam zone\",\r\n  \"administrator_email\": \"jasperanels@gmail.com\",\r\n  \"administrator_password\": \"111111\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}store/login",
+							"host": [
+								"{{BASE_URL}}store"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "STORE/UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Shoppa\",\r\n    \"sub_category_id\": 1,\r\n    \"email\": \"shoppax@gmail.com\",\r\n    \"phone_number\": \"08084837423\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}store/7/update",
+							"host": [
+								"{{BASE_URL}}store"
+							],
+							"path": [
+								"7",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "STORE/PHOTO/UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "photo",
+									"type": "file",
+									"src": "/C:/Users/Jasper/Pictures/images (5).jpeg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}store/7/photo/update",
+							"host": [
+								"{{BASE_URL}}store"
+							],
+							"path": [
+								"7",
+								"photo",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "STORE/ADDRESS/UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"street\": \"2 Ben street\",\r\n    \"city\": \"Orlu\",\r\n    \"state\": \"Imo\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}store/7/address/update",
+							"host": [
+								"{{BASE_URL}}store"
+							],
+							"path": [
+								"7",
+								"address",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "STORE/GET",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}store/7",
+							"host": [
+								"{{BASE_URL}}store"
+							],
+							"path": [
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "STORE/WORKING-HOURS/UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"working_hours\": [\r\n        {\r\n            \"id\": 1,\r\n            \"day\": \"monday\",\r\n            \"opening\": \"08:00\",\r\n            \"closing\": \"18:00\"\r\n        },\r\n        {\r\n            \"id\": 8,\r\n            \"day\": \"tuesday\",\r\n            \"opening\": \"08:00\",\r\n            \"closing\": \"18:00\"\r\n        },\r\n        {\r\n            \"day\": \"wednesday\",\r\n            \"opening\": \"08:00\",\r\n            \"closing\": \"15:00\"\r\n        }\r\n    ]\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}store/7/working-hours/update",
+							"host": [
+								"{{BASE_URL}}store"
+							],
+							"path": [
+								"7",
+								"working-hours",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "STORE/LIST",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidHlwZSI6ImFwcGxpY2F0aW9uIiwicm9sZSI6InN1cGVyIiwiZmlyc3RfbmFtZSI6Ikphc3BlciIsImxhc3RfbmFtZSI6IkFuZWxlY2h1a3d1IiwiZW1haWwiOiJqYXNwZXJhbmVsc0BnbWFpbC5jb20iLCJhdXRoVHlwZSI6IkFQUF9BRE1JTiIsImV4cCI6MTY0Mjk5MzE2NCwiaWF0IjoxNjQwNDAxMTY0fQ.POaGSODqKJ41FYL8tgGTM9Xyg6sMaZnu3fx3IY51DKA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}store/list?page=2&page_limit=2",
+							"host": [
+								"{{BASE_URL}}store"
+							],
+							"path": [
+								"list"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "2"
+								},
+								{
+									"key": "page_limit",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "STORE/WITHDRAWAL-ACCOUNT/UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"bank_name\": \"union bank\",\r\n    \"account_name\": \"Freddrick\",\r\n    \"account_number\": \"0055907456\",\r\n    \"account_type\": \"savings\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}store/7/withdrawal-account/update",
+							"host": [
+								"{{BASE_URL}}store"
+							],
+							"path": [
+								"7",
+								"withdrawal-account",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "STORE/PRODUCT/LIST",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}store/7/product/list",
+							"host": [
+								"{{BASE_URL}}store"
+							],
+							"path": [
+								"7",
+								"product",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "STORE/SAVED-CART/LIST",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ADMIN_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}store/7/saved-cart/list",
+							"host": [
+								"{{BASE_URL}}store"
+							],
+							"path": [
+								"7",
+								"saved-cart",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "STORE/DISCOUNT/LIST",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}store/5/discount/list?page_limit=1&page=2",
+							"host": [
+								"{{BASE_URL}}store"
+							],
+							"path": [
+								"5",
+								"discount",
+								"list"
+							],
+							"query": [
+								{
+									"key": "page_limit",
+									"value": "1"
+								},
+								{
+									"key": "page",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "STORE/PRODUCT/DISCOUNT/LIST",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}store/7/product/discount/9",
+							"host": [
+								"{{BASE_URL}}store"
+							],
+							"path": [
+								"7",
+								"product",
+								"discount",
+								"9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "STORE/STATUS/UPDATE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ADMIN_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"status\": \"active\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}store/8/status/update",
+							"host": [
+								"{{BASE_URL}}store"
+							],
+							"path": [
+								"8",
+								"status",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "STORE/ORDER/LIST",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}store/7/order/list",
+							"host": [
+								"{{BASE_URL}}store"
+							],
+							"path": [
+								"7",
+								"order",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "STORE/TRANSACTION/LIST",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}store/7/transaction/list",
+							"host": [
+								"{{BASE_URL}}store"
+							],
+							"path": [
+								"7",
+								"transaction",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "STORE/TRANSACTION/BALANCE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}store/7/transaction/balance",
+							"host": [
+								"{{BASE_URL}}store"
+							],
+							"path": [
+								"7",
+								"transaction",
+								"balance"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{STORE_SHOPPA_TOKEN}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "PRODUCT",
+			"item": [
+				{
+					"name": "PRODUCT-VARIANT",
+					"item": [
+						{
+							"name": "PRODUCT-VARIANT/CREATE",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": " {\r\n  \"product_id\": 13,\r\n  \"name\": \"small tin\",\r\n  \"price\": 2500,\r\n  \"quantity\": 26,\r\n  \"weight\": 6.20,\r\n  \"available\": false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}product-variant/create",
+									"host": [
+										"{{BASE_URL}}product-variant"
+									],
+									"path": [
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PRODUCT-VARIANT/UPDATE",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"small tin\",\r\n  \"price\": 2500,\r\n  \"quantity\": 26,\r\n  \"weight\": 6.20,\r\n  \"available\": false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}product-variant/17/update",
+									"host": [
+										"{{BASE_URL}}product-variant"
+									],
+									"path": [
+										"17",
+										"update"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PRODUCT-VARIANT/DELETE",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}product-variant/14/delete",
+									"host": [
+										"{{BASE_URL}}product-variant"
+									],
+									"path": [
+										"14",
+										"delete"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "PRODUCT/CREATE",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"sub_category_id\": 9,\r\n  \"title\": \"Hot dog\",\r\n  \"description\": \"Best hot dog in town\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}product/create",
+							"host": [
+								"{{BASE_URL}}product"
+							],
+							"path": [
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PRODUCT/UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"sub_category_id\": 9,\r\n  \"title\": \"Hot dog\",\r\n  \"description\": \"Best hot dog in town\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}product/13/update",
+							"host": [
+								"{{BASE_URL}}product"
+							],
+							"path": [
+								"13",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PRODUCT/PHOTO/UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "photo",
+									"type": "file",
+									"src": "/C:/Users/Jasper/Pictures/burger.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}product/7/photo/update",
+							"host": [
+								"{{BASE_URL}}product"
+							],
+							"path": [
+								"7",
+								"photo",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PRODUCT/GET",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}product/7",
+							"host": [
+								"{{BASE_URL}}product"
+							],
+							"path": [
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PRODUCT/DELETE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InN1cGVyIiwidHlwZSI6InN0b3JlIiwic3RvcmUiOnsiaWQiOjUsIm5hbWUiOiJZYW0gem9uZSIsImVtYWlsIjoieWFtem9uZUBnbWFpbC5jb20ifSwiYXV0aFR5cGUiOiJTVE9SRV9BRE1JTiIsImV4cCI6MTY0MzMzNzMzMiwiaWF0IjoxNjQwNzQ1MzMyfQ.-MwbK_jRxBeMdHFiIT4u6oGCtaixueVd0yFYVjAdKvw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}product/11/delete",
+							"host": [
+								"{{BASE_URL}}product"
+							],
+							"path": [
+								"11",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{STORE_SHOPPA_TOKEN}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "DELIVERY-FIRM",
+			"item": [
+				{
+					"name": "DELIVERY-FIRM/REGISTER",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"All round logistics\",\r\n    \"email\": \"allroundlogistics@gmail.com\",\r\n    \"phone_number\": \"09023839321\",\r\n    \"administrator_email\": \"wb@yahoo.com\",\r\n    \"administrator_password\": \"111111\",\r\n    \"administrator_password_confirmation\": \"111111\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}delivery-firm/register",
+							"host": [
+								"{{BASE_URL}}delivery-firm"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELIVERY-FIRM/LOGIN",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Freeway logistics\",\r\n  \"administrator_email\": \"wb@yahoo.com\",\r\n  \"administrator_password\": \"111111\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}delivery-firm/login",
+							"host": [
+								"{{BASE_URL}}delivery-firm"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELIVERY-FIRM/UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"All round logistics\",\r\n    \"email\": \"allroundlogistics@gmail.com\",\r\n    \"phone_number\": \"08039457321\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}delivery-firm/3/update",
+							"host": [
+								"{{BASE_URL}}delivery-firm"
+							],
+							"path": [
+								"3",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELIVERY-FIRM/PHOTO/UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "photo",
+									"type": "file",
+									"src": "/C:/Users/Jasper/Pictures/delivery.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}delivery-firm/3/photo/update",
+							"host": [
+								"{{BASE_URL}}delivery-firm"
+							],
+							"path": [
+								"3",
+								"photo",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELIVERY-FIRM/GET",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}delivery-firm/3",
+							"host": [
+								"{{BASE_URL}}delivery-firm"
+							],
+							"path": [
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELIVERY-FIRM/ADDRESS/UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"street\": \"10 Sam street, Dog Road\",\r\n    \"city\": \"Owerri-North\",\r\n    \"state\": \"Imo\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}delivery-firm/1/address/update",
+							"host": [
+								"{{BASE_URL}}delivery-firm"
+							],
+							"path": [
+								"1",
+								"address",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELIVERY-FIRM/WORKING-HOURS/UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"working_hours\": [\r\n    {\r\n      \"day\": \"monday\",\r\n      \"opening\": \"07:00\",\r\n      \"closing\": \"22:00\"\r\n    },\r\n    {\r\n      \"day\": \"wednesday\",\r\n      \"opening\": \"07:00\",\r\n      \"closing\": \"22:00\"\r\n    },\r\n    {\r\n      \"day\": \"saturday\",\r\n      \"opening\": \"07:00\",\r\n      \"closing\": \"22:00\"\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}delivery-firm/1/working-hours/update",
+							"host": [
+								"{{BASE_URL}}delivery-firm"
+							],
+							"path": [
+								"1",
+								"working-hours",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELIVERY-FIRM/WITHDRAWAL-ACCOUNT/UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"bank_name\": \"access bank\",\r\n    \"account_name\": \"All round ltd\",\r\n    \"account_number\": \"0055907432\",\r\n    \"account_type\": \"current\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}delivery-firm/3/withdrawal-account/update",
+							"host": [
+								"{{BASE_URL}}delivery-firm"
+							],
+							"path": [
+								"3",
+								"withdrawal-account",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELIVERY-FIRM/LIST",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidHlwZSI6ImFwcGxpY2F0aW9uIiwicm9sZSI6InN1cGVyIiwiZmlyc3RfbmFtZSI6Ikphc3BlciIsImxhc3RfbmFtZSI6IkFuZWxlY2h1a3d1IiwiZW1haWwiOiJqYXNwZXJhbmVsc0BnbWFpbC5jb20iLCJhdXRoVHlwZSI6IkFQUF9BRE1JTiIsImV4cCI6MTY0Mjk5MzE2NCwiaWF0IjoxNjQwNDAxMTY0fQ.POaGSODqKJ41FYL8tgGTM9Xyg6sMaZnu3fx3IY51DKA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}delivery-firm/list?page_limit=1&page=2",
+							"host": [
+								"{{BASE_URL}}delivery-firm"
+							],
+							"path": [
+								"list"
+							],
+							"query": [
+								{
+									"key": "page_limit",
+									"value": "1"
+								},
+								{
+									"key": "page",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELIVERY-FIRM/ROUTE/LIST",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}delivery-firm/3/delivery-route/list",
+							"host": [
+								"{{BASE_URL}}delivery-firm"
+							],
+							"path": [
+								"3",
+								"delivery-route",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELIVERY-FIRM/STATUS/UPDATE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ADMIN_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"status\": \"active\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}delivery-firm/2/status/update",
+							"host": [
+								"{{BASE_URL}}delivery-firm"
+							],
+							"path": [
+								"2",
+								"status",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELIVEREY-FIRM/ROUTE/BASE/LIST",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}delivery-firm/3/delivery-route/base/list",
+							"host": [
+								"{{BASE_URL}}delivery-firm"
+							],
+							"path": [
+								"3",
+								"delivery-route",
+								"base",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELIVERY-FIRM/ORDER/LIST",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}delivery-firm/1/order/list",
+							"host": [
+								"{{BASE_URL}}delivery-firm"
+							],
+							"path": [
+								"1",
+								"order",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELIVERY-FIRM/TRANSACTION/LIST",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}delivery-firm/3/transaction/list",
+							"host": [
+								"{{BASE_URL}}delivery-firm"
+							],
+							"path": [
+								"3",
+								"transaction",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELIVERY-FIRM/TRANSACTION/BALANCE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}delivery-firm/3/transaction/balance",
+							"host": [
+								"{{BASE_URL}}delivery-firm"
+							],
+							"path": [
+								"3",
+								"transaction",
+								"balance"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{DELIVERY_ROUND_TOKEN}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "DELIVERY-ROUTE",
+			"item": [
+				{
+					"name": "DELIVERY-ROUTE-WEIGHT",
+					"item": [
+						{
+							"name": "ROUTE-WEIGHT/CREATE",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"delivery_route_id\": 10,\r\n  \"minimium\": 5,\r\n  \"maximium\": 20,\r\n  \"fee\": 100.00\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}delivery-route-weight/create",
+									"host": [
+										"{{BASE_URL}}delivery-route-weight"
+									],
+									"path": [
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ROUTE-WEIGHT/UPDATE",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"minimium\": 25,\r\n  \"maximium\": 60,\r\n  \"fee\": 300.00\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}delivery-route-weight/12/update",
+									"host": [
+										"{{BASE_URL}}delivery-route-weight"
+									],
+									"path": [
+										"12",
+										"update"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ROUTE-WEIGHT/DELETE",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}delivery-route-weight/1/delete",
+									"host": [
+										"{{BASE_URL}}delivery-route-weight"
+									],
+									"path": [
+										"1",
+										"delete"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "DELIVEREY-ROUTE-DURATION",
+					"item": [
+						{
+							"name": "ROUTE-DURATION/CREATE",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"delivery_route_id\": 10,\r\n  \"minimium\": 1,\r\n  \"maximium\": 4,\r\n  \"fee\": 0,\r\n  \"unit\": \"day\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}delivery-route-duration/create",
+									"host": [
+										"{{BASE_URL}}delivery-route-duration"
+									],
+									"path": [
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ROUTE-DURATION/UPDATE",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"minimium\": 1,\r\n  \"maximium\": 3,\r\n  \"fee\": 100,\r\n  \"unit\": \"day\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}delivery-route-duration/4/update",
+									"host": [
+										"{{BASE_URL}}delivery-route-duration"
+									],
+									"path": [
+										"4",
+										"update"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ROUTE-DURATION/DELETE",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}delivery-route-duration/1/delete",
+									"host": [
+										"{{BASE_URL}}delivery-route-duration"
+									],
+									"path": [
+										"1",
+										"delete"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "ROUTE/CREATE",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"state\": \"Imo\",\r\n  \"city\": \"Orlu\",\r\n  \"door_delivery\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}delivery-route/create",
+							"host": [
+								"{{BASE_URL}}delivery-route"
+							],
+							"path": [
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ROUTE/UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"state\": \"Imo\",\r\n  \"city\": \"Orlu\",\r\n  \"door_delivery\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}delivery-route/7/update",
+							"host": [
+								"{{BASE_URL}}delivery-route"
+							],
+							"path": [
+								"7",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ROUTE/GET",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}delivery-route/10",
+							"host": [
+								"{{BASE_URL}}delivery-route"
+							],
+							"path": [
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ROUTE/DELETE",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}delivery-route/3/delete",
+							"host": [
+								"{{BASE_URL}}delivery-route"
+							],
+							"path": [
+								"3",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ROUTE/LINK/CREATE",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"origin_route_id\": 8,\r\n  \"destination_route_id\": 9\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}delivery-route/link/create",
+							"host": [
+								"{{BASE_URL}}delivery-route"
+							],
+							"path": [
+								"link",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ROUTE/LINK/UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"origin_route_id\": 3,\r\n  \"destination_route_id\": 4\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}delivery-route/7/link/update",
+							"host": [
+								"{{BASE_URL}}delivery-route"
+							],
+							"path": [
+								"7",
+								"link",
+								"update"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{DELIVERY_FREEWAY_TOKEN}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "LOCATION",
+			"item": [
+				{
+					"name": "LOCATION/LIST",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}location/list",
+							"host": [
+								"{{BASE_URL}}location"
+							],
+							"path": [
+								"list"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "noauth"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "FAVORITE",
+			"item": [
+				{
+					"name": "FAVORITE/CREATE",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"product_id\": 13\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}favorite/create",
+							"host": [
+								"{{BASE_URL}}favorite"
+							],
+							"path": [
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FAVORITE/DELETE",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}favorite/7/delete",
+							"host": [
+								"{{BASE_URL}}favorite"
+							],
+							"path": [
+								"7",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{CUSTOMER_TOKEN}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "SAVED-CART",
+			"item": [
+				{
+					"name": "SAVED-CART/CREATE",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Mr chuks package\",\r\n  \"saved_cart_items\": [\r\n    {\r\n      \"product_variant_id\": 2,\r\n      \"quantity\": 4\r\n    },\r\n    {\r\n      \"product_variant_id\": 3,\r\n      \"quantity\": 2\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}saved-cart/create",
+							"host": [
+								"{{BASE_URL}}saved-cart"
+							],
+							"path": [
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SAVED-CART/DELETE",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}saved-cart/7/delete",
+							"host": [
+								"{{BASE_URL}}saved-cart"
+							],
+							"path": [
+								"7",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SAVED-CART/GET",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}saved-cart/CARTXPHGH",
+							"host": [
+								"{{BASE_URL}}saved-cart"
+							],
+							"path": [
+								"CARTXPHGH"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{STORE_SHOPPA_TOKEN}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "DISCOUNT",
+			"item": [
+				{
+					"name": "DISCOUNT-PRODUCT",
+					"item": [
+						{
+							"name": "DISCOUNT-PRODUCT/CREATE",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"discount_id\": 9,\r\n  \"product_id\": 7\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}discount-product/create",
+									"host": [
+										"{{BASE_URL}}discount-product"
+									],
+									"path": [
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DISCOUNT-PRODUCT/DELETE",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}discount-product/10/delete",
+									"host": [
+										"{{BASE_URL}}discount-product"
+									],
+									"path": [
+										"10",
+										"delete"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "DISCOUNT/CREATE",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"January savers\",\r\n  \"type\": \"percentage\",\r\n  \"value\": 10,\r\n  \"minimium_required_quantity\": 2,\r\n  \"start_date\": \"2022-01-12 09:00:00\",\r\n  \"end_date\": \"2022-01-20 12:00:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}discount/create",
+							"host": [
+								"{{BASE_URL}}discount"
+							],
+							"path": [
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DISCOUNT/UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"January savers\",\r\n  \"type\": \"percentage\",\r\n  \"value\": 20,\r\n  \"minimium_required_quantity\": 2,\r\n  \"start_date\": \"2022-01-12 09:00:00\",\r\n  \"end_date\": \"2022-01-20 12:00:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}discount/9/update",
+							"host": [
+								"{{BASE_URL}}discount"
+							],
+							"path": [
+								"9",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DISCOUNT/DELETE",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}discount/9/delete",
+							"host": [
+								"{{BASE_URL}}discount"
+							],
+							"path": [
+								"9",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DISCOUNT/GET",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}discount/9",
+							"host": [
+								"{{BASE_URL}}discount"
+							],
+							"path": [
+								"9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DISCOUNT/DISCOUNT-PRODUCT/LIST",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}discount/9/discount-product/list",
+							"host": [
+								"{{BASE_URL}}discount"
+							],
+							"path": [
+								"9",
+								"discount-product",
+								"list"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{STORE_SHOPPA_TOKEN}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "ORDER",
+			"item": [
+				{
+					"name": "ORDER-ITEM",
+					"item": [
+						{
+							"name": "ORDER-ITEM/PROCESSING-DATE/UPDATE",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{STORE_SHOPPA_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}order-item/2/processing-date/update",
+									"host": [
+										"{{BASE_URL}}order-item"
+									],
+									"path": [
+										"2",
+										"processing-date",
+										"update"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ORDER-ITEM/TRANSPORTING-DATE/UPDATE",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{DELIVERY_ROUND_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}order-item/2/transporting-date/update",
+									"host": [
+										"{{BASE_URL}}order-item"
+									],
+									"path": [
+										"2",
+										"transporting-date",
+										"update"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ORDER-ITEM/DELIVERY-DATE/UPDATE",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}order-item/2/delivery-date/update",
+									"host": [
+										"{{BASE_URL}}order-item"
+									],
+									"path": [
+										"2",
+										"delivery-date",
+										"update"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "ORDER/ROUTE/SUGGEST",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"store_id\": 7,\r\n  \"customer_address_id\": 1,\r\n  \"order_items\": [\r\n    {\r\n      \"product_variant_id\": 2,\r\n      \"quantity\": 2\r\n    },\r\n    {\r\n      \"product_variant_id\": 11,\r\n      \"quantity\": 1\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}order/route/suggest",
+							"host": [
+								"{{BASE_URL}}order"
+							],
+							"path": [
+								"route",
+								"suggest"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ROUTE/DISCOUNT/SUGGEST",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"order_items\": [\r\n    {\r\n      \"product_variant_id\": 2,\r\n      \"quantity\": 2\r\n    },\r\n    {\r\n      \"product_variant_id\": 11,\r\n      \"quantity\": 1\r\n    },\r\n    {\r\n      \"product_variant_id\": 3,\r\n      \"quantity\": 1\r\n    },\r\n    {\r\n      \"product_variant_id\": 4,\r\n      \"quantity\": 3\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}order/discount/suggest",
+							"host": [
+								"{{BASE_URL}}order"
+							],
+							"path": [
+								"discount",
+								"suggest"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ORDER/CREATE",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"store_id\": 7,\r\n  \"customer_address_id\": 1,\r\n  \"delivery_firm_id\": 3,\r\n  \"delivery_route_id\": 7,\r\n  \"delivery_method\": \"door\",\r\n  \"payment_method\": \"cashless\",\r\n  \"note\": \"Add extra pepper to food\",\r\n  \"order_items\": [\r\n    {\r\n      \"product_variant_id\": 2,\r\n      \"delivery_weight_id\": 8,\r\n      \"delivery_duration_id\": 2,\r\n      \"discount_product_id\": 10,\r\n      \"quantity\": 1\r\n    },\r\n    {\r\n      \"product_variant_id\": 11,\r\n      \"delivery_weight_id\": 8,\r\n      \"delivery_duration_id\": 2,\r\n      \"discount_product_id\": 10,\r\n      \"quantity\": 1\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}order/create",
+							"host": [
+								"{{BASE_URL}}order"
+							],
+							"path": [
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ORDER/STATUS/UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"status\": \"cancelled\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}order/2/status/update",
+							"host": [
+								"{{BASE_URL}}order"
+							],
+							"path": [
+								"2",
+								"status",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ORDER/STORE-STATUS/UPDATE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{STORE_SHOPPA_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"store_status\": \"accepted\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}order/1/store-status/update",
+							"host": [
+								"{{BASE_URL}}order"
+							],
+							"path": [
+								"1",
+								"store-status",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ORDER/DELIVERY-FIRM-STATUS/UPDATE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{DELIVERY_ROUND_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"delivery_firm_status\": \"accepted\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}order/1/delivery-firm-status/update",
+							"host": [
+								"{{BASE_URL}}order"
+							],
+							"path": [
+								"1",
+								"delivery-firm-status",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ORDER/GET",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}order/1",
+							"host": [
+								"{{BASE_URL}}order"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ORDERE/LIST",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ADMIN_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}order/list",
+							"host": [
+								"{{BASE_URL}}order"
+							],
+							"path": [
+								"list"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{CUSTOMER_TOKEN}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "TRANSACTION",
+			"item": [
+				{
+					"name": "TRANSACTION/VERIFY/WEBHOOK",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"event\": \"transfer.failed\",\r\n  \"data\": {\r\n    \"reference\": \"DNTX_L2VESWTD2OCMOI3\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}transaction/verify/webhook",
+							"host": [
+								"{{BASE_URL}}transaction"
+							],
+							"path": [
+								"verify",
+								"webhook"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TRANSACTION/WITHDRAWAL/CREATE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{STORE_SHOPPA_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"amount\": 5000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}transaction/withdrawal/create",
+							"host": [
+								"{{BASE_URL}}transaction"
+							],
+							"path": [
+								"withdrawal",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TRANSACTION/STATUS/UPDATE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ADMIN_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"status\": \"processing\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}transaction/12/status/update",
+							"host": [
+								"{{BASE_URL}}transaction"
+							],
+							"path": [
+								"12",
+								"status",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TRANSACTION/REFUND/CREATE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{CUSTOMER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"order_id\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}transaction/refund/create",
+							"host": [
+								"{{BASE_URL}}transaction"
+							],
+							"path": [
+								"refund",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TRANSACTION/PAYMENT/CREATE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{CUSTOMER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"order_id\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}transaction/payment/create",
+							"host": [
+								"{{BASE_URL}}transaction"
+							],
+							"path": [
+								"payment",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TRANSACTION/GET",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{CUSTOMER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}transaction/1",
+							"host": [
+								"{{BASE_URL}}transaction"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TRANSACTION/LIST",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}transaction/list?page=2",
+							"host": [
+								"{{BASE_URL}}transaction"
+							],
+							"path": [
+								"list"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PASSWORD-RESET",
+			"item": [
+				{
+					"name": "PASSWORD-RESET/CUSTOMER/CREATE",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"jasperanels@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}password-reset/customer/create",
+							"host": [
+								"{{BASE_URL}}password-reset"
+							],
+							"path": [
+								"customer",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PASSWORD-RESET/RESET",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"token\": \"XZFVYBT506\",\r\n  \"password\": \"111111\",\r\n  \"password_confirmation\": \"111111\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}password-reset/reset",
+							"host": [
+								"{{BASE_URL}}password-reset"
+							],
+							"path": [
+								"reset"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PASSWORD-RESET/STORE/CREATE",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Yam zone\",\r\n  \"administrator_email\": \"jasperanels@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}password-reset/store/create",
+							"host": [
+								"{{BASE_URL}}password-reset"
+							],
+							"path": [
+								"store",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PASSWORD-RESET/DELIVERY-FIRM/CREATE",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Freeway logistics\",\r\n  \"administrator_email\": \"wb@yahoo.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}password-reset/delivery-firm/create",
+							"host": [
+								"{{BASE_URL}}password-reset"
+							],
+							"path": [
+								"delivery-firm",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PASSWORD-RESET/ADMINISTRATOR/CREATE",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"jasperanels@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}password-reset/administrator/create",
+							"host": [
+								"{{BASE_URL}}password-reset"
+							],
+							"path": [
+								"administrator",
+								"create"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "noauth"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "REVIEW",
+			"item": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{ADMIN_TOKEN}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BASE_URL",
+			"value": "localhost:3001/api/"
+		},
+		{
+			"key": "ADMIN_TOKEN",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoxLCJhZG1pblJvbGUiOiJzdXBlciIsImFkbWluVHlwZSI6ImFwcGxpY2F0aW9uIiwiYXV0aFR5cGUiOiJBUFBfQURNSU4iLCJjdXN0b21lcklkIjoxLCJ1c2VySWQiOjEsImV4cCI6MTY0NDQ1NzUyNywiaWF0IjoxNjQxODY1NTI3fQ.PTD0eWg4hxh_hz_tEzeLGhjgOJaqZbQ_a4lZ-Bx9M7E"
+		},
+		{
+			"key": "CUSTOMER_TOKEN",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjdXN0b21lcklkIjoxLCJ1c2VySWQiOjEsImF1dGhUeXBlIjoiQ1VTVE9NRVIiLCJleHAiOjE2NDQ0NTIyMTcsImlhdCI6MTY0MTg2MDIxN30.MwsMbG6WMPx1fxNWWI9ccx91p05AF1lmEsYf3N0IkG4"
+		},
+		{
+			"key": "STORE_SHOPPA_TOKEN",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjo0LCJhZG1pblJvbGUiOiJzdXBlciIsImFkbWluVHlwZSI6InN0b3JlIiwiYXV0aFR5cGUiOiJTVE9SRV9BRE1JTiIsInN0b3JlSWQiOjcsInVzZXJJZCI6NywiZXhwIjoxNjQ0NDg3ODYxLCJpYXQiOjE2NDE4OTU4NjF9.iYj8fi-Tpl2pdPx-oxb1yuEW3qBmUB4u7lR69fX7uvo"
+		},
+		{
+			"key": "STORE_YAM_TOKEN",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoyLCJhZG1pblJvbGUiOiJzdXBlciIsImFkbWluVHlwZSI6InN0b3JlIiwiYXV0aFR5cGUiOiJTVE9SRV9BRE1JTiIsInN0b3JlSWQiOjUsInVzZXJJZCI6NSwiZXhwIjoxNjQ0NDg3OTgyLCJpYXQiOjE2NDE4OTU5ODJ9.NfLXzIejg0a2OGiaULFfWO0sfa_QN6-3W8vi9vLE6jk"
+		},
+		{
+			"key": "DELIVERY_ROUND_TOKEN",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjo4LCJhZG1pblJvbGUiOiJzdXBlciIsImFkbWluVHlwZSI6ImRlbGl2ZXJ5X2Zpcm0iLCJhdXRoVHlwZSI6IkRFTElWRVJZX0FETUlOIiwiZGVsaXZlcnlGaXJtSWQiOjMsInVzZXJJZCI6MTEsImV4cCI6MTY0NDQ5MjIxMCwiaWF0IjoxNjQxOTAwMjEwfQ.adwpwjfCHCdvniVnT3A8cfwPeEc42DZu8r6NrnnixJ8"
+		},
+		{
+			"key": "DELIVERY_FREEWAY_TOKEN",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjo2LCJhZG1pblJvbGUiOiJzdXBlciIsImFkbWluVHlwZSI6ImRlbGl2ZXJ5X2Zpcm0iLCJhdXRoVHlwZSI6IkRFTElWRVJZX0FETUlOIiwiZGVsaXZlcnlGaXJtSWQiOjEsInVzZXJJZCI6OSwiZXhwIjoxNjQ0NDk4Njg2LCJpYXQiOjE2NDE5MDY2ODZ9.WuQz4ViCgt7CvVE6_a9t4kmYmlbSh2AKF8H_ETF9-vY"
+		}
+	]
+}

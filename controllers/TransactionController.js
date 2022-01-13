@@ -1,5 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
 const InternalServerException = require("../http/exceptions/InternalServerException");
+const Pagination = require("../http/Pagination");
 const Response = require("../http/Response");
 const StringGenerator = require("../http/StringGenerator");
 const Transaction = require("../models/Transaction");
@@ -17,12 +18,17 @@ module.exports = class TransactionController {
 
       } else if (req.body.event === 'transfer.success') {
 
+        await TransactionRepository.updateTransferVerifed(req.body.data.reference);
+
+      } else if (req.body.event === 'transfer.failed') {
+
+        await TransactionRepository.updateTransferFailed(req.body.data.reference);
+
       }
       
       res.status(StatusCodes.OK).send({ reference: req.body.data.reference });
 
     } catch(error) {
-      console.error(error)
       next(new InternalServerException(error));
     }
   }
@@ -85,7 +91,7 @@ module.exports = class TransactionController {
   }
 
   async updateStatus(req, res, next) {
-    return res.send({ hat:77 });
+    
     try {
       
       switch (req.body.status) {
@@ -94,17 +100,168 @@ module.exports = class TransactionController {
           await TransactionRepository.updateStatusToDeclinedOrCancelled(req.data.transaction, req.body.status);
           break;
         case Transaction.STATUS_PROCESSING:
-          await TransactionRepository.updateStatusToProcessing(req.data.transaction);
+          await TransactionRepository.updateStatusToProcessing(req.data.transaction); //send to paystack
           break;
       }
       
       const transaction = await TransactionRepository.get(req.data.transaction.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._transaction_status'), transaction);
+      const response = new Response(Response.SUCCESS, req.__('_updated._transaction'), transaction);
 
       res.status(StatusCodes.OK).send(response);
       
     } catch (error) {
+      next(new InternalServerException(error));
+    }
+  }
+
+  get(req, res) {
+
+    const response = new Response(Response.SUCCESS, req.__('_fetched._transaction'), req.data.transaction);
+
+    res.status(StatusCodes.OK).send(response);
+  }
+
+  async getList(req, res, next) {
+
+    try {
+
+      const { pager } = req.data;
+
+      const { count, rows } = await TransactionRepository.getList(pager.page_offset, pager.page_limit);
+
+      const pagination = new Pagination(req, pager.page, pager.page_limit, count);
+
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._transaction'), rows, pagination);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      next(new InternalServerException(error));
+    }
+  }
+
+  getListByCustomer = async (req, res, next)=> {
+    
+    try {
+
+      const { pager, customer } = req.data;
+
+      const { count, rows } = await TransactionRepository.getListByUser(customer.user_id, pager.page_offset, pager.page_limit);
+
+      const pagination = new Pagination(req, pager.page, pager.page_limit, count);
+
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._transaction'), rows, pagination);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      next(new InternalServerException(error));
+    }
+  }
+
+  getListByStore = async (req, res, next)=> {
+    
+    try {
+
+      const { pager, store } = req.data;
+
+      const { count, rows } = await TransactionRepository.getListByUser(store.user_id, pager.page_offset, pager.page_limit);
+
+      const pagination = new Pagination(req, pager.page, pager.page_limit, count);
+
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._transaction'), rows, pagination);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      next(new InternalServerException(error));
+    }
+  }
+  
+  getBalanceByStore = async (req, res, next)=> {
+    
+    try {
+
+      const { store } = req.data;
+
+      const balance = await TransactionRepository.getBalance(store.user_id);
+
+      const response = new Response(Response.SUCCESS, req.__('_fetched._transaction'), { balance });
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      next(new InternalServerException(error));
+    }
+  }
+  
+  getListByDeliveryFirm = async (req, res, next)=> {
+    
+    try {
+
+      const { pager, deliveryFirm } = req.data;
+
+      const { count, rows } = await TransactionRepository.getListByUser(deliveryFirm.user_id, pager.page_offset, pager.page_limit);
+
+      const pagination = new Pagination(req, pager.page, pager.page_limit, count);
+
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._transaction'), rows, pagination);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      next(new InternalServerException(error));
+    }
+  }
+
+  getBalanceByDeliveryFirm = async (req, res, next)=> {
+    
+    try {
+
+      const { deliveryFirm } = req.data;
+
+      const balance = await TransactionRepository.getBalance(deliveryFirm.user_id);
+
+      const response = new Response(Response.SUCCESS, req.__('_fetched._transaction'), { balance });
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      next(new InternalServerException(error));
+    }
+  }
+
+  getListByAdministrator = async (req, res, next)=> {
+    
+    try {
+
+      const { pager } = req.data;
+
+      const { count, rows } = await TransactionRepository.getListByAdministrator(pager.page_offset, pager.page_limit);
+
+      const pagination = new Pagination(req, pager.page, pager.page_limit, count);
+
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._transaction'), rows, pagination);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      next(new InternalServerException(error));
+    }
+  }
+
+  getBalanceByAdministrator = async (req, res, next)=> {
+    
+    try {
+
+      const balance = await TransactionRepository.getBalanceByAdministrator();
+
+      const response = new Response(Response.SUCCESS, req.__('_fetched._transaction'), { balance });
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
       next(new InternalServerException(error));
     }
   }

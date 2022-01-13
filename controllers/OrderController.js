@@ -295,6 +295,25 @@ module.exports = class OrderController {
     res.status(StatusCodes.OK).send(response);
   }
 
+  async getList(req, res, next) {
+
+    try {
+
+      const { pager } = req.data;
+
+      const { count, rows } = await OrderRepository.getList(pager.page_offset, pager.page_limit);
+
+      const pagination = new Pagination(req, pager.page, pager.page_limit, count);
+
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._order'), rows, pagination);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      next(new InternalServerException(error));
+    }
+  }
+
   getListByCustomer = async (req, res, next)=> {
     
     try {
@@ -305,7 +324,7 @@ module.exports = class OrderController {
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._saved_cart'), rows, pagination);
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._order'), rows, pagination);
 
       res.status(StatusCodes.OK).send(response);
 
@@ -324,7 +343,7 @@ module.exports = class OrderController {
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._saved_cart'), rows, pagination);
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._order'), rows, pagination);
 
       res.status(StatusCodes.OK).send(response);
 
@@ -343,7 +362,7 @@ module.exports = class OrderController {
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._saved_cart'), rows, pagination);
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._order'), rows, pagination);
 
       res.status(StatusCodes.OK).send(response);
 

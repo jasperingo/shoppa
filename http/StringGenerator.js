@@ -4,6 +4,7 @@ const Transaction = require("../models/Transaction");
 const OrderRepository = require("../repository/OrderRepository");
 const SavedCartRepository = require("../repository/SavedCartRepository");
 const TransactionRepository = require("../repository/TransactionRepository");
+const PasswordResetRepository = require("../repository/PasswordResetRepository");
 
 const ALLOWED_ATTEMPTS = 3;
 
@@ -76,6 +77,30 @@ module.exports = {
       count++;
 
       if (await TransactionRepository.referenceExists(number)) {
+        number = undefined;
+      }
+
+    } while(count < ALLOWED_ATTEMPTS && number === undefined);
+
+    if (number === undefined) throw new Error('_error._generate_reference');
+
+    return number;
+  },
+
+  async passwordResetToken() {
+
+    let number, count = 0;
+
+    do {
+
+      number = randomstring.generate({
+        length: 10,
+        capitalization: 'uppercase'
+      });
+
+      count++;
+
+      if (await PasswordResetRepository.tokenExists(number)) {
         number = undefined;
       }
 

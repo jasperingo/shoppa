@@ -6,7 +6,4 @@ module.exports = {
 
   administrator_email: ValidationRules.getDeliveryFirmAdministratorEmailValid(),
 
-  administrator_password: ValidationRules.getAuthPasswordValid('administrator')
-
 };
-

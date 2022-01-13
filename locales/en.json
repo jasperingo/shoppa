@@ -16,9 +16,10 @@
     "_discount": "Discount created",
     "_discount_product": "Discount product created",
     "_order": "Order created",
-    "_transaction": "Transaction created"
+    "_transaction": "Transaction created",
+    "_password_reset": "Password reset created"
   },
-
+  
   "_updated": {
     "_customer": "Customer updated",
     "_password": "Password updated",
@@ -39,7 +40,7 @@
     "_discount": "Discount updated",
     "_order": "Order updated",
     "_order_item": "Order item updated",
-    "_transaction_status": "Transaction status updated"
+    "_transaction": "Transaction updated"
   },
 
   "_deleted": {
@@ -69,7 +70,8 @@
     "_saved_cart": "Saved cart fetched",
     "_discount": "Discount fetched",
     "_discount_product": "Discount product fetched",
-    "_order": "Order fetched"
+    "_order": "Order fetched",
+    "_transaction": "Transaction fetched"
   },
 
   "_list_fetched": {
@@ -84,7 +86,9 @@
     "_route": "Route list fetched",
     "_saved_cart": "Saved cart list fetched",
     "_discount": "Discount list fetched",
-    "_discount_product": "Discount product list fetched"
+    "_discount_product": "Discount product list fetched",
+    "_order": "Order list fetched",
+    "_transaction": "Transaction list fetched"
   },
 
   "_login": "Login successfully",

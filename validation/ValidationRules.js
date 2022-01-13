@@ -3,8 +3,11 @@ const InternalServerException = require("../http/exceptions/InternalServerExcept
 const Address = require("../models/Address");
 const Category = require("../models/Category");
 const User = require("../models/User");
+const AdministratorRepository = require("../repository/AdministratorRepository");
 const CustomerRepository = require("../repository/CustomerRepository");
+const DeliveryFirmRepository = require("../repository/DeliveryFirmRepository");
 const LocationRepository = require('../repository/LocationRepository');
+const StoreRepository = require("../repository/StoreRepository");
 const Hash = require("../security/Hash");
 
 module.exports = {
@@ -203,6 +206,111 @@ module.exports = {
             else 
               req.data = { customer };
           } catch (err) {
+            return Promise.reject(InternalServerException.TAG);
+          }
+        }
+      }
+    }
+  },
+  
+  getAdministratorEmailValid() {
+    return {
+      notEmpty: this.notEmpty,
+      isEmail: this.isEmail,
+      custom: {
+        options: async (value, { req })=> {
+          try {
+            const administrator = await AdministratorRepository.getByEmail(value);
+            if (administrator === null)
+              return Promise.reject(req.__('_error._form._email_invalid'));
+            else 
+              req.data = { administrator };
+          } catch (err) {
+            return Promise.reject(InternalServerException.TAG);
+          }
+        }
+      }
+    }
+  },
+
+  getStoreNameValid() {
+    return {
+      notEmpty: this.notEmpty,
+      custom: {
+        options: async (value, { req })=> {
+          try {
+            const store = await StoreRepository.getByName(value);
+            if (store === null)
+              return Promise.reject(req.__('_error._form._name_invalid'));
+            else 
+              req.data = { store };
+          } catch (err) {
+            return Promise.reject(InternalServerException.TAG);
+          }
+        }
+      }
+    }
+  },
+
+  getStoreAdministratorEmailValid() {
+    return {
+      notEmpty: this.notEmpty,
+      isEmail: this.isEmail,
+      custom: {
+        options: async (value, { req })=> {
+          try {
+            if (!req.data || !req.data.store)
+              return Promise.reject(req.__('_error._form._email_invalid'));
+            
+            const administrator = await AdministratorRepository.getByEmailAndStore(value, req.data.store.id);
+            if (administrator === null)
+              return Promise.reject(req.__('_error._form._email_invalid'));
+            else 
+              req.data.administrator = administrator;
+          } catch (err) {
+            return Promise.reject(InternalServerException.TAG);
+          }
+        }
+      }
+    }
+  },
+
+  getDeliveryFirmNameValid() {
+    return {
+      notEmpty: this.notEmpty,
+      custom: {
+        options: async (value, { req })=> {
+          try {
+            const deliveryFirm = await DeliveryFirmRepository.getByName(value);
+            if (deliveryFirm === null)
+              return Promise.reject(req.__('_error._form._name_invalid'));
+            else 
+              req.data = { deliveryFirm };
+          } catch (err) {
+            return Promise.reject(InternalServerException.TAG);
+          }
+        }
+      }
+    }
+  },
+  
+  getDeliveryFirmAdministratorEmailValid() {
+    return {
+      notEmpty: this.notEmpty,
+      isEmail: this.isEmail,
+      custom: {
+        options: async (value, { req })=> {
+          try {
+            if (!req.data || !req.data.deliveryFirm)
+              return Promise.reject(req.__('_error._form._email_invalid'));
+            
+            const administrator = await AdministratorRepository.getByEmailAndDeliveryFirm(value, req.data.deliveryFirm.id);
+            if (administrator === null)
+              return Promise.reject(req.__('_error._form._email_invalid'));
+            else 
+              req.data.administrator = administrator;
+          } catch (err) {
+            console.error(err)
             return Promise.reject(InternalServerException.TAG);
           }
         }

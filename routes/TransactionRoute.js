@@ -14,6 +14,9 @@ const WithdrawalTransactionCreateValidation = require('../validation/transaction
 const RefundTransactionCreateValidation = require('../validation/transaction/RefundTransactionCreateValidation');
 const PaymentTransactionCreatePermissionMiddleware = require('../middlewares/permissions/transaction/PaymentTransactionCreatePermissionMiddleware');
 const PaymentTransactionCreateValidation = require('../validation/transaction/PaymentTransactionCreateValidation');
+const TransactionFetchPermissionMiddleware = require('../middlewares/permissions/transaction/TransactionFetchPermissionMiddleware');
+const AdministratorPermissionMiddleware = require('../middlewares/permissions/AdministratorPermissionMiddleware');
+const PaginationMiddleware = require('../middlewares/PaginationMiddleware');
 
 const router = express.Router();
 
@@ -62,6 +65,21 @@ router.put(
   controller.updateStatus
 );
 
+router.get(
+  '/list',
+  AuthMiddleware,
+  AdministratorPermissionMiddleware,
+  PaginationMiddleware,
+  controller.getList
+);
+
+router.get(
+  '/:id(\\d+)',
+  TransactionFetchMiddleware,
+  AuthMiddleware,
+  TransactionFetchPermissionMiddleware,
+  controller.get
+);
 
 
 module.exports = router;

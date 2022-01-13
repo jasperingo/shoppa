@@ -40,11 +40,43 @@ module.exports = {
     });
   },
   
+  getBalanceByAdministrator() {
+    return Transaction.sum('amount', { 
+      where: { application: true } 
+    });
+  },
+
+  getList(offset, limit) {
+    return Transaction.findAndCountAll({ 
+      order: [['created_at', 'DESC']],
+      offset,
+      limit
+    });
+  },
+
+  getListByUser(user_id, offset, limit) {
+    return Transaction.findAndCountAll({
+      where: { user_id },
+      order: [['created_at', 'DESC']],
+      offset,
+      limit
+    });
+  },
+
+  getListByAdministrator(offset, limit) {
+    return Transaction.findAndCountAll({
+      where: { application: true },
+      order: [['created_at', 'DESC']],
+      offset,
+      limit
+    });
+  },
+  
   createWithdrawal({ amount }, reference, user_id) {
     return Transaction.create({ 
       user_id,
-      amount,
       reference,
+      amount: -amount,
       application: false,
       status: Transaction.STATUS_PENDING,
       type: Transaction.TYPE_WITHDRAWAL
@@ -59,7 +91,7 @@ module.exports = {
           reference,
           application: false, 
           order_id: order.id, 
-          amount: order.total,
+          amount: -order.total,
           user_id: order.customer.user.id,
           status: Transaction.STATUS_PENDING,
           type: Transaction.TYPE_PAYMENT
@@ -134,6 +166,48 @@ module.exports = {
         await Transaction.bulkCreate(await Transaction.distributeOrderPayment(tx.order, referenceGenerator), { transaction });
       }
 
+      return true;
+    });
+  },
+
+  updateTransferVerifed(reference) {
+
+    return sequelize.transaction(async (transaction)=> {
+      
+      const tx = await Transaction.findOne({
+        where: { reference, status: Transaction.STATUS_PROCESSING },
+        include: { model: Order },
+        transaction
+      });
+
+      if (tx === null) return false;
+
+      await Transaction.update({ status: Transaction.STATUS_APPROVED }, { where: { reference }, transaction });
+
+      if (tx.type === Transaction.TYPE_REFUND)
+        await Order.update({ refund_status: Order.REFUND_STATUS_APPROVED }, { where: { id: tx.order.id }, transaction });
+      
+      return true;
+    });
+  },
+
+  updateTransferFailed(reference) {
+
+    return sequelize.transaction(async (transaction)=> {
+      
+      const tx = await Transaction.findOne({
+        where: { reference, status: Transaction.STATUS_PROCESSING },
+        include: { model: Order },
+        transaction
+      });
+
+      if (tx === null) return false;
+
+      await Transaction.update({ status: Transaction.STATUS_FAILED }, { where: { reference }, transaction });
+
+      if (tx.type === Transaction.TYPE_REFUND)
+        await Order.update({ refund_status: Order.REFUND_STATUS_FAILED }, { where: { id: tx.order.id }, transaction });
+      
       return true;
     });
   },
