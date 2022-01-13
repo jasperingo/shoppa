@@ -163,14 +163,14 @@ Order.init({
   total: {
     type: DataTypes.VIRTUAL,
     get() {
-      return (this.sub_total + this.delivery_total - this.discount_total).toFixed(2);
+      return Number((this.sub_total + this.delivery_total - this.discount_total).toFixed(2));
     }
   },
-
+  
   sub_total_discounted: {
     type: DataTypes.VIRTUAL,
     get() {
-      return (this.sub_total - this.discount_total).toFixed(2);
+      return Number((this.sub_total - this.discount_total).toFixed(2));
     }
   },
   

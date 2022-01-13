@@ -28,22 +28,22 @@ module.exports = class TransactionController {
   }
   
   async createPayment(req, res, next) {
-    res.send({ k:3 });
-    // try {
+    
+    try {
 
-    //   const reference = await StringGenerator.transactionReference();
+      const reference = await StringGenerator.transactionReference();
 
-    //   const _transaction = await TransactionRepository.createWithdrawal(req.body, reference);
+      const _transaction = await TransactionRepository.createPayment(req.data.order, reference);
 
-    //   const transaction = await TransactionRepository.get(_transaction.id);
+      const transaction = await TransactionRepository.get(_transaction.id);
 
-    //   const response = new Response(Response.SUCCESS, req.__('_created._transaction'), transaction);
+      const response = new Response(Response.SUCCESS, req.__('_created._transaction'), transaction);
 
-    //   res.status(StatusCodes.CREATED).send(response);
+      res.status(StatusCodes.CREATED).send(response);
 
-    // } catch (error) {
-    //   next(new InternalServerException(error));
-    // }
+    } catch (error) {
+      next(new InternalServerException(error));
+    }
   }
 
   async createWithdrawal(req, res, next) {
@@ -52,7 +52,7 @@ module.exports = class TransactionController {
 
       const reference = await StringGenerator.transactionReference();
 
-      const _transaction = await TransactionRepository.createWithdrawal(req.body, reference);
+      const _transaction = await TransactionRepository.createWithdrawal(req.body, reference, req.auth.userId);
 
       const transaction = await TransactionRepository.get(_transaction.id);
 
@@ -66,7 +66,7 @@ module.exports = class TransactionController {
   }
 
   async createRefund(req, res, next) {
-
+    
     try {
 
       const reference = await StringGenerator.transactionReference();
@@ -85,7 +85,7 @@ module.exports = class TransactionController {
   }
 
   async updateStatus(req, res, next) {
-    
+    return res.send({ hat:77 });
     try {
       
       switch (req.body.status) {

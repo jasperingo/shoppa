@@ -1,15 +1,25 @@
 
 const ForbiddenException = require("../../../http/exceptions/ForbiddenException");
-const Administrator = require("../../../models/Administrator");
+const InternalServerException = require("../../../http/exceptions/InternalServerException");
+const DeliveryFirmRepository = require("../../../repository/DeliveryFirmRepository");
+const StoreRepository = require("../../../repository/StoreRepository");
 const JWT = require("../../../security/JWT");
 
-module.exports = function permit(req, res, next) {
-  if ((req.body.user_id !== undefined && req.body.user_id !== null && req.auth.role === Administrator.ROLE_SUPER) &&
-      (req.auth.authType === JWT.AUTH_STORE_ADMIN && req.body.user_id === req.auth.store.user_id) ||
-      (req.auth.authType === JWT.AUTH_DELIVERY_ADMIN && req.body.user_id === req.auth.deliveryFirm.user_id)) {
-    next();
-  } else {
-    next(new ForbiddenException());
+module.exports = async function permit(req, res, next) {
+  
+  try {
+    
+    if (
+      (req.auth.authType === JWT.AUTH_STORE_ADMIN && await StoreRepository.statusIsActive(req.auth.storeId)) ||
+      (req.auth.authType === JWT.AUTH_DELIVERY_ADMIN && await DeliveryFirmRepository.statusIsActive(req.auth.deliveryFirmId))
+    )
+    {
+      next();
+    } else {
+      next(new ForbiddenException());
+    }
+  } catch (error) {
+    next(new InternalServerException(error))
   }
 };
 

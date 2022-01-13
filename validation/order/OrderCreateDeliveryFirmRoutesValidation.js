@@ -37,14 +37,14 @@ module.exports = async function(req, res, next) {
 
       if (data.delivery_firm_id === undefined || data.delivery_firm_id === null) {
         deliveryFirmErr = requiredMessage;
-      } else if (! (await DeliveryFirmRepository.idExists(data.delivery_firm_id))) {
+      } else if (! (await DeliveryFirmRepository.statusIsActive(data.delivery_firm_id))) {
         deliveryFirmErr = invalidIDMessage;
       }
 
-      if (data.route_id === undefined || data.route_id === null) {
+      if (data.delivery_route_id === undefined || data.delivery_route_id === null) {
         routeErr = requiredMessage;
       } else {
-        route = await RouteRepository.get(req.body.route_id);
+        route = await RouteRepository.get(req.body.delivery_route_id);
         if (route === null || route.delivery_firm_id !== data.delivery_firm_id) {
           routeErr = invalidIDMessage;
         }
@@ -61,16 +61,16 @@ module.exports = async function(req, res, next) {
 
       for (let [i, item] of data.order_items.entries()) {
 
-        if (item.route_weight_id === undefined || item.route_weight_id === null) {
-          err.push({ name: 'route_weight_id', message: requiredMessage, index: i });
-        } else if (route === null || route === undefined || route.route_weights.find(w=> w.id === item.route_weight_id) === undefined) {
-          err.push({ name: 'route_weight_id', message: invalidIDMessage, index: i });
+        if (item.delivery_weight_id === undefined || item.delivery_weight_id === null) {
+          err.push({ name: 'delivery_weight_id', message: requiredMessage, index: i });
+        } else if (route === null || route === undefined || route.delivery_route_weights.find(w=> w.id === item.delivery_weight_id) === undefined) {
+          err.push({ name: 'delivery_weight_id', message: invalidIDMessage, index: i });
         }
         
-        if (item.route_duration_id === undefined || item.route_duration_id === null) {
-          err.push({ name: 'route_duration_id', message: requiredMessage, index: i });
-        } else if (route === null || route === undefined || route.route_durations.find(d=> d.id === item.route_duration_id) === undefined) {
-          err.push({ name: 'route_duration_id', message: invalidIDMessage, index: i });
+        if (item.delivery_duration_id === undefined || item.delivery_duration_id === null) {
+          err.push({ name: 'delivery_duration_id', message: requiredMessage, index: i });
+        } else if (route === null || route === undefined || route.delivery_route_durations.find(d=> d.id === item.delivery_duration_id) === undefined) {
+          err.push({ name: 'delivery_duration_id', message: invalidIDMessage, index: i });
         }
       }
 
@@ -80,41 +80,34 @@ module.exports = async function(req, res, next) {
         const storeAddress = (await StoreRepository.get(data.store_id)).user.addresses[0];
 
         if (
-          (route.location_1_state === customerAddress.state &&
-            route.location_2_state === storeAddress.state &&
-            (
-              (route.location_1_city === customerAddress.city &&
-              route.location_2_city === storeAddress.city) ||
-              (
-                route.location_1_city === null &&
-                route.location_2_city === null
-              )
-            )
-          )
+          ((route.state === customerAddress.state &&
+            route.state === storeAddress.state) &&
+            (route.city === customerAddress.city &&
+            route.city === storeAddress.city))
           ||
-          (route.location_1_state === storeAddress.state &&
-            route.location_2_state === customerAddress.state &&
-            (
-              (route.location_1_city === storeAddress.city &&
-              route.location_2_city === customerAddress.city) ||
-              (
-                route.location_1_city === null &&
-                route.location_2_city === null
-              )
-            )
+          (
+            (route.origin_route.state === storeAddress.state &&
+            route.destination_route.state === customerAddress.state && 
+            route.origin_route.city === storeAddress.city &&
+            route.destination_route.city === customerAddress.city)
+            ||
+            (route.origin_route.state === customerAddress.state &&
+            route.destination_route.state === storeAddress.state && 
+            route.origin_route.city === customerAddress.city &&
+            route.destination_route.city === storeAddress.city)
           )
         ) {
 
           for (let [i, item] of data.order_items.entries()) {
 
-            let routeWeight = route.route_weights.find(w=> w.id === item.route_weight_id);
-
+            let routeWeight = route.delivery_route_weights.find(w=> w.id === item.delivery_weight_id);
+            
             let productVariant = await ProductVariantRepository.get(item.product_variant_id);
 
             let weight = productVariant.weight * item.quantity;
 
             if (routeWeight.minimium > weight || routeWeight.maximium < weight) {
-              err.push({ name: 'route_weight_id', message: invalidIDMessage, index: i });
+              err.push({ name: 'delivery_weight_id', message: invalidIDMessage, index: i });
             }
             
           }
@@ -127,16 +120,16 @@ module.exports = async function(req, res, next) {
               for (let j = i; j <  data.order_items.length-1; j++) {
                 let v1 = data.order_items[i];
                 let v2 = data.order_items[j+1];
-                if (v1.route_duration_id !== v2.route_duration_id) {
+                if (v1.delivery_duration_id !== v2.delivery_duration_id) {
                   
                   if (!errIndex.includes(i)) {
                     errIndex.push(i);
-                    err.push({ name: 'route_duration_id', message: differenceMessage, index: i });
+                    err.push({ name: 'delivery_duration_id', message: differenceMessage, index: i });
                   }
           
                   if (!errIndex.includes(j+1)) {
                     errIndex.push(j+1);
-                    err.push({ name: 'route_duration_id', message: differenceMessage, index: j+1 });
+                    err.push({ name: 'delivery_duration_id', message: differenceMessage, index: j+1 });
                   }
                 }
               }
@@ -165,12 +158,12 @@ module.exports = async function(req, res, next) {
 
       for (let [i, item] of req.body.order_items.entries()) {
 
-        if (item.route_weight_id !== undefined && item.route_weight_id !== null) {
-          err.push({ name: 'route_weight_id', message: notRequiredMessage, index: i });
+        if (item.delivery_weight_id !== undefined && item.delivery_weight_id !== null) {
+          err.push({ name: 'delivery_weight_id', message: notRequiredMessage, index: i });
         }
 
-        if (item.route_duration_id !== undefined && item.route_duration_id !== null) {
-          err.push({ name: 'route_duration_id', message: notRequiredMessage, index: i });
+        if (item.delivery_duration_id !== undefined && item.delivery_duration_id !== null) {
+          err.push({ name: 'delivery_duration_id', message: notRequiredMessage, index: i });
         }
 
       }
@@ -185,7 +178,7 @@ module.exports = async function(req, res, next) {
     }
 
     if (routeErr !== undefined) {
-      await body('route_id').custom(()=> { throw routeErr; }).run(req);
+      await body('delivery_route_id').custom(()=> { throw routeErr; }).run(req);
     }
 
     if (err.length > 0) {
@@ -195,6 +188,7 @@ module.exports = async function(req, res, next) {
     next();
 
   } catch (error) {
+    console.error(error);
     next(new InternalServerException(error));
   }
 }

@@ -12,6 +12,8 @@ const ValidationMiddleware = require('../middlewares/ValidationMiddleware');
 const TransactionStatusUpdateValidation = require('../validation/transaction/TransactionStatusUpdateValidation');
 const WithdrawalTransactionCreateValidation = require('../validation/transaction/WithdrawalTransactionCreateValidation');
 const RefundTransactionCreateValidation = require('../validation/transaction/RefundTransactionCreateValidation');
+const PaymentTransactionCreatePermissionMiddleware = require('../middlewares/permissions/transaction/PaymentTransactionCreatePermissionMiddleware');
+const PaymentTransactionCreateValidation = require('../validation/transaction/PaymentTransactionCreateValidation');
 
 const router = express.Router();
 
@@ -19,7 +21,7 @@ const controller = new TransactionController();
 
 router.post(
   '/verify/webhook',
-  PaystackWebhookAuthMiddleware,
+  //PaystackWebhookAuthMiddleware,
   controller.verifyByWebhook
 );
 
@@ -43,10 +45,10 @@ router.post(
 
 router.post(
   '/payment/create',
-  // AuthMiddleware,
-  // RefundTransactionCreatePermissionMiddleware,
-  // checkSchema(RefundTransactionCreateValidation),
-  // ValidationMiddleware(),
+  AuthMiddleware,
+  PaymentTransactionCreatePermissionMiddleware,
+  checkSchema(PaymentTransactionCreateValidation),
+  ValidationMiddleware(),
   controller.createPayment
 );
 

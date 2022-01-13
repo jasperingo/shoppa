@@ -14,7 +14,7 @@ module.exports = class OrderItemController {
 
       const orderItem = await OrderItemRepository.get(req.data.orderItem.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._order_item_processing_date'), orderItem);
+      const response = new Response(Response.SUCCESS, req.__('_updated._order_item'), orderItem);
 
       res.status(StatusCodes.OK).send(response);
 
@@ -31,7 +31,7 @@ module.exports = class OrderItemController {
 
       const orderItem = await OrderItemRepository.get(req.data.orderItem.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._order_item_transporting_date'), orderItem);
+      const response = new Response(Response.SUCCESS, req.__('_updated._order_item'), orderItem);
 
       res.status(StatusCodes.OK).send(response);
 
@@ -48,7 +48,7 @@ module.exports = class OrderItemController {
 
       const orderItem = await OrderItemRepository.get(req.data.orderItem.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._order_item_delivery_date'), orderItem);
+      const response = new Response(Response.SUCCESS, req.__('_updated._order_item'), orderItem);
 
       res.status(StatusCodes.OK).send(response);
 

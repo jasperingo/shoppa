@@ -1,17 +1,16 @@
 const { StatusCodes } = require("http-status-codes");
 const InternalServerException = require("../http/exceptions/InternalServerException");
+const Pagination = require("../http/Pagination");
 const Response = require("../http/Response");
 const StringGenerator = require("../http/StringGenerator");
 const Discount = require("../models/Discount");
 const Order = require("../models/Order");
-const AddressRepository = require("../repository/AddressRepository");
 const DiscountProductRepository = require("../repository/DiscountProductRepository");
 const OrderRepository = require("../repository/OrderRepository");
 const ProductVariantRepository = require("../repository/ProductVariantRepository");
 const RouteDurationRepository = require("../repository/RouteDurationRepository");
 const RouteRepository = require("../repository/RouteRepository");
 const RouteWeightRepository = require("../repository/RouteWeightRepository");
-const StoreRepository = require("../repository/StoreRepository");
 
 
 module.exports = class OrderController {
@@ -30,9 +29,9 @@ module.exports = class OrderController {
 
       data.discount_total = 0;
 
-      data.number = await StringGenerator.orderNumber();
+      data.customer_id = req.auth.customerId;
 
-      data.transaction_reference = await StringGenerator.transactionReference();
+      data.number = await StringGenerator.orderNumber();
 
       for (let [i, item] of data.order_items.entries()) {
 
@@ -42,21 +41,21 @@ module.exports = class OrderController {
 
         data.order_items[i].product_id = productVariant.product_id;
 
-        data.order_items[i].weight = productVariant.weight * item.quantity;
+        data.order_items[i].weight = Number((productVariant.weight * item.quantity).toFixed(2));
 
-        data.order_items[i].amount = productVariant.price * item.quantity;
+        data.order_items[i].amount = Number((productVariant.price * item.quantity).toFixed(2));
 
-        data.sub_total += productVariant.price * item.quantity; 
+        data.sub_total += Number((productVariant.price * item.quantity).toFixed(2)); 
 
-        if (item.route_weight_id !== undefined && item.route_weight_id !== null) {
-          let routeWeight = await RouteWeightRepository.get(item.route_weight_id);
-          data.order_items[i].delivery_weight_fee = routeWeight.price;
-          data.delivery_total += routeWeight.price;
+        if (item.delivery_weight_id !== undefined && item.delivery_weight_id !== null) {
+          let routeWeight = await RouteWeightRepository.get(item.delivery_weight_id);
+          data.order_items[i].delivery_fee = routeWeight.fee;
+          data.delivery_total += routeWeight.fee;
         }
 
-        if (item.route_duration_id !== undefined && item.route_duration_id !== null) {
-          let routeDuration = await RouteDurationRepository.get(item.route_duration_id);
-          data.order_items[i].delivery_duration_fee = routeDuration.fee;
+        if (item.delivery_duration_id !== undefined && item.delivery_duration_id !== null) {
+          let routeDuration = await RouteDurationRepository.get(item.delivery_duration_id);
+          data.order_items[i].delivery_fee += routeDuration.fee;
           data.delivery_total += routeDuration.fee;
         }
 
@@ -75,7 +74,9 @@ module.exports = class OrderController {
 
       for (let product of products) {
 
-        if (product.product_variants[0].discount_product_id === undefined || product.product_variants[0].discount_product_id === null) {
+        if (product.product_variants[0].discount_product_id === undefined || 
+            product.product_variants[0].discount_product_id === null) 
+        {
           continue;
         }
 
@@ -88,7 +89,7 @@ module.exports = class OrderController {
         if (discountProduct.discount.type === Discount.TYPE_AMOUNT) {
           discountTotal = discountProduct.discount.value;
         } else if (discountProduct.discount.type === Discount.TYPE_PERCENTAGE) {
-          discountTotal = (discountProduct.discount.value / 100) * amountTotal;
+          discountTotal = Number(((discountProduct.discount.value / 100) * amountTotal).toFixed(2));
         }
 
         data.discount_total += discountTotal;
@@ -102,7 +103,7 @@ module.exports = class OrderController {
       
       const _order = await OrderRepository.create(data);
 
-      const order = await OrderRepository.getWithTransactions(_order.id);
+      const order = await OrderRepository.get(_order.id);
 
       const response = new Response(Response.SUCCESS, req.__('_created._order'), order);
 
@@ -128,8 +129,6 @@ module.exports = class OrderController {
         storeAddress.city
       );
 
-      console.log(routes.length)
-
       for (let i=0; i<routes.length; i++) {
 
         let weights = [];
@@ -138,7 +137,7 @@ module.exports = class OrderController {
 
           let productVariant = await ProductVariantRepository.get(item.product_variant_id);
   
-          let weight = productVariant.weight * item.quantity;
+          let weight = Number((productVariant.weight * item.quantity).toFixed(2));
 
           const routeWeight = await RouteWeightRepository.getByRouteAndWeight(routes[i].id, weight);
 
@@ -182,7 +181,7 @@ module.exports = class OrderController {
 
         let productVariant = await ProductVariantRepository.get(item.product_variant_id);
 
-        item.amount = productVariant.price * item.quantity;
+        item.amount = Number((productVariant.price * item.quantity).toFixed(2));
   
         let index = products.findIndex(product=> product.id === productVariant.product_id);
 
@@ -204,7 +203,11 @@ module.exports = class OrderController {
           return v;
         });
 
-        let discountProducts = await DiscountProductRepository.getListByNotExpiredAndProductAndQuantityAndAmount(product.id, quantity, amount);
+        let discountProducts = await DiscountProductRepository.getListByNotExpiredAndProductAndQuantityAndAmount(
+          product.id, 
+          quantity, 
+          amount
+        );
 
         products[i].discount_products = discountProducts;
 
@@ -224,11 +227,11 @@ module.exports = class OrderController {
     try {
       
       if (req.body.status === Order.STATUS_CANCELLED)
-        await OrderRepository.updateStatusToCancel(req.data.order, StringGenerator.transactionReference);
+        await OrderRepository.updateStatusToCancel(req.data.order);
 
       const order = await OrderRepository.get(req.data.order.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._order_status'), order);
+      const response = new Response(Response.SUCCESS, req.__('_updated._order'), order);
 
       res.status(StatusCodes.OK).send(response);
 
@@ -246,13 +249,13 @@ module.exports = class OrderController {
           await OrderRepository.updateStoreStatusToAccepted(req.data.order, StringGenerator.transactionReference);
           break;
         case Order.STORE_STATUS_DECLINED:
-          await OrderRepository.updateStoreStatusToDeclined(req.data.order, StringGenerator.transactionReference);
+          await OrderRepository.updateStoreStatusToDeclined(req.data.order);
           break;
       }
       
       const order = await OrderRepository.get(req.data.order.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._order_store_status'), order);
+      const response = new Response(Response.SUCCESS, req.__('_updated._order'), order);
 
       res.status(StatusCodes.OK).send(response);
       
@@ -270,17 +273,81 @@ module.exports = class OrderController {
           await OrderRepository.updateDeliveryFirmStatusToAccepted(req.data.order, StringGenerator.transactionReference);
           break;
         case Order.DELIVERY_FIRM_STATUS_DECLINED:
-          await OrderRepository.updateDeliveryFirmStatusToDeclined(req.data.order, StringGenerator.transactionReference);
+          await OrderRepository.updateDeliveryFirmStatusToDeclined(req.data.order);
           break;
       }
 
       const order = await OrderRepository.get(req.data.order.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._order_delivery_firm_status'), order);
+      const response = new Response(Response.SUCCESS, req.__('_updated._order'), order);
 
       res.status(StatusCodes.OK).send(response);
       
     } catch (error) {
+      next(new InternalServerException(error));
+    }
+  }
+
+  get(req, res) {
+
+    const response = new Response(Response.SUCCESS, req.__('_fetched._order'), req.data.order);
+
+    res.status(StatusCodes.OK).send(response);
+  }
+
+  getListByCustomer = async (req, res, next)=> {
+    
+    try {
+
+      const { pager, customer } = req.data;
+
+      const { count, rows } = await OrderRepository.getListByCustomer(customer, pager.page_offset, pager.page_limit);
+
+      const pagination = new Pagination(req, pager.page, pager.page_limit, count);
+
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._saved_cart'), rows, pagination);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      next(new InternalServerException(error));
+    }
+  }
+
+  getListByStore = async (req, res, next)=> {
+    
+    try {
+
+      const { pager, store } = req.data;
+
+      const { count, rows } = await OrderRepository.getListByStore(store, pager.page_offset, pager.page_limit);
+
+      const pagination = new Pagination(req, pager.page, pager.page_limit, count);
+
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._saved_cart'), rows, pagination);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      next(new InternalServerException(error));
+    }
+  }
+  
+  getListByDeliveryFirm = async (req, res, next)=> {
+    
+    try {
+
+      const { pager, deliveryFirm } = req.data;
+
+      const { count, rows } = await OrderRepository.getListByDeliveryFirm(deliveryFirm, pager.page_offset, pager.page_limit);
+
+      const pagination = new Pagination(req, pager.page, pager.page_limit, count);
+
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._saved_cart'), rows, pagination);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
       next(new InternalServerException(error));
     }
   }

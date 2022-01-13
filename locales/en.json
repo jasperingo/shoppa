@@ -37,12 +37,8 @@
     "_working_hours": "Working hours updated",
     "_withdrawal_account": "Withdrawal account updated",
     "_discount": "Discount updated",
-    "_order_status": "Order status updated",
-    "_order_store_status": "Order store status updated",
-    "_order_delivery_firm_status": "Order delivery firm status updated",
-    "_order_item_processing_date": "Order item processing date updated",
-    "_order_item_transporting_date": "Order item transporting date updated",
-    "_order_item_delivery_date": "Order item delivery date updated",
+    "_order": "Order updated",
+    "_order_item": "Order item updated",
     "_transaction_status": "Transaction status updated"
   },
 
@@ -72,7 +68,8 @@
     "_route_duration": "Route duration fetched",
     "_saved_cart": "Saved cart fetched",
     "_discount": "Discount fetched",
-    "_discount_product": "Discount product fetched"
+    "_discount_product": "Discount product fetched",
+    "_order": "Order fetched"
   },
 
   "_list_fetched": {
@@ -149,6 +146,10 @@
 
       "_field_pair": "This field should be sent with the {{ pair }} field",
 
+      "_order_item_product_unavailable": "An item on this order is unavailable",
+      
+      "_order_item_product_quantity_gt": "An item on this order is short on quantity",
+
       "_order_status_not_pending": "Order status must be pending for you to update it to {{ status }}",
       
       "_order_payment_pending": "Order payment must be approved before you can accept this order",
@@ -158,6 +159,8 @@
       "_order_item_date_updated": "Order item {{ date }} has already been updated",
 
       "_order_cant_get_refund": "A refund cannot be issued for this order",
+
+      "_order_cant_get_payment": "A payment transaction cannot be generated for this order",
 
       "_withdrawal_minimium_amount": "Withdrawal amount cannot be less than {{ amount }}",
 

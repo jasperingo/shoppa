@@ -69,7 +69,9 @@ module.exports = async function(req, res, next) {
 
       for (let product of products) {
 
-        if (product.product_variants[0].discount_product_id === undefined || product.product_variants[0].discount_product_id === null) {
+        if (product.product_variants[0].discount_product_id === undefined || 
+            product.product_variants[0].discount_product_id === null) 
+        {
           continue;
         }
 

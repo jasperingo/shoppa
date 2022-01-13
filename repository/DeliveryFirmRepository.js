@@ -67,6 +67,22 @@ module.exports = {
     return res !== null;
   },
   
+  async statusIsActive(id) {
+    const res = await DeliveryFirm.findOne({ 
+      attributes: ['id'], 
+      where: {
+        id, 
+        '$user.type$': User.TYPE_DELIVERY_FIRM, 
+        '$user.status$': User.STATUS_ACTIVE
+      },
+      include: {
+        model: User,
+        attributes: []
+      }
+    });
+    return res !== null;
+  },
+
   async statusIsActiveOrActivating(id) {
     const res = await User.findOne({ 
       attributes: ['id'], 

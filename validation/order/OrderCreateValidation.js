@@ -12,7 +12,7 @@ module.exports = {
     custom: {
       options: async (value, { req })=> {
         try {
-          if (! (await StoreRepository.idExists(value)))
+          if (! (await StoreRepository.statusIsActive(value)))
             return Promise.reject(req.__('_error._form._id_invalid'));
         } catch (err) {
           return Promise.reject(InternalServerException.TAG);

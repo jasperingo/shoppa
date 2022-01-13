@@ -39,8 +39,8 @@ module.exports = {
       } 
     });
   },
-
-  createWithdrawal({ user_id, amount }, reference) {
+  
+  createWithdrawal({ amount }, reference, user_id) {
     return Transaction.create({ 
       user_id,
       amount,
@@ -48,6 +48,31 @@ module.exports = {
       application: false,
       status: Transaction.STATUS_PENDING,
       type: Transaction.TYPE_WITHDRAWAL
+    });
+  },
+
+  createPayment(order, reference) {
+    return sequelize.transaction(async (transaction)=> {
+
+      const tx = await Transaction.create(
+        { 
+          reference,
+          application: false, 
+          order_id: order.id, 
+          amount: order.total,
+          user_id: order.customer.user.id,
+          status: Transaction.STATUS_PENDING,
+          type: Transaction.TYPE_PAYMENT
+        }, 
+        { transaction }
+      );
+      
+      await Order.update(
+        { payment_status: Order.PAYMENT_STATUS_PENDING }, 
+        { where: { id: order.id }, transaction }
+      );
+
+      return tx;
     });
   },
   

@@ -26,6 +26,8 @@ const DeliveryFirmLoginPermissionMiddleware = require('../middlewares/permission
 const DeliveryFirmFetchPermissionMiddleware = require('../middlewares/permissions/delivery_firm/DeliveryFirmFetchPermissionMiddleware');
 const OptionalAuthMiddleware = require('../middlewares/OptionalAuthMiddleware');
 const CustomerUpdateStatusValidation = require('../validation/customer/CustomerUpdateStatusValidation');
+const OrderController = require('../controllers/OrderController');
+const DeliveryFirmAndAdminPermissionMiddleware = require('../middlewares/permissions/delivery_firm/DeliveryFirmAndAdminPermissionMiddleware');
 
 const router = express.Router();
 
@@ -38,6 +40,8 @@ const workingHourController = new WorkingHourController();
 const withdrawalAccountController = new WithdrawalAccountController();
 
 const routeController = new RouteController();
+
+const orderController = new OrderController();
 
 router.post(
   '/register', 
@@ -138,6 +142,15 @@ router.get(
   DeliveryFirmPermissionMiddleware,
   PaginationMiddleware,
   routeController.getListOfBaseByDeliveryFirm
+);
+
+router.get(
+  '/:id(\\d+)/order/list', 
+  DeliveryFirmFetchMiddleware,
+  AuthMiddleware,
+  DeliveryFirmAndAdminPermissionMiddleware,
+  PaginationMiddleware,
+  orderController.getListByDeliveryFirm
 );
 
 router.get(

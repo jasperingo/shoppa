@@ -66,6 +66,22 @@ module.exports = {
     });
     return res !== null;
   },
+
+  async statusIsActive(id) {
+    const res = await Store.findOne({ 
+      attributes: ['id'], 
+      where: {
+        id, 
+        '$user.type$': User.TYPE_STORE, 
+        '$user.status$': User.STATUS_ACTIVE
+      },
+      include: {
+        model: User,
+        attributes: []
+      }
+    });
+    return res !== null;
+  },
   
   async statusIsActiveOrActivating(id) {
     const res = await User.findOne({ 

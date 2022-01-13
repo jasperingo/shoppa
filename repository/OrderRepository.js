@@ -25,6 +25,22 @@ module.exports = {
     });
     return order !== null;
   },
+
+  async idExistsForStore(id, store_id) {
+    const order = await Order.findOne({ 
+      attributes: ['id'],
+      where: { id, store_id }
+    });
+    return order !== null;
+  },
+
+  async idExistsForDeliveryFirm(id, delivery_firm_id) {
+    const order = await Order.findOne({ 
+      attributes: ['id'],
+      where: { id, delivery_firm_id }
+    });
+    return order !== null;
+  },
   
   get(id) {
     return Order.findOne({
@@ -42,7 +58,11 @@ module.exports = {
           model: Store,
           include: {
             model: User,
-            attributes: User.GET_ATTR
+            attributes: User.GET_ATTR,
+            include: {
+              model: Address,
+              attributes: Address.GET_ATTR
+            }
           }
         },
         {
@@ -69,49 +89,30 @@ module.exports = {
     });
   },
 
-  getWithTransactions(id) {
-    return Order.findOne({
-      where: { id },
-      include: [
-        {
-          model: Customer,
-          attributes: Customer.GET_ATTR,
-          include: {
-            model: User,
-            attributes: User.GET_ATTR
-          }
-        },
-        {
-          model: Store,
-          include: {
-            model: User,
-            attributes: User.GET_ATTR
-          }
-        },
-        {
-          model: DeliveryFirm,
-          include: {
-            model: User,
-            attributes: User.GET_ATTR
-          }
-        },
-        {
-          model: Address,
-        },
-        {
-          model: OrderItem,
-          include: {
-            model: ProductVariant,
-            include: {
-              model: Product,
-              attributes: Product.GET_ATTR
-            }
-          }
-        },
-        {
-          model: Transaction
-        }
-      ]
+  getListByCustomer(customer, offset, limit) {
+    return Order.findAndCountAll({
+      where: { customer_id: customer.id },
+      order: [['created_at', 'DESC']],
+      offset,
+      limit
+    });
+  },
+
+  getListByStore(store, offset, limit) {
+    return Order.findAndCountAll({
+      where: { store_id: store.id },
+      order: [['created_at', 'DESC']],
+      offset,
+      limit
+    });
+  },
+
+  getListByDeliveryFirm(deliveryFirm, offset, limit) {
+    return Order.findAndCountAll({
+      where: { delivery_firm_id: deliveryFirm.id },
+      order: [['created_at', 'DESC']],
+      offset,
+      limit
     });
   },
 
@@ -119,15 +120,16 @@ module.exports = {
     store_id, 
     customer_id, 
     customer_address_id, 
-    delivery_firm_id, route_id, 
-    number, delivery_method, 
+    delivery_firm_id, 
+    delivery_route_id, 
+    number, 
+    delivery_method, 
     payment_method, 
     note, 
     sub_total, 
     delivery_total,
     discount_total,
-    order_items, 
-    transaction_reference 
+    order_items
   }) {
     return sequelize.transaction(async (transaction)=> {
 
@@ -136,7 +138,7 @@ module.exports = {
         customer_id, 
         customer_address_id, 
         delivery_firm_id, 
-        route_id, 
+        delivery_route_id, 
         number, 
         delivery_method, 
         payment_method, 
@@ -147,22 +149,20 @@ module.exports = {
         status: Order.STATUS_PENDING,
         store_status: Order.STORE_STATUS_PENDING,
         delivery_firm_status: (delivery_method === Order.DELIVERY_METHOD_DOOR ? Order.DELIVERY_FIRM_STATUS_PENDING : undefined),
-        payment_status: Order.PAYMENT_STATUS_PENDING
       }, 
       { transaction }
       );
 
       for (let { 
         product_variant_id, 
-        route_weight_id, 
-        route_duration_id, 
+        delivery_weight_id, 
+        delivery_duration_id, 
         discount_product_id, 
         quantity, 
         amount, 
         weight, 
         discount_amount, 
-        delivery_duration_fee, 
-        delivery_weight_fee 
+        delivery_fee, 
       } of order_items) {
         await OrderItem.create(
           { 
@@ -171,51 +171,27 @@ module.exports = {
             quantity, 
             amount, 
             weight,
-            route_weight_id: route_weight_id ?? undefined,
-            route_duration_id: route_duration_id ?? undefined,
+            delivery_fee: delivery_fee ?? 0,
+            discount_amount: discount_amount ?? 0,
+            delivery_weight_id: delivery_weight_id ?? undefined,
+            delivery_duration_id: delivery_duration_id ?? undefined,
             discount_product_id: discount_product_id ?? undefined,
-            discount_amount: discount_amount ?? undefined,
-            delivery_duration_fee: delivery_duration_fee ?? undefined,
-            delivery_weight_fee: delivery_weight_fee ?? undefined
           },
           { transaction }
         );
       }
 
-      const customer = await Customer.findOne({
-        attributes: ['user_id'],
-        where: { id: customer_id },
-        transaction
-      });
-
-      await Transaction.create(
-        { 
-          application: false, 
-          order_id: order.id,
-          user_id: customer.user_id, 
-          reference: transaction_reference,
-          amount: -order.total,
-          status: Transaction.STATUS_PENDING,
-          type: Transaction.TYPE_PAYMENT
-        }, 
-        { transaction }
-      );
-
       return order;
     });
   },
   
-  updateStatusToCancel(order, referenceGenerator) {
+  updateStatusToCancel(order) {
     return sequelize.transaction(async (transaction)=> {
 
       const orderUpdate = await Order.update(
         { status: Order.STATUS_CANCELLED }, 
         { where: { id: order.id }, transaction }
       );
-
-      if (order.payment_status === Order.PAYMENT_STATUS_APPROVED) {
-        await Transaction.create(await Transaction.issueOrderRefund(order, referenceGenerator), { transaction });  
-      }
 
       return orderUpdate;
     });
@@ -247,20 +223,11 @@ module.exports = {
     });
   },
 
-  updateStoreStatusToDeclined(order, referenceGenerator) {
-    return sequelize.transaction(async (transaction)=> {
-
-      const orderUpdate = await Order.update(
-        { store_status: Order.STORE_STATUS_DECLINED, status: Order.STATUS_DECLINED }, 
-        { where: { id: order.id }, transaction }
-      );
-      
-      if (order.payment_status === Order.PAYMENT_STATUS_APPROVED) {
-        await Transaction.create(await Transaction.issueOrderRefund(order, referenceGenerator), { transaction });
-      }
-      
-      return orderUpdate;
-    });
+  updateStoreStatusToDeclined(order) {
+    return Order.update(
+      { store_status: Order.STORE_STATUS_DECLINED, status: Order.STATUS_DECLINED }, 
+      { where: { id: order.id } }
+    );
   },
 
   updateDeliveryFirmStatusToAccepted(order, referenceGenerator) {
@@ -280,7 +247,7 @@ module.exports = {
       } else {
 
         orderUpdate = await Order.update(
-          { delivery_firm_status: Order.DELIVERY_FIRM_STATUS_ACCEPTED, }, 
+          { delivery_firm_status: Order.DELIVERY_FIRM_STATUS_ACCEPTED }, 
           { where: { id: order.id }, transaction }
         );
       }
@@ -289,21 +256,11 @@ module.exports = {
     });
   },
 
-  updateDeliveryFirmStatusToDeclined(order, referenceGenerator) {
-    return sequelize.transaction(async (transaction)=> {
-
-      const orderUpdate = await Order.update(
-        { delivery_firm_status: Order.DELIVERY_FIRM_STATUS_DECLINED, status: Order.STATUS_DECLINED }, 
-        { where: { id: order.id }, transaction }
-      );
-      
-      if (order.payment_status === Order.PAYMENT_STATUS_APPROVED) {
-        await Transaction.create(await Transaction.issueOrderRefund(order, referenceGenerator), { transaction });
-      }
-      
-      return orderUpdate;
-    });
+  updateDeliveryFirmStatusToDeclined(order) {
+    return Order.update(
+      { delivery_firm_status: Order.DELIVERY_FIRM_STATUS_DECLINED, status: Order.STATUS_DECLINED }, 
+      { where: { id: order.id } }
+    );
   },
-
-
+  
 };

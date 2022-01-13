@@ -24,6 +24,7 @@ const WithdrawalAccountController = require('../controllers/WithdrawalAccountCon
 const CustomerAndAdminPermissionMiddleware = require('../middlewares/permissions/customer/CustomerAndAdminPermissionMiddleware');
 const WithdrawalAccountUpdateValidation = require('../validation/withdrawal_account/WithdrawalAccountUpdateValidation');
 const CustomerLoginPermissionMiddleware = require('../middlewares/permissions/customer/CustomerLoginPermissionMiddleware');
+const OrderController = require('../controllers/OrderController');
 
 const router = express.Router();
 
@@ -36,6 +37,8 @@ const withdrawalAccountController = new WithdrawalAccountController();
 const favoriteController = new FavoriteController();
 
 const savedCartController = new SavedCartController();
+
+const orderController = new OrderController();
 
 router.post(
   '/register', 
@@ -134,6 +137,15 @@ router.get(
   CustomerAndAdminPermissionMiddleware,
   PaginationMiddleware,
   savedCartController.getListByCustomer
+);
+
+router.get(
+  '/:id(\\d+)/order/list', 
+  CustomerFetchMiddleware,
+  AuthMiddleware, 
+  CustomerAndAdminPermissionMiddleware,
+  PaginationMiddleware,
+  orderController.getListByCustomer
 );
 
 router.get(
