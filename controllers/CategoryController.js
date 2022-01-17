@@ -27,9 +27,11 @@ module.exports = class CategoryController {
 
     try {
 
-      const { category } = req.data;
+      const _category = req.data.category;
       
-      await CategoryRepository.update(category, req.body);
+      await CategoryRepository.update(_category, req.body);
+
+      const category = await CategoryRepository.get(_category.id);
       
       const response = new Response(Response.SUCCESS, req.__('_updated._category'), category);
 
@@ -44,9 +46,11 @@ module.exports = class CategoryController {
 
     try {
 
-      const { category } = req.data;
+      const _category = req.data.category;
 
-      await CategoryRepository.updatePhoto(category, req.file.filename);
+      await CategoryRepository.updatePhoto(_category, req.file.filename);
+
+      const category = await CategoryRepository.get(_category.id);
 
       const response = new Response(Response.SUCCESS, req.__('_updated._photo'), category);
 

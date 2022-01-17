@@ -3,6 +3,8 @@ const InternalServerException = require("../http/exceptions/InternalServerExcept
 const Response = require("../http/Response");
 const Pagination = require("../http/Pagination");
 const ProductRepository = require("../repository/ProductRepository");
+const ReviewRepository = require("../repository/ReviewRepository");
+const FavoriteRepository = require("../repository/FavoriteRepository");
 
 
 module.exports = class ProductController {
@@ -73,11 +75,29 @@ module.exports = class ProductController {
     }
   }
 
-  get(req, res) {
+  async get(req, res, next) {
 
-    const response = new Response(Response.SUCCESS, req.__('_fetched._product'), req.data.product);
+    try {
 
-    res.status(StatusCodes.OK).send(response);
+      const { product } = req.data;
+
+      product.review_summary = await ReviewRepository.getSummaryForProduct(product);
+      
+      if (req.auth !== undefined && req.auth.customerId !== undefined) {
+        
+        const fav = await FavoriteRepository.getIdByProductAndCustomer(product.id, req.auth.customerId);
+
+        product.setDataValue('favorite', fav);
+
+      }
+      
+      const response = new Response(Response.SUCCESS, req.__('_fetched._product'), product);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      next(new InternalServerException(error));
+    }
   }
 
   async getListByStore(req, res, next) {
@@ -95,7 +115,6 @@ module.exports = class ProductController {
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      console.error(error)
       next(new InternalServerException(error));
     }
   }

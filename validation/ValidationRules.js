@@ -2,6 +2,7 @@
 const InternalServerException = require("../http/exceptions/InternalServerException");
 const Address = require("../models/Address");
 const Category = require("../models/Category");
+const Review = require("../models/Review");
 const User = require("../models/User");
 const AdministratorRepository = require("../repository/AdministratorRepository");
 const CustomerRepository = require("../repository/CustomerRepository");
@@ -96,6 +97,12 @@ module.exports = {
   categoryTypeIsIn: {
     bail: true,
     options: [[Category.TYPE_STORE, Category.TYPE_PRODUCT]],
+    errorMessage: (value, { req })=> req.__('_error._form._field_invalid')
+  },
+
+  reviewRatingIsIn: {
+    bail: true,
+    options: [Review.getRatings()],
     errorMessage: (value, { req })=> req.__('_error._form._field_invalid')
   },
 

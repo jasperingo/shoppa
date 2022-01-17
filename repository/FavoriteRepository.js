@@ -37,6 +37,13 @@ module.exports = {
     });
   },
 
+  getIdByProductAndCustomer(product_id, customer_id) {
+    return Favorite.findOne({
+      attributes: ['id'],
+      where: { product_id, customer_id },
+    });
+  },
+
   getListByCustomer(customer, offset, limit) {
     return sequelize.transaction(async (transaction)=> {
 

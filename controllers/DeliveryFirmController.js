@@ -3,6 +3,7 @@ const InternalServerException = require("../http/exceptions/InternalServerExcept
 const Pagination = require("../http/Pagination");
 const Response = require("../http/Response");
 const DeliveryFirmRepository = require("../repository/DeliveryFirmRepository");
+const ReviewRepository = require("../repository/ReviewRepository");
 const Hash = require("../security/Hash");
 const JWT = require("../security/JWT");
 
@@ -107,12 +108,22 @@ module.exports = class DeliveryFirmController {
       next(new InternalServerException(error));
     }
   }
+  
+  async get(req, res, next) {
 
-  get(req, res) {
+    try {
 
-    const response = new Response(Response.SUCCESS, req.__('_fetched._delivery_firm'), req.data.deliveryFirm);
+      const { deliveryFirm } = req.data;
 
-    res.status(StatusCodes.OK).send(response);
+      deliveryFirm.review_summary = await ReviewRepository.getSummaryForDeliveryFirm(deliveryFirm);
+
+      const response = new Response(Response.SUCCESS, req.__('_fetched._delivery_firm'), deliveryFirm);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      next(new InternalServerException(error));
+    }
   }
 
   async getList(req, res, next) {

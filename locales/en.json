@@ -17,7 +17,8 @@
     "_discount_product": "Discount product created",
     "_order": "Order created",
     "_transaction": "Transaction created",
-    "_password_reset": "Password reset created"
+    "_password_reset": "Password reset created",
+    "_review": "Review created"
   },
   
   "_updated": {
@@ -40,7 +41,8 @@
     "_discount": "Discount updated",
     "_order": "Order updated",
     "_order_item": "Order item updated",
-    "_transaction": "Transaction updated"
+    "_transaction": "Transaction updated",
+    "_review": "Review updated"
   },
 
   "_deleted": {
@@ -52,7 +54,8 @@
     "_favorite": "Favorite deleted",
     "_saved_cart": "Saved cart deleted",
     "_discount": "Discount deleted",
-    "_discount_product": "Discount product deleted"
+    "_discount_product": "Discount product deleted",
+    "_review": "Review deleted"
   },
 
   "_fetched": {
@@ -88,7 +91,8 @@
     "_discount": "Discount list fetched",
     "_discount_product": "Discount product list fetched",
     "_order": "Order list fetched",
-    "_transaction": "Transaction list fetched"
+    "_transaction": "Transaction list fetched",
+    "_review": "Review list fetched"
   },
 
   "_login": "Login successfully",
@@ -119,6 +123,7 @@
       "_route_cant_be_a_link": "This route cannot be made a link route",
       
       "_favorite_exists": "This favorite already exists",
+      "_review_exists": "This review already exists",
 
       "_name_exists": "This name already exists",
       "_name_invalid": "This name is invalid",

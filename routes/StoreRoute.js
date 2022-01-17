@@ -31,6 +31,7 @@ const StoreAndAdminPermissionMiddleware = require('../middlewares/permissions/st
 const CustomerUpdateStatusValidation = require('../validation/customer/CustomerUpdateStatusValidation');
 const OrderController = require('../controllers/OrderController');
 const TransactionController = require('../controllers/TransactionController');
+const ReviewController = require('../controllers/ReviewController');
 
 const router = express.Router();
 
@@ -51,6 +52,8 @@ const discountController = new DiscountController();
 const orderController = new OrderController();
 
 const transactionController = new TransactionController();
+
+const reviewController = new ReviewController();
 
 router.post(
   '/register', 
@@ -196,6 +199,15 @@ router.get(
   AuthMiddleware,
   StoreAndAdminPermissionMiddleware,
   transactionController.getBalanceByStore
+);
+
+router.get(
+  '/:id(\\d+)/review/list', 
+  StoreFetchMiddleware,
+  OptionalAuthMiddleware,
+  StoreFetchPermissionMiddleware,
+  PaginationMiddleware,
+  reviewController.getListByStore
 );
 
 router.get(

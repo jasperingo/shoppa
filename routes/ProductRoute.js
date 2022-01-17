@@ -2,12 +2,14 @@
 const express = require('express');
 const { checkSchema } = require('express-validator');
 const ProductController = require('../controllers/ProductController');
+const ReviewController = require('../controllers/ReviewController');
 const Files = require('../http/Files');
 const AuthMiddleware = require('../middlewares/AuthMiddleware');
 const ProductFetchMiddleware = require('../middlewares/fetch/ProductFetchMiddleware');
 const FileUploadMiddleware = require('../middlewares/FileUploadMiddleware');
 const FileUploadValidationMiddleware = require('../middlewares/FileUploadValidationMiddleware');
 const OptionalAuthMiddleware = require('../middlewares/OptionalAuthMiddleware');
+const PaginationMiddleware = require('../middlewares/PaginationMiddleware');
 const ProductAddPermissionMiddleware = require('../middlewares/permissions/product/ProductAddPermissionMiddleware');
 const ProductFetchPermissionMiddleware = require('../middlewares/permissions/product/ProductFetchPermissionMiddleware');
 const ProductUpdatePermissionMiddleware = require('../middlewares/permissions/product/ProductUpdatePermissionMiddleware');
@@ -18,6 +20,8 @@ const ProductUpdateValidation = require('../validation/product/ProductUpdateVali
 const router = express.Router();
 
 const controller = new ProductController();
+
+const reviewController = new ReviewController();
 
 router.post(
   '/create', 
@@ -54,6 +58,15 @@ router.delete(
   AuthMiddleware,
   ProductUpdatePermissionMiddleware,
   controller.delete
+);
+
+router.get(
+  '/:id(\\d+)/review/list', 
+  ProductFetchMiddleware, 
+  OptionalAuthMiddleware,
+  ProductFetchPermissionMiddleware,
+  PaginationMiddleware,
+  reviewController.getListByProduct
 );
 
 router.get(

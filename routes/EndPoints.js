@@ -21,6 +21,7 @@ const OrderRoute = require('./OrderRoute');
 const OrderItemRoute = require('./OrderItemRoute');
 const TransactionRoute = require('./TransactionRoute');
 const PasswordResetRoute = require('./PasswordResetRoute');
+const ReviewRoute = require('./ReviewRoute');
 
 const router = express.Router();
 
@@ -65,6 +66,8 @@ router.use('/order-item', OrderItemRoute);
 router.use('/transaction', TransactionRoute);
 
 router.use('/password-reset', PasswordResetRoute);
+
+router.use('/review', ReviewRoute);
 
 module.exports = router;
 

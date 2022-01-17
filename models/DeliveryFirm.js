@@ -19,6 +19,10 @@ DeliveryFirm.init({
     }
   },
 
+  review_summary: {
+    type: DataTypes.VIRTUAL,
+  },
+
 },
 {
   sequelize,

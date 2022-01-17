@@ -2,6 +2,7 @@ const { StatusCodes } = require("http-status-codes");
 const InternalServerException = require("../http/exceptions/InternalServerException");
 const Pagination = require("../http/Pagination");
 const Response = require("../http/Response");
+const ReviewRepository = require("../repository/ReviewRepository");
 const StoreRepository = require("../repository/StoreRepository");
 const Hash = require("../security/Hash");
 const JWT = require("../security/JWT");
@@ -107,11 +108,21 @@ module.exports = class StoreController {
     }
   }
   
-  get(req, res) {
+  async get(req, res, next) {
 
-    const response = new Response(Response.SUCCESS, req.__('_fetched._store'), req.data.store);
+    try {
 
-    res.status(StatusCodes.OK).send(response);
+      const { store } = req.data;
+
+      store.review_summary = await ReviewRepository.getSummaryForStore(store);
+
+      const response = new Response(Response.SUCCESS, req.__('_fetched._store'), store);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      next(new InternalServerException(error));
+    }
   }
 
   async getList(req, res, next) {

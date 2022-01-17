@@ -29,6 +29,7 @@ const CustomerUpdateStatusValidation = require('../validation/customer/CustomerU
 const OrderController = require('../controllers/OrderController');
 const DeliveryFirmAndAdminPermissionMiddleware = require('../middlewares/permissions/delivery_firm/DeliveryFirmAndAdminPermissionMiddleware');
 const TransactionController = require('../controllers/TransactionController');
+const ReviewController = require('../controllers/ReviewController');
 
 const router = express.Router();
 
@@ -45,6 +46,8 @@ const routeController = new RouteController();
 const orderController = new OrderController();
 
 const transactionController = new TransactionController();
+
+const reviewController = new ReviewController();
 
 router.post(
   '/register', 
@@ -171,6 +174,15 @@ router.get(
   AuthMiddleware, 
   DeliveryFirmAndAdminPermissionMiddleware,
   transactionController.getBalanceByDeliveryFirm
+);
+
+router.get(
+  '/:id(\\d+)/review/list', 
+  DeliveryFirmFetchMiddleware,
+  OptionalAuthMiddleware,
+  DeliveryFirmFetchPermissionMiddleware,
+  PaginationMiddleware,
+  reviewController.getListByDeliveryFirm
 );
 
 router.get(
