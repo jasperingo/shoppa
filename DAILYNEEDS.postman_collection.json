@@ -1080,12 +1080,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{BASE_URL}}store/7",
+							"raw": "{{BASE_URL}}store/5",
 							"host": [
 								"{{BASE_URL}}store"
 							],
 							"path": [
-								"7"
+								"5"
 							]
 						}
 					},
@@ -1375,6 +1375,25 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "STORE/REVIEW/LIST",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}store/7/review/list",
+							"host": [
+								"{{BASE_URL}}store"
+							],
+							"path": [
+								"7",
+								"review",
+								"list"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"auth": {
@@ -1592,15 +1611,25 @@
 				{
 					"name": "PRODUCT/GET",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{CUSTOMER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{BASE_URL}}product/7",
+							"raw": "{{BASE_URL}}product/13",
 							"host": [
 								"{{BASE_URL}}product"
 							],
 							"path": [
-								"7"
+								"13"
 							]
 						}
 					},
@@ -1629,6 +1658,31 @@
 							"path": [
 								"11",
 								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PRODUCT/REVIEW/LIST",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}product/7/review/list?page=1",
+							"host": [
+								"{{BASE_URL}}product"
+							],
+							"path": [
+								"7",
+								"review",
+								"list"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								}
 							]
 						}
 					},
@@ -2044,6 +2098,25 @@
 								"3",
 								"transaction",
 								"balance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELIVERY-FIRM/REVIEW/LIST",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}delivery-firm/3/review/list",
+							"host": [
+								"{{BASE_URL}}delivery-firm"
+							],
+							"path": [
+								"3",
+								"review",
+								"list"
 							]
 						}
 					},
@@ -3622,7 +3695,164 @@
 		},
 		{
 			"name": "REVIEW",
-			"item": []
+			"item": [
+				{
+					"name": "REVIEW/PRODUCT/CREATE",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"product_id\": 7,\r\n  \"rating\": 4,\r\n  \"description\": \"Great product\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}review/product/create",
+							"host": [
+								"{{BASE_URL}}review"
+							],
+							"path": [
+								"product",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "REVIEW/STORE/CREATE",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"store_id\": 7,\r\n  \"rating\": 5,\r\n  \"description\": \"Great store service\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}review/store/create",
+							"host": [
+								"{{BASE_URL}}review"
+							],
+							"path": [
+								"store",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "REVIEW/DELIVERY-FIRM/CREATE",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"delivery_firm_id\": 3,\r\n  \"rating\": 3,\r\n  \"description\": \"Good delivery service\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}review/delivery-firm/create",
+							"host": [
+								"{{BASE_URL}}review"
+							],
+							"path": [
+								"delivery-firm",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "REVIEW/UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"rating\": 4,\r\n  \"description\": \"The service was ok\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}review/5/update",
+							"host": [
+								"{{BASE_URL}}review"
+							],
+							"path": [
+								"5",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "REVIEW/DELETE",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}review/5/delete",
+							"host": [
+								"{{BASE_URL}}review"
+							],
+							"path": [
+								"5",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{CUSTOMER_TOKEN}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
 		}
 	],
 	"auth": {

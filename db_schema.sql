@@ -459,7 +459,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES (1,1,7,3,7,1,'0215876899','processing','accepted','accepted','door','cashless','approved',NULL,15700,100,3140,'Add extra pepper to food','2022-01-12 19:01:44'),(2,1,7,NULL,NULL,NULL,'0670089684','cancelled','pending',NULL,'store','cashless','approved','failed',24000,0,0,NULL,'2022-01-12 22:02:59');
+INSERT INTO `orders` VALUES (1,1,7,3,7,1,'0215876899','fulfilled','accepted','accepted','door','cashless','approved',NULL,15700,100,3140,'Add extra pepper to food','2022-01-12 19:01:44'),(2,1,7,NULL,NULL,NULL,'0670089684','cancelled','pending',NULL,'store','cashless','approved','failed',24000,0,0,NULL,'2022-01-12 22:02:59');
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -561,6 +561,45 @@ LOCK TABLES `products` WRITE;
 /*!40000 ALTER TABLE `products` DISABLE KEYS */;
 INSERT INTO `products` VALUES (7,7,6,'Vanilla cake pro','It is very sweet with vanilla taste','UIDSHSDFKSD','product-7.jpg',NULL,'2021-12-27 21:10:07'),(8,7,6,'strawberry cake','It is as sweet as strawberry','UIDSHSD334D',NULL,NULL,'2021-12-27 21:27:40'),(9,5,9,'Egusi and goat meat','Sweet soup','UIDSHSD334Q',NULL,NULL,'2021-12-29 02:38:24'),(10,5,9,'Egusi and Turkey meat','Sweet soup','UIDSHSD33AA',NULL,NULL,'2022-01-01 19:13:36'),(11,5,9,'Okra','Sweet soup','UIDSHSD3WQA',NULL,'2022-01-01 20:08:10','2022-01-01 19:55:23'),(12,5,9,'Ofo soup','Sweet OFO soup','UIDSHSD3WAA',NULL,NULL,'2022-01-04 18:50:17'),(13,7,9,'Hot dog','Best hot dog in town',NULL,NULL,NULL,'2022-01-11 11:48:36');
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `reviews`
+--
+
+DROP TABLE IF EXISTS `reviews`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `reviews` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `customer_id` bigint(20) NOT NULL,
+  `product_id` bigint(20) DEFAULT NULL,
+  `store_id` bigint(20) DEFAULT NULL,
+  `delivery_firm_id` bigint(20) DEFAULT NULL,
+  `rating` enum('1','2','3','4','5') NOT NULL,
+  `description` varchar(50) NOT NULL,
+  `created_at` datetime DEFAULT (now()),
+  PRIMARY KEY (`id`),
+  KEY `customer_id` (`customer_id`),
+  KEY `product_id` (`product_id`),
+  KEY `store_id` (`store_id`),
+  KEY `delivery_firm_id` (`delivery_firm_id`),
+  CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`),
+  CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`),
+  CONSTRAINT `reviews_ibfk_3` FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`),
+  CONSTRAINT `reviews_ibfk_4` FOREIGN KEY (`delivery_firm_id`) REFERENCES `delivery_firms` (`id`),
+  CONSTRAINT `reviews_chk_1` CHECK ((`rating` between 1 and 5))
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `reviews`
+--
+
+LOCK TABLES `reviews` WRITE;
+/*!40000 ALTER TABLE `reviews` DISABLE KEYS */;
+INSERT INTO `reviews` VALUES (3,1,7,NULL,NULL,'4','Great product','2022-01-17 16:59:18'),(4,1,NULL,7,NULL,'5','Great store service','2022-01-17 17:26:46'),(6,1,NULL,NULL,3,'3','Good delivery service','2022-01-17 17:59:25');
+/*!40000 ALTER TABLE `reviews` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -817,4 +856,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-01-13 13:36:00
+-- Dump completed on 2022-01-17 20:27:06
