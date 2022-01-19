@@ -81,6 +81,21 @@ module.exports = class AddressController {
     }
   }
 
+  async delete(req, res, next) {
+    
+    try {
+
+      await AddressRepository.deleteForCustomer(req.data.address);
+
+      const response = new Response(Response.SUCCESS, req.__('_deleted._address'));
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch (error) {
+      next(new InternalServerException(error));
+    }
+  }
+
   get(req, res) {
 
     const response = new Response(Response.SUCCESS, req.__('_fetched._address'), req.data.address);

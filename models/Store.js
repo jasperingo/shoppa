@@ -13,6 +13,10 @@ Store.init({
     autoIncrement: true
   },
 
+  updated_at: {
+    type: DataTypes.DATE
+  },
+
   href: {
     type: DataTypes.VIRTUAL,
     get() {
@@ -27,7 +31,9 @@ Store.init({
 },
 {
   sequelize,
-  timestamps: false,
+  timestamps: true,
+  createdAt: false,
+  updatedAt: 'updated_at',
   tableName: 'stores',
   modelName: 'store'
 });

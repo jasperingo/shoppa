@@ -47,12 +47,7 @@ module.exports = {
   getListByCustomer(customer, offset, limit) {
     return sequelize.transaction(async (transaction)=> {
 
-      const count = await Favorite.count({
-        where: { customer_id: customer.id },
-        transaction
-      });
-
-      const rows = await Favorite.findAll({
+      const { count, rows } = await Favorite.findAndCountAll({
         where: { customer_id: customer.id },
         include: {
           model: Product,
@@ -62,15 +57,6 @@ module.exports = {
               include: {
                 model: User,
                 attributes: User.GET_ATTR
-              }
-            },
-            {
-              model: ProductVariant,
-              attributes: ['price'],
-              where: {
-                deleted_at: {
-                  [Op.is]: null
-                }
               }
             },
             {
@@ -88,6 +74,16 @@ module.exports = {
         limit,
         transaction
       });
+
+      for (let [i, fav] of rows.entries()) {
+        let variant = await ProductVariant.findOne({
+          attributes: ['id', 'price'],
+          where: { product_id: fav.product.id },
+          order: [['price', 'ASC']],
+        });
+        
+        rows[i].product.setDataValue('product_variants', (variant === null ? [] : [variant]));
+      }
 
       return { count, rows };
     });

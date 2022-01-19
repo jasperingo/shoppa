@@ -36,6 +36,10 @@ Customer.init({
     allowNull: false
   },
 
+  updated_at: {
+    type: DataTypes.DATE
+  },
+
   href: {
     type: DataTypes.VIRTUAL,
     get() {
@@ -45,7 +49,9 @@ Customer.init({
 },
 {
   sequelize,
-  timestamps: false,
+  timestamps: true,
+  createdAt: false,
+  updatedAt: 'updated_at',
   tableName: 'customers',
   modelName: 'customer',
 });

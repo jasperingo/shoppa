@@ -26,6 +26,8 @@ DiscountProduct.init({
 {
   sequelize,
   timestamps: false,
+  paranoid: true,
+  deletedAt: 'deleted_at',
   tableName: 'discount_products',
   modelName: 'discount_product'
 });

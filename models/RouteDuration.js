@@ -56,6 +56,10 @@ RouteDuration.init({
     allowNull: false
   },
 
+  updated_at: {
+    type: DataTypes.DATE
+  },
+
   deleted_at: {
     type: DataTypes.DATE
   },
@@ -67,7 +71,11 @@ RouteDuration.init({
 },
 {
   sequelize,
-  timestamps: false,
+  timestamps: true,
+  createdAt: false,
+  paranoid: true,
+  updatedAt: 'updated_at',
+  deletedAt: 'deleted_at',
   tableName: 'delivery_route_durations',
   modelName: 'delivery_route_duration'
 });

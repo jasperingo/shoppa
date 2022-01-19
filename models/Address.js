@@ -47,6 +47,14 @@ Address.init({
     type: DataTypes.ENUM(Address.TYPE_DEFAULT, Address.TYPE_SUB, Address.TYPE_PICK_UP),
     allowNull: false
   },
+
+  updated_at: {
+    type: DataTypes.DATE
+  },
+
+  deleted_at: {
+    type: DataTypes.DATE
+  },
   
   created_at: {
     type: DataTypes.DATE
@@ -62,7 +70,11 @@ Address.init({
 },
 {
   sequelize,
-  timestamps: false,
+  timestamps: true,
+  createdAt: false,
+  paranoid: true,
+  updatedAt: 'updated_at',
+  deletedAt: 'deleted_at',
   tableName: 'addresses',
   modelName: 'address',
 });

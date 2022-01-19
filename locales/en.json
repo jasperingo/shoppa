@@ -46,6 +46,7 @@
   },
 
   "_deleted": {
+    "_address": "Address deleted",
     "_product": "Product deleted",
     "_product_variant": "Product variant deleted",
     "_route": "Route deleted",
@@ -143,7 +144,9 @@
       "_password_confirmation_not_match": "This field do not match with password",
 
       "_address_type_not_default": "Address type has to be default",
-
+      
+      "_address_type_default_delete": "Address of type default cannot be deleted",
+      
       "_opening_hour_is_gte": "Opening hour cannot be greater than or equal to closing hour",
 
       "_minimium_is_gte": "Minimium cannot be greater than or equal to maximium",

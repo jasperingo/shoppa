@@ -25,6 +25,10 @@ Route.init({
     type: DataTypes.BOOLEAN
   },
 
+  updated_at: {
+    type: DataTypes.DATE
+  },
+
   deleted_at: {
     type: DataTypes.DATE
   },
@@ -36,7 +40,11 @@ Route.init({
 },
 {
   sequelize,
-  timestamps: false,
+  timestamps: true,
+  createdAt: false,
+  paranoid: true,
+  updatedAt: 'updated_at',
+  deletedAt: 'deleted_at',
   tableName: 'delivery_routes',
   modelName: 'delivery_route'
 });

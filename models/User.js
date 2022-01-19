@@ -69,6 +69,10 @@ User.init({
     allowNull: false
   },
 
+  updated_at: {
+    type: DataTypes.DATE
+  },
+
   created_at: {
     type: DataTypes.DATE
   }
@@ -76,7 +80,9 @@ User.init({
 },
 {
   sequelize,
-  timestamps: false,
+  timestamps: true,
+  createdAt: false,
+  updatedAt: 'updated_at',
   tableName: 'users',
   modelName: 'user'
 });

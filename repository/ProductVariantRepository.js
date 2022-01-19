@@ -1,6 +1,8 @@
 const { Op } = require("sequelize");
 const Product = require("../models/Product");
 const ProductVariant = require("../models/ProductVariant");
+const SavedCartItem = require("../models/SavedCartItem");
+const sequelize = require("./DB");
 
 
 module.exports = {
@@ -8,10 +10,7 @@ module.exports = {
   async idExists(id) {
     const product = await ProductVariant.findOne({ 
       attributes: ['id'], 
-      where: { 
-        id, 
-        deleted_at: { [Op.is]: null } 
-      } 
+      where: { id } 
     });
     return product !== null;
   },
@@ -19,11 +18,7 @@ module.exports = {
   async idExistsForStore(id, store_id) {
     const product = await ProductVariant.findOne({ 
       attributes: ['id'], 
-      where: { 
-        id, 
-        deleted_at: { [Op.is]: null },
-        '$product.store_id$': store_id
-      },
+      where: { id, '$product.store_id$': store_id },
       include: {
         model: Product,
         attributes: ['id']
@@ -35,13 +30,7 @@ module.exports = {
   async nameExists(name, product_id) {
     const product = await ProductVariant.findOne({ 
       attributes: ['id'], 
-      where: { 
-        name, 
-        product_id,
-        deleted_at: {
-          [Op.is]: null
-        }
-      } 
+      where: { name, product_id } 
     });
     return product !== null;
   },
@@ -52,32 +41,19 @@ module.exports = {
       where: { 
         name, 
         product_id: productVariant.product_id,
-        deleted_at: {
-          [Op.is]: null
-        }, 
-        id: {
-          [Op.not]: productVariant.id
-        }
+        id: { [Op.not]: productVariant.id }
       } 
     });
     return product !== null;
   },
-
+  
   get(id) {
-    return ProductVariant.findOne({ 
-      where: { 
-        id,
-        deleted_at: { [Op.is]: null }
-      } 
-    });
+    return ProductVariant.findByPk(id);
   },
   
   getWithProduct(id) {
     return ProductVariant.findOne({ 
-      where: { 
-        id,
-        deleted_at: { [Op.is]: null }
-      },
+      where: { id },
       include: {
         model: Product
       }
@@ -93,9 +69,13 @@ module.exports = {
   },
 
   delete(productVariant) {
-    return ProductVariant.update({ deleted_at: Date.now() }, { where: { id: productVariant.id } });
+    return sequelize.transaction(async (transaction)=> {
+      return await Promise.all([
+        ProductVariant.destroy({ where: { id: productVariant.id }, transaction }),
+        SavedCartItem.destroy({ where: { product_variant_id: productVariant.id }, transaction }),
+      ]);
+    });
   }
-
 
 };
 

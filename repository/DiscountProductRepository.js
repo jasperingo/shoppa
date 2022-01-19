@@ -9,10 +9,7 @@ module.exports = {
   async idExists(id) {
     const product = await DiscountProduct.findOne({ 
       attributes: ['id'], 
-      where: { 
-        id, 
-        deleted_at: { [Op.is]: null }
-      } 
+      where: { id } 
     });
     return product !== null;
   },
@@ -20,30 +17,18 @@ module.exports = {
   async idExistsForProduct(product_id, discount_id) {
     const product = await DiscountProduct.findOne({ 
       attributes: ['id'], 
-      where: { 
-        product_id, 
-        discount_id,
-        deleted_at: { [Op.is]: null }
-      } 
+      where: { product_id, discount_id } 
     });
     return product !== null;
   },
 
   get(id) {
-    return DiscountProduct.findOne({
-      where: { 
-        id,
-        deleted_at: { [Op.is]: null }
-      }
-    });
+    return DiscountProduct.findByPk(id);
   },
 
   getWithDiscount(id) {
     return DiscountProduct.findOne({
-      where: { 
-        id,
-        deleted_at: { [Op.is]: null }
-      },
+      where: { id },
       include: {
         model: Discount
       }
@@ -52,10 +37,7 @@ module.exports = {
 
   getListByDiscount(discount, offset, limit) {
     return DiscountProduct.findAndCountAll({
-      where: { 
-        discount_id: discount.id,
-        deleted_at: { [Op.is]: null }
-      },
+      where: { discount_id: discount.id },
       include: {
         model: Product,
         attributes: Product.GET_ATTR
@@ -70,7 +52,6 @@ module.exports = {
     return DiscountProduct.findAll({
       where: { 
         product_id,
-        deleted_at: { [Op.is]: null },
         '$discount.end_date$': { [Op.gt]: sequelize.fn('now') },
         '$discount.minimium_required_amount$': {
           [Op.or]: {
@@ -96,7 +77,7 @@ module.exports = {
   },
 
   delete(discountProduct) {
-    return DiscountProduct.update({ deleted_at: Date.now() }, { where: { id: discountProduct.id } });
+    return DiscountProduct.destroy({ where: { id: discountProduct.id } });
   }
 
 };

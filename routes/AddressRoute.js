@@ -8,6 +8,7 @@ const AddressAddPermissionMiddleware = require('../middlewares/permissions/adddr
 const AddressUpdatePermissionMiddleware = require('../middlewares/permissions/adddres/AddressUpdatePermissionMiddleware');
 const ValidationMiddleware = require('../middlewares/ValidationMiddleware');
 const CustomerAddressAddValidation = require('../validation/address/CustomerAddressAddValidation');
+const CustomerAddressDeleteValidation = require('../validation/address/CustomerAddressDeleteValidation');
 const CustomerAddressUpdateValidation = require('../validation/address/CustomerAddressUpdateValidation');
 
 const router = express.Router();
@@ -31,6 +32,16 @@ router.put(
   checkSchema(CustomerAddressUpdateValidation), 
   ValidationMiddleware(), 
   controller.update
+);
+
+router.delete(
+  '/:id(\\d+)/delete',
+  AddressFetchMiddleware, 
+  AuthMiddleware, 
+  AddressUpdatePermissionMiddleware,
+  checkSchema(CustomerAddressDeleteValidation), 
+  ValidationMiddleware(), 
+  controller.delete
 );
 
 router.get(

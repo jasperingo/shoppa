@@ -74,12 +74,10 @@ module.exports = {
 
   delete(savedCart) {
     return sequelize.transaction(async (transaction)=> {
-
-      for (let item of savedCart.saved_cart_items) {
-        await SavedCartItem.destroy({ where: { id: item.id }, transaction });
-      }
-      
-      return await SavedCart.destroy({ where: { id: savedCart.id }, transaction });
+      return await Promise.all([
+        SavedCartItem.destroy({ where: { saved_cart_id: savedCart.id }, transaction }),
+        SavedCart.destroy({ where: { id: savedCart.id }, transaction })
+      ]);
     });
   }
 

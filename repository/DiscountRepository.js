@@ -31,10 +31,7 @@ module.exports = {
 
   get(id) {
     return Discount.findOne({
-      where: { 
-        id,
-        deleted_at: { [Op.is]: null }
-      },
+      where: { id },
       include: {
         model: Store,
         include: {
@@ -47,12 +44,7 @@ module.exports = {
 
   getListByStore(store, offset, limit) {
     return Discount.findAndCountAll({
-      where: { 
-        store_id: store.id,
-        deleted_at: {
-          [Op.is]: null
-        }
-      },
+      where: { store_id: store.id },
       order: [['created_at', 'DESC']],
       offset,
       limit,
@@ -91,19 +83,9 @@ module.exports = {
   
   delete(discount) {
     return sequelize.transaction(async (transaction)=> {
-
-      const deleted_at = Date.now();
-
       return await Promise.all([
-        Discount.update(
-          { deleted_at }, 
-          { where: { id: discount.id }, transaction }
-        ),
-        
-        DiscountProduct.update(
-          { deleted_at }, 
-          { where: { discount_id: discount.id, deleted_at: { [Op.is]: null } }, transaction }
-        )
+        Discount.destroy({ where: { id: discount.id }, transaction }),
+        DiscountProduct.destroy({ where: { discount_id: discount.id }, transaction })
       ]);
     });
   }

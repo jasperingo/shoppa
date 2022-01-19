@@ -27,6 +27,10 @@ RouteWeight.init({
     allowNull: false
   },
 
+  updated_at: {
+    type: DataTypes.DATE
+  },
+
   deleted_at: {
     type: DataTypes.DATE
   },
@@ -38,7 +42,11 @@ RouteWeight.init({
 },
 {
   sequelize,
-  timestamps: false,
+  timestamps: true,
+  createdAt: false,
+  paranoid: true,
+  updatedAt: 'updated_at',
+  deletedAt: 'deleted_at',
   tableName: 'delivery_route_weights',
   modelName: 'delivery_route_weight'
 });

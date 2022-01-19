@@ -38,6 +38,10 @@ ProductVariant.init({
     allowNull: false
   },
 
+  updated_at: {
+    type: DataTypes.DATE
+  },
+
   deleted_at: {
     type: DataTypes.DATE
   },
@@ -49,7 +53,11 @@ ProductVariant.init({
 },
 {
   sequelize,
-  timestamps: false,
+  timestamps: true,
+  createdAt: false,
+  paranoid: true,
+  updatedAt: 'updated_at',
+  deletedAt: 'deleted_at',
   tableName: 'product_variants',
   modelName: 'product_variant'
 });

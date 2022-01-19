@@ -1,8 +1,11 @@
 const { Op } = require("sequelize");
 const Category = require("../models/Category");
 const DiscountProduct = require("../models/DiscountProduct");
+const Favorite = require("../models/Favorite");
 const Product = require("../models/Product");
 const ProductVariant = require("../models/ProductVariant");
+const Review = require("../models/Review");
+const SavedCartItem = require("../models/SavedCartItem");
 const Store = require("../models/Store");
 const SubCategory = require("../models/SubCategory");
 const User = require("../models/User");
@@ -14,10 +17,7 @@ module.exports = {
   async idExists(id) {
     const product = await Product.findOne({ 
       attributes: ['id'], 
-      where: { 
-        id, 
-        deleted_at: { [Op.is]: null } 
-      } 
+      where: { id } 
     });
     return product !== null;
   },
@@ -25,17 +25,16 @@ module.exports = {
   async idExistsForStore(id, store_id) {
     const product = await Product.findOne({ 
       attributes: ['id'], 
-      where: { 
-        id, 
-        store_id, 
-        deleted_at: { [Op.is]: null } 
-      } 
+      where: { id, store_id } 
     });
     return product !== null;
   },
 
   async titleExists(title) {
-    const product = await Product.findOne({ attributes: ['id'], where: { title, deleted_at: { [Op.is]: null } } });
+    const product = await Product.findOne({ 
+      attributes: ['id'], 
+      where: { title } 
+    });
     return product !== null;
   },
 
@@ -45,7 +44,6 @@ module.exports = {
       where: { 
         title, 
         [Op.not]: { id },
-        deleted_at: { [Op.is]: null }
       } 
     });
     return product !== null;
@@ -53,11 +51,7 @@ module.exports = {
 
   get(id) {
     return Product.findOne({
-      where: { 
-        id,
-        deleted_at: { [Op.is]: null },
-        '$product_variants.deleted_at$': { [Op.is]: null }
-      },
+      where: { id },
       include: [
         {
           model: Store,
@@ -85,10 +79,7 @@ module.exports = {
   async getListByStore(store, offset, limit) {
       
     const { count, rows } = await Product.findAndCountAll({
-      where: { 
-        store_id: store.id,
-        deleted_at: { [Op.is]: null }
-      },
+      where: { store_id: store.id },
       include: [
         {
           model: Store,
@@ -114,10 +105,7 @@ module.exports = {
     for (let [i, product] of rows.entries()) {
       let variant = await ProductVariant.findOne({
         attributes: ['id', 'price'],
-        where: {
-          product_id: product.id,
-          deleted_at: { [Op.is]: null }
-        },
+        where: { product_id: product.id },
         order: [['price', 'ASC']],
       });
 
@@ -129,10 +117,7 @@ module.exports = {
   
   async getListByStoreWithDiscount(store, discount_id, offset, limit) {
     const { count, rows } = await Product.findAndCountAll({
-      where: { 
-        store_id: store.id,
-        deleted_at: { [Op.is]: null }
-      },
+      where: { store_id: store.id },
       order: [['created_at', 'DESC']],
       offset,
       limit,
@@ -142,8 +127,7 @@ module.exports = {
       let discountProduct = await DiscountProduct.findOne({
         where: {
           discount_id,
-          product_id: product.id,
-          deleted_at: { [Op.is]: null }
+          product_id: product.id
         }
       });
 
@@ -170,19 +154,20 @@ module.exports = {
 
   delete(product) {
     return sequelize.transaction(async (transaction)=> {
-
-      const deleted_at = Date.now();
-
       return await Promise.all([
-        Product.update(
-          { deleted_at }, 
-          { where: { id: product.id }, transaction }
-        ),
-
-        ProductVariant.update(
-          { deleted_at }, 
-          { where: { product_id: product.id, deleted_at: { [Op.is]: null } }, transaction }
-        )
+        Product.destroy({ where: { id: product.id }, transaction }),
+        ProductVariant.destroy({ where: { product_id: product.id }, transaction }),
+        DiscountProduct.destroy({ where: { product_id: product.id }, transaction }),
+        Favorite.destroy({ where: { product_id: product.id }, transaction }),
+        Review.destroy({ where: { product_id: product.id }, transaction }),
+        SavedCartItem.destroy({ 
+          where: { 
+            product_variant_id: {
+              [Op.in]: product.product_variants.map(i=> i.id)
+            } 
+          }, 
+          transaction
+         }),
       ]);
     });
   }

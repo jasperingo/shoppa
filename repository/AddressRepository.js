@@ -101,7 +101,11 @@ module.exports = {
       },
       transaction
     });
-  }
+  },
+
+  deleteForCustomer(address) {
+    return Address.destroy({ where: { id: address.id } });
+  },
 
 };
 
