@@ -7,10 +7,12 @@ module.exports = {
   async idForStoreExists(id) {
     const res = await SubCategory.findOne({ 
       attributes: ['id'], 
-      where: { id },
+      where: { 
+        id,
+        '$category.type$': Category.TYPE_STORE
+      },
       include: {
-        model: Category,
-        where: { type: Category.TYPE_STORE }
+        model: Category
       }
     });
     return res !== null;
@@ -19,10 +21,12 @@ module.exports = {
   async idForProductExists(id) {
     const res = await SubCategory.findOne({ 
       attributes: ['id'], 
-      where: { id },
+      where: { 
+        id,
+        '$category.type$': Category.TYPE_PRODUCT
+      },
       include: {
-        model: Category,
-        where: { type: Category.TYPE_PRODUCT }
+        model: Category
       }
     });
     return res !== null;
@@ -44,22 +48,20 @@ module.exports = {
     return res !== null;
   },
 
-  add(data) {
-    return SubCategory.create(data);
-  },
-
-  update(subCategory, data) {
-    subCategory.set({ name: data.name, description: data.description });
-    return subCategory.save();
-  },
-
   get(id) {
     return SubCategory.findByPk(parseInt(id));
   },
+
+  add({ category_id, name, description }) {
+    return SubCategory.create({ category_id, name, description });
+  },
+
+  update(subCategory, { name, description }) {
+    return SubCategory.update({ name, description }, { where: { id: subCategory.id } });
+  },
   
   updatePhoto(subCategory, photo) {
-    subCategory.photo = photo;
-    return subCategory.save();
+    return SubCategory.update({ photo }, { where: { id: subCategory.id } });
   }
 
 };

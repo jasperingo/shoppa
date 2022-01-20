@@ -40,9 +40,12 @@ module.exports = class Pagination {
   }
 
   getLink(page) {
+    this.req.query.page = page;
+    this.req.query.page_limit = this.page_limit;
+    const parsedUrl = new URLSearchParams(this.req.query);
     return {
       page,
-      href: `${process.env.DOMAIN_NAME}${this.req.baseUrl.substring(1)}${this.req.path}?page=${page}&page_limit=${this.page_limit}`
+      href: `${process.env.DOMAIN_NAME}${this.req.baseUrl.substring(1)}${this.req.path}?${parsedUrl}`
     };
   }
 

@@ -46,8 +46,13 @@ router.put(
 );
 
 router.get(
-  '/list',
-  controller.getList
+  '/store/list',
+  controller.getListByStore
+);
+
+router.get(
+  '/product/list',
+  controller.getListByProduct
 );
 
 router.get(

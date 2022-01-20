@@ -30,6 +30,7 @@ const OrderController = require('../controllers/OrderController');
 const DeliveryFirmAndAdminPermissionMiddleware = require('../middlewares/permissions/delivery_firm/DeliveryFirmAndAdminPermissionMiddleware');
 const TransactionController = require('../controllers/TransactionController');
 const ReviewController = require('../controllers/ReviewController');
+const OrderListFilterMiddleware = require('../middlewares/OrderListFilterMiddleware');
 
 const router = express.Router();
 
@@ -156,6 +157,7 @@ router.get(
   AuthMiddleware,
   DeliveryFirmAndAdminPermissionMiddleware,
   PaginationMiddleware,
+  OrderListFilterMiddleware,
   orderController.getListByDeliveryFirm
 );
 

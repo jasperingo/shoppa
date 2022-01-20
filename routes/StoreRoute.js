@@ -32,6 +32,7 @@ const CustomerUpdateStatusValidation = require('../validation/customer/CustomerU
 const OrderController = require('../controllers/OrderController');
 const TransactionController = require('../controllers/TransactionController');
 const ReviewController = require('../controllers/ReviewController');
+const OrderListFilterMiddleware = require('../middlewares/OrderListFilterMiddleware');
 
 const router = express.Router();
 
@@ -181,6 +182,7 @@ router.get(
   AuthMiddleware,
   StoreAndAdminPermissionMiddleware,
   PaginationMiddleware,
+  OrderListFilterMiddleware,
   orderController.getListByStore
 );
 

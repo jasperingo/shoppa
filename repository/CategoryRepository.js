@@ -1,5 +1,6 @@
 const { Op } = require("sequelize");
 const Category = require("../models/Category");
+const SubCategory = require("../models/SubCategory");
 
 
 module.exports = {
@@ -26,25 +27,43 @@ module.exports = {
   },
 
   get(id) {
-    return Category.findByPk(parseInt(id));
+    return Category.findByPk(parseInt(id), {
+      include: {
+        model: SubCategory
+      }
+    });
   },
   
-  getList() {
-    return Category.findAll({ order: [['created_at', 'DESC']] });
+  getListStore() {
+    return Category.findAll({ 
+      where: { type: Category.TYPE_STORE }, 
+      include: {
+        model: SubCategory
+      },
+      order: [['created_at', 'DESC']] 
+    });
   },
 
-  add(data) {
-    return Category.create(data);
+  getListByProduct() {
+    return Category.findAll({ 
+      where: { type: Category.TYPE_PRODUCT }, 
+      include: {
+        model: SubCategory
+      },
+      order: [['created_at', 'DESC']] 
+    });
+  },
+
+  add({ name, type, description }) {
+    return Category.create({ name, type, description });
   },
   
-  update(category, data) {
-    category.set(data);
-    return category.save();
+  update(category, { name, description }) {
+    return Category.update({ name, description }, { where: { id: category.id } });
   },
   
   updatePhoto(category, photo) {
-    category.photo = photo;
-    return category.save();
+    return Category.update({ photo }, { where: { id: category.id } });
   }
 
 };

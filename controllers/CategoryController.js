@@ -68,11 +68,26 @@ module.exports = class CategoryController {
     res.status(StatusCodes.OK).send(response);
   }
 
-  async getList(req, res, next) {
+  async getListByStore(req, res, next) {
 
     try {
 
-      const categories = await CategoryRepository.getList();
+      const categories = await CategoryRepository.getListStore();
+
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._category'), categories);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      next(new InternalServerException(error));
+    }
+  }
+
+  async getListByProduct(req, res, next) {
+
+    try {
+
+      const categories = await CategoryRepository.getListByProduct();
 
       const response = new Response(Response.SUCCESS, req.__('_list_fetched._category'), categories);
 

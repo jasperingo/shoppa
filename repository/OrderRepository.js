@@ -273,17 +273,18 @@ module.exports = {
     });
   },
 
-  getList(offset, limit) {
+  getList(offset, limit, options) { 
     return Order.findAndCountAll({
+      where: options ?? undefined,
       order: [['created_at', 'DESC']],
       offset,
       limit
     });
   },
-
-  getListByCustomer(customer, offset, limit) {
+  
+  getListByCustomer(customer, offset, limit, options) {
     return Order.findAndCountAll({
-      where: { customer_id: customer.id },
+      where: { customer_id: customer.id, ...options },
       order: [['created_at', 'DESC']],
       offset,
       limit
@@ -292,7 +293,7 @@ module.exports = {
 
   getListByStore(store, offset, limit) {
     return Order.findAndCountAll({
-      where: { store_id: store.id },
+      where: { store_id: store.id, ...options },
       order: [['created_at', 'DESC']],
       offset,
       limit
@@ -301,7 +302,7 @@ module.exports = {
 
   getListByDeliveryFirm(deliveryFirm, offset, limit) {
     return Order.findAndCountAll({
-      where: { delivery_firm_id: deliveryFirm.id },
+      where: { delivery_firm_id: deliveryFirm.id, ...options },
       order: [['created_at', 'DESC']],
       offset,
       limit

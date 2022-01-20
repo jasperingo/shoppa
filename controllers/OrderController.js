@@ -299,9 +299,9 @@ module.exports = class OrderController {
 
     try {
 
-      const { pager } = req.data;
+      const { pager, orderFilter } = req.data;
 
-      const { count, rows } = await OrderRepository.getList(pager.page_offset, pager.page_limit);
+      const { count, rows } = await OrderRepository.getList(pager.page_offset, pager.page_limit, orderFilter);
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
@@ -318,9 +318,9 @@ module.exports = class OrderController {
     
     try {
 
-      const { pager, customer } = req.data;
+      const { pager, customer, orderFilter } = req.data;
 
-      const { count, rows } = await OrderRepository.getListByCustomer(customer, pager.page_offset, pager.page_limit);
+      const { count, rows } = await OrderRepository.getListByCustomer(customer, pager.page_offset, pager.page_limit, orderFilter);
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
@@ -337,9 +337,9 @@ module.exports = class OrderController {
     
     try {
 
-      const { pager, store } = req.data;
+      const { pager, store, orderFilter } = req.data;
 
-      const { count, rows } = await OrderRepository.getListByStore(store, pager.page_offset, pager.page_limit);
+      const { count, rows } = await OrderRepository.getListByStore(store, pager.page_offset, pager.page_limit, orderFilter);
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
@@ -356,9 +356,9 @@ module.exports = class OrderController {
     
     try {
 
-      const { pager, deliveryFirm } = req.data;
+      const { pager, deliveryFirm, orderFilter } = req.data;
 
-      const { count, rows } = await OrderRepository.getListByDeliveryFirm(deliveryFirm, pager.page_offset, pager.page_limit);
+      const { count, rows } = await OrderRepository.getListByDeliveryFirm(deliveryFirm, pager.page_offset, pager.page_limit, orderFilter);
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 

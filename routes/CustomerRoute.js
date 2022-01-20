@@ -26,6 +26,7 @@ const WithdrawalAccountUpdateValidation = require('../validation/withdrawal_acco
 const CustomerLoginPermissionMiddleware = require('../middlewares/permissions/customer/CustomerLoginPermissionMiddleware');
 const OrderController = require('../controllers/OrderController');
 const TransactionController = require('../controllers/TransactionController');
+const OrderListFilterMiddleware = require('../middlewares/OrderListFilterMiddleware');
 
 const router = express.Router();
 
@@ -148,6 +149,7 @@ router.get(
   AuthMiddleware, 
   CustomerAndAdminPermissionMiddleware,
   PaginationMiddleware,
+  OrderListFilterMiddleware,
   orderController.getListByCustomer
 );
 
