@@ -86,6 +86,7 @@
     "_delivery_firm": "Delivery firm list fetched",
     "_product": "Product list fetched",
     "_location": "Location list fetched",
+    "_bank": "Bank list fetched",
     "_favorite": "Favorite list fetched",
     "_route": "Route list fetched",
     "_saved_cart": "Saved cart list fetched",

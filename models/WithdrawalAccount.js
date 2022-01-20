@@ -4,7 +4,7 @@ const User = require("./User");
 
 class WithdrawalAccount extends Model {
 
-  static GET_ATTR = ['bank_name', 'account_number', 'account_name', 'account_type'];
+  static GET_ATTR = ['id', 'bank_name', 'account_number', 'account_name', 'account_type'];
 
 }
 
@@ -15,6 +15,11 @@ WithdrawalAccount.init({
     primaryKey: true,
     autoIncrement: true
   },
+
+  paystack_recipient_code: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },  
 
   bank_name: {
     type: DataTypes.STRING,

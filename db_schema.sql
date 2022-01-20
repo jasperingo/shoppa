@@ -50,6 +50,27 @@ LOCK TABLES `addresses` WRITE;
 INSERT INTO `addresses` VALUES (1,1,'Home address','45 young street','Owerri-West','Imo','default','2022-01-18 21:51:31',NULL,'2021-12-23 23:22:06'),(2,1,'Office address','3 Paul street','Owerri','Imo State','sub',NULL,NULL,'2021-12-24 00:05:27'),(3,2,'Main','39 Black road','Ihiagwa-Owerri','Imo State','sub',NULL,NULL,'2021-12-24 11:58:49'),(4,2,'Office address','44 Okey street','Control-Owerri','Imo State','default',NULL,NULL,'2021-12-25 15:29:45'),(5,3,'Home address','2 Buns street','Rumuola','Rivers State','default',NULL,NULL,'2021-12-25 15:35:57'),(6,7,NULL,'2 Ben street','Orlu','Imo','default',NULL,NULL,'2021-12-26 14:44:25'),(7,11,NULL,'50 dead road','Owerri-Mbaise','Imo State','default',NULL,NULL,'2021-12-29 00:56:16'),(8,3,'School address','3 Meat lodge','Oyigbo','Rivers','sub',NULL,NULL,'2021-12-29 22:43:07'),(9,9,NULL,'10 Sam street, Dog Road','Owerri-North','Imo','default',NULL,NULL,'2022-01-06 14:10:37'),(10,1,'School address','3 Meat lodge','Oyigbo','Rivers','sub','2022-01-18 21:51:31','2022-01-18 22:29:41','2022-01-11 00:30:40');
 /*!40000 ALTER TABLE `addresses` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_addresses` BEFORE UPDATE ON `addresses` FOR EACH ROW INSERT INTO addresses_history SET 
+  address_id = OLD.id,
+  `title` = OLD.title,
+  `street` = OLD.street,
+  `city` = OLD.city,
+  `state` = OLD.state,
+  `type`= OLD.type */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `addresses_history`
@@ -174,9 +195,28 @@ CREATE TABLE `customers` (
 
 LOCK TABLES `customers` WRITE;
 /*!40000 ALTER TABLE `customers` DISABLE KEYS */;
-INSERT INTO `customers` VALUES (1,1,'Jasper','Anelechukwu','$2b$10$30mKxCxOCMlcuJw7KfG2GuHe4PuHi5CDRga6B1aLewee8rDuuxJnC','2022-01-18 21:43:46'),(2,2,'Richard','Chukwu','$2b$10$aXuVPBNUdvqlm6fGpfjYNOqn.um0K2oXXu7a5UqRc2Vioa/d9NfRO',NULL),(3,3,'Fred','Cake','$2b$10$zkl9QtVS2Z8ZSayGmByLY.UlHC1DMEx9AGZv4XR/ydpMpKlVOoAZm',NULL),(4,4,'White','Black','$2b$10$atK.zjusD8vdZB7B2pBsBOq58muLRqIEiPOmf4z0Ynnj4Ka576fwK',NULL),(7,14,'Husk','Blue','$2b$10$Nma.peF34.cXoXH/um.M6eLNxxzHK1puA5EO6N5PWenGSGNJmNI6i',NULL);
+INSERT INTO `customers` VALUES (1,1,'Jaspx','Anelechukwu','$2b$10$30mKxCxOCMlcuJw7KfG2GuHe4PuHi5CDRga6B1aLewee8rDuuxJnC','2022-01-20 11:26:07'),(2,2,'Richard','Chukwu','$2b$10$aXuVPBNUdvqlm6fGpfjYNOqn.um0K2oXXu7a5UqRc2Vioa/d9NfRO',NULL),(3,3,'Fred','Cake','$2b$10$zkl9QtVS2Z8ZSayGmByLY.UlHC1DMEx9AGZv4XR/ydpMpKlVOoAZm',NULL),(4,4,'White','Black','$2b$10$atK.zjusD8vdZB7B2pBsBOq58muLRqIEiPOmf4z0Ynnj4Ka576fwK',NULL),(7,14,'Husk','Blue','$2b$10$Nma.peF34.cXoXH/um.M6eLNxxzHK1puA5EO6N5PWenGSGNJmNI6i',NULL);
 /*!40000 ALTER TABLE `customers` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_customers` BEFORE UPDATE ON `customers` FOR EACH ROW INSERT INTO customers_history SET 
+  customer_id = OLD.id,
+  `first_name` = OLD.first_name,
+  `last_name` = OLD.last_name,
+  `password` = OLD.password */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `customers_history`
@@ -195,7 +235,7 @@ CREATE TABLE `customers_history` (
   PRIMARY KEY (`id`),
   KEY `customer_id` (`customer_id`),
   CONSTRAINT `customers_history_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -204,7 +244,7 @@ CREATE TABLE `customers_history` (
 
 LOCK TABLES `customers_history` WRITE;
 /*!40000 ALTER TABLE `customers_history` DISABLE KEYS */;
-INSERT INTO `customers_history` VALUES (1,7,'Husk','Blue','$2b$10$Nma.peF34.cXoXH/um.M6eLNxxzHK1puA5EO6N5PWenGSGNJmNI6i','2022-01-18 22:47:09'),(2,7,'Husku','Blue','$2b$10$Nma.peF34.cXoXH/um.M6eLNxxzHK1puA5EO6N5PWenGSGNJmNI6i','2022-01-18 22:47:09'),(3,1,'Jasper','Anelechukwu','$2b$10$30mKxCxOCMlcuJw7KfG2GuHe4PuHi5CDRga6B1aLewee8rDuuxJnC','2022-01-18 22:47:09'),(4,1,'Jaspe','Anelechukwu','$2b$10$30mKxCxOCMlcuJw7KfG2GuHe4PuHi5CDRga6B1aLewee8rDuuxJnC','2022-01-18 22:47:09');
+INSERT INTO `customers_history` VALUES (1,7,'Husk','Blue','$2b$10$Nma.peF34.cXoXH/um.M6eLNxxzHK1puA5EO6N5PWenGSGNJmNI6i','2022-01-18 22:47:09'),(2,7,'Husku','Blue','$2b$10$Nma.peF34.cXoXH/um.M6eLNxxzHK1puA5EO6N5PWenGSGNJmNI6i','2022-01-18 22:47:09'),(5,1,'Jasper','Anelechukwu','$2b$10$30mKxCxOCMlcuJw7KfG2GuHe4PuHi5CDRga6B1aLewee8rDuuxJnC','2022-01-19 17:29:09'),(6,1,'Jasp','Anelechukwu','$2b$10$30mKxCxOCMlcuJw7KfG2GuHe4PuHi5CDRga6B1aLewee8rDuuxJnC','2022-01-20 11:26:07');
 /*!40000 ALTER TABLE `customers_history` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -254,7 +294,7 @@ CREATE TABLE `delivery_route_durations` (
   PRIMARY KEY (`id`),
   KEY `delivery_route_durations_ibfk_1` (`delivery_route_id`),
   CONSTRAINT `delivery_route_durations_ibfk_1` FOREIGN KEY (`delivery_route_id`) REFERENCES `delivery_routes` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -263,9 +303,29 @@ CREATE TABLE `delivery_route_durations` (
 
 LOCK TABLES `delivery_route_durations` WRITE;
 /*!40000 ALTER TABLE `delivery_route_durations` DISABLE KEYS */;
-INSERT INTO `delivery_route_durations` VALUES (1,1,1,3,0,'day',NULL,NULL,'2022-01-11 20:51:33'),(2,7,4,5,0,'day',NULL,NULL,'2022-01-12 10:22:34'),(3,7,2,3,50,'day',NULL,NULL,'2022-01-12 10:23:01'),(4,4,1,4,100,'day','2022-01-18 22:09:48',NULL,'2022-01-12 10:23:17'),(5,4,1,2,0,'week',NULL,NULL,'2022-01-12 10:23:36'),(6,8,1,2,0,'day',NULL,NULL,'2022-01-12 10:32:58'),(7,9,1,4,0,'day',NULL,NULL,'2022-01-12 10:33:34'),(8,10,1,4,0,'day',NULL,NULL,'2022-01-12 10:34:50');
+INSERT INTO `delivery_route_durations` VALUES (1,1,1,3,0,'day',NULL,NULL,'2022-01-11 20:51:33'),(2,7,4,5,0,'day',NULL,NULL,'2022-01-12 10:22:34'),(3,7,2,3,50,'day',NULL,NULL,'2022-01-12 10:23:01'),(4,4,1,4,100,'day','2022-01-18 22:09:48',NULL,'2022-01-12 10:23:17'),(5,4,1,2,0,'week',NULL,NULL,'2022-01-12 10:23:36'),(6,8,1,2,0,'day',NULL,NULL,'2022-01-12 10:32:58'),(7,9,1,4,0,'day',NULL,NULL,'2022-01-12 10:33:34'),(8,10,1,4,0,'day',NULL,NULL,'2022-01-12 10:34:50'),(9,11,1,2,0,'week','2022-01-19 17:03:41','2022-01-19 17:11:51','2022-01-19 17:03:41');
 /*!40000 ALTER TABLE `delivery_route_durations` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_delivery_route_durations` BEFORE UPDATE ON `delivery_route_durations` FOR EACH ROW INSERT INTO delivery_route_durations_history SET 
+  delivery_route_duration_id = OLD.id,
+  `minimium` = OLD.minimium,
+  `maximium` = OLD.maximium,
+  `fee` = OLD.fee,
+  unit = OLD.unit */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `delivery_route_durations_history`
@@ -285,7 +345,7 @@ CREATE TABLE `delivery_route_durations_history` (
   PRIMARY KEY (`id`),
   KEY `delivery_route_duration_id` (`delivery_route_duration_id`),
   CONSTRAINT `delivery_route_durations_history_ibfk_1` FOREIGN KEY (`delivery_route_duration_id`) REFERENCES `delivery_route_durations` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -294,7 +354,7 @@ CREATE TABLE `delivery_route_durations_history` (
 
 LOCK TABLES `delivery_route_durations_history` WRITE;
 /*!40000 ALTER TABLE `delivery_route_durations_history` DISABLE KEYS */;
-INSERT INTO `delivery_route_durations_history` VALUES (1,1,1,3,0,'day','2022-01-18 14:38:46'),(2,1,1,3,1,'day','2022-01-18 14:38:57'),(3,4,1,3,100,'day','2022-01-18 22:09:48');
+INSERT INTO `delivery_route_durations_history` VALUES (1,1,1,3,0,'day','2022-01-18 14:38:46'),(2,1,1,3,1,'day','2022-01-18 14:38:57'),(3,4,1,3,100,'day','2022-01-18 22:09:48'),(4,9,1,2,0,'week','2022-01-19 17:06:03'),(5,9,1,2,0,'week','2022-01-19 18:11:26'),(6,9,1,2,0,'week','2022-01-19 17:11:51');
 /*!40000 ALTER TABLE `delivery_route_durations_history` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -317,7 +377,7 @@ CREATE TABLE `delivery_route_weights` (
   PRIMARY KEY (`id`),
   KEY `delivery_route_weights_ibfk_1` (`delivery_route_id`),
   CONSTRAINT `delivery_route_weights_ibfk_1` FOREIGN KEY (`delivery_route_id`) REFERENCES `delivery_routes` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -326,9 +386,28 @@ CREATE TABLE `delivery_route_weights` (
 
 LOCK TABLES `delivery_route_weights` WRITE;
 /*!40000 ALTER TABLE `delivery_route_weights` DISABLE KEYS */;
-INSERT INTO `delivery_route_weights` VALUES (1,1,5,50,120,'2022-01-18 22:08:58',NULL,'2022-01-11 20:26:35'),(2,1,51,100,250,NULL,NULL,'2022-01-11 20:27:52'),(3,7,10,30,100,NULL,NULL,'2022-01-12 10:17:51'),(4,7,35,80,200,NULL,NULL,'2022-01-12 10:18:22'),(5,7,90,250,450,NULL,NULL,'2022-01-12 10:21:10'),(6,4,1,20,50,NULL,NULL,'2022-01-12 10:21:54'),(7,4,21,45,150,NULL,NULL,'2022-01-12 10:22:06'),(8,7,2,9,50,NULL,NULL,'2022-01-12 10:28:33'),(9,8,1,10,50,NULL,NULL,'2022-01-12 10:32:38'),(10,9,4,10,80,NULL,NULL,'2022-01-12 10:34:05'),(11,9,5,20,150,NULL,NULL,'2022-01-12 10:35:11'),(12,9,25,60,300,NULL,NULL,'2022-01-12 10:35:25'),(13,10,5,20,100,NULL,NULL,'2022-01-12 10:39:45');
+INSERT INTO `delivery_route_weights` VALUES (1,1,5,50,120,'2022-01-18 22:08:58',NULL,'2022-01-11 20:26:35'),(2,1,51,100,250,NULL,NULL,'2022-01-11 20:27:52'),(3,7,10,30,100,NULL,NULL,'2022-01-12 10:17:51'),(4,7,35,80,200,NULL,NULL,'2022-01-12 10:18:22'),(5,7,90,250,450,NULL,NULL,'2022-01-12 10:21:10'),(6,4,1,20,50,NULL,NULL,'2022-01-12 10:21:54'),(7,4,21,45,150,NULL,NULL,'2022-01-12 10:22:06'),(8,7,2,9,50,NULL,NULL,'2022-01-12 10:28:33'),(9,8,1,10,50,NULL,NULL,'2022-01-12 10:32:38'),(10,9,4,10,80,NULL,NULL,'2022-01-12 10:34:05'),(11,9,5,20,150,NULL,NULL,'2022-01-12 10:35:11'),(12,9,25,60,300,NULL,NULL,'2022-01-12 10:35:25'),(13,10,5,20,100,NULL,NULL,'2022-01-12 10:39:45'),(14,11,5,20,200,'2022-01-19 17:03:07','2022-01-19 17:25:06','2022-01-19 17:03:07');
 /*!40000 ALTER TABLE `delivery_route_weights` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_delivery_route_weights` BEFORE UPDATE ON `delivery_route_weights` FOR EACH ROW INSERT INTO delivery_route_weights_history SET 
+  delivery_route_weight_id = OLD.id,
+  `minimium` = OLD.minimium,
+  `maximium` = OLD.maximium,
+  `fee` = OLD.fee */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `delivery_route_weights_history`
@@ -347,7 +426,7 @@ CREATE TABLE `delivery_route_weights_history` (
   PRIMARY KEY (`id`),
   KEY `delivery_route_weight_id` (`delivery_route_weight_id`),
   CONSTRAINT `delivery_route_weights_history_ibfk_1` FOREIGN KEY (`delivery_route_weight_id`) REFERENCES `delivery_route_weights` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -356,7 +435,7 @@ CREATE TABLE `delivery_route_weights_history` (
 
 LOCK TABLES `delivery_route_weights_history` WRITE;
 /*!40000 ALTER TABLE `delivery_route_weights_history` DISABLE KEYS */;
-INSERT INTO `delivery_route_weights_history` VALUES (1,1,5,50,100,'2022-01-18 14:37:19'),(2,1,50,50,100,'2022-01-18 14:37:35'),(3,1,5,50,100,'2022-01-18 22:08:58');
+INSERT INTO `delivery_route_weights_history` VALUES (1,1,5,50,100,'2022-01-18 14:37:19'),(2,1,50,50,100,'2022-01-18 14:37:35'),(3,1,5,50,100,'2022-01-18 22:08:58'),(4,14,5,20,200,'2022-01-19 17:06:03'),(5,14,5,20,200,'2022-01-19 18:11:17'),(6,14,5,20,200,'2022-01-19 17:25:06');
 /*!40000 ALTER TABLE `delivery_route_weights_history` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -385,7 +464,7 @@ CREATE TABLE `delivery_routes` (
   CONSTRAINT `delivery_routes_ibfk_1` FOREIGN KEY (`delivery_firm_id`) REFERENCES `delivery_firms` (`id`),
   CONSTRAINT `delivery_routes_ibfk_2` FOREIGN KEY (`origin_route_id`) REFERENCES `delivery_routes` (`id`),
   CONSTRAINT `delivery_routes_ibfk_3` FOREIGN KEY (`destination_route_id`) REFERENCES `delivery_routes` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -394,9 +473,30 @@ CREATE TABLE `delivery_routes` (
 
 LOCK TABLES `delivery_routes` WRITE;
 /*!40000 ALTER TABLE `delivery_routes` DISABLE KEYS */;
-INSERT INTO `delivery_routes` VALUES (1,3,NULL,NULL,'Abia','Aba North',1,NULL,NULL,'2022-01-11 13:41:33'),(2,3,NULL,NULL,'Imo','Owerri-North',1,NULL,NULL,'2022-01-11 23:12:43'),(3,3,NULL,NULL,'Imo','Owerri-West',1,NULL,NULL,'2022-01-11 23:12:54'),(4,3,NULL,NULL,'Imo','Orlu',0,'2022-01-18 22:06:15',NULL,'2022-01-11 23:13:01'),(7,3,3,4,NULL,NULL,NULL,NULL,NULL,'2022-01-12 08:57:07'),(8,1,NULL,NULL,'Imo','Owerri-West',1,NULL,NULL,'2022-01-12 10:32:10'),(9,1,NULL,NULL,'Imo','Orlu',0,NULL,NULL,'2022-01-12 10:33:22'),(10,1,8,9,NULL,NULL,NULL,NULL,NULL,'2022-01-12 10:34:29');
+INSERT INTO `delivery_routes` VALUES (1,3,NULL,NULL,'Abia','Aba North',1,NULL,NULL,'2022-01-11 13:41:33'),(2,3,NULL,NULL,'Imo','Owerri-North',1,NULL,NULL,'2022-01-11 23:12:43'),(3,3,NULL,NULL,'Imo','Owerri-West',1,NULL,NULL,'2022-01-11 23:12:54'),(4,3,NULL,NULL,'Imo','Orlu',0,'2022-01-18 22:06:15',NULL,'2022-01-11 23:13:01'),(7,3,3,4,NULL,NULL,NULL,NULL,NULL,'2022-01-12 08:57:07'),(8,1,NULL,NULL,'Imo','Owerri-West',1,NULL,NULL,'2022-01-12 10:32:10'),(9,1,NULL,NULL,'Imo','Orlu',0,NULL,NULL,'2022-01-12 10:33:22'),(10,1,8,9,NULL,NULL,NULL,NULL,NULL,'2022-01-12 10:34:29'),(11,3,NULL,NULL,'Imo','Mbano',0,'2022-01-19 17:02:49','2022-01-19 17:26:05','2022-01-19 17:02:49');
 /*!40000 ALTER TABLE `delivery_routes` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_delivery_routes` BEFORE UPDATE ON `delivery_routes` FOR EACH ROW INSERT INTO delivery_routes_history SET 
+  delivery_route_id = OLD.id,
+  origin_route_id = OLD.origin_route_id,
+  destination_route_id = OLD.destination_route_id,
+  `state` = OLD.state,
+  `city` = OLD.city,
+  `door_delivery` = OLD.door_delivery */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `delivery_routes_history`
@@ -417,7 +517,7 @@ CREATE TABLE `delivery_routes_history` (
   PRIMARY KEY (`id`),
   KEY `delivery_route_id` (`delivery_route_id`),
   CONSTRAINT `delivery_routes_history_ibfk_1` FOREIGN KEY (`delivery_route_id`) REFERENCES `delivery_routes` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -426,7 +526,7 @@ CREATE TABLE `delivery_routes_history` (
 
 LOCK TABLES `delivery_routes_history` WRITE;
 /*!40000 ALTER TABLE `delivery_routes_history` DISABLE KEYS */;
-INSERT INTO `delivery_routes_history` VALUES (1,1,NULL,NULL,'Abia','Aba North',1,'2022-01-18 14:27:46'),(2,1,NULL,NULL,'Abia','Aba Northj',1,'2022-01-18 14:32:32'),(3,4,NULL,NULL,'Imo','Orlu',1,'2022-01-18 22:06:15');
+INSERT INTO `delivery_routes_history` VALUES (1,1,NULL,NULL,'Abia','Aba North',1,'2022-01-18 14:27:46'),(2,1,NULL,NULL,'Abia','Aba Northj',1,'2022-01-18 14:32:32'),(3,4,NULL,NULL,'Imo','Orlu',1,'2022-01-18 22:06:15'),(5,11,NULL,NULL,'Imo','Mbano',0,'2022-01-19 17:06:03'),(6,11,NULL,NULL,'Imo','Mbano',0,'2022-01-19 18:25:00'),(7,11,NULL,NULL,'Imo','Mbano',0,'2022-01-19 17:26:05');
 /*!40000 ALTER TABLE `delivery_routes_history` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -448,7 +548,7 @@ CREATE TABLE `discount_products` (
   KEY `product_id` (`product_id`),
   CONSTRAINT `discount_products_ibfk_1` FOREIGN KEY (`discount_id`) REFERENCES `discounts` (`id`),
   CONSTRAINT `discount_products_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -457,9 +557,26 @@ CREATE TABLE `discount_products` (
 
 LOCK TABLES `discount_products` WRITE;
 /*!40000 ALTER TABLE `discount_products` DISABLE KEYS */;
-INSERT INTO `discount_products` VALUES (1,5,9,NULL,'2022-01-04 01:14:16'),(2,5,10,NULL,'2022-01-04 01:14:16'),(5,7,9,'2022-01-04 12:50:32','2022-01-04 12:45:33'),(7,8,7,NULL,'2022-01-06 16:36:57'),(8,8,8,NULL,'2022-01-07 23:50:03'),(9,9,13,NULL,'2022-01-11 21:44:18'),(10,9,7,NULL,'2022-01-11 21:44:32');
+INSERT INTO `discount_products` VALUES (1,5,9,NULL,'2022-01-04 01:14:16'),(2,5,10,NULL,'2022-01-04 01:14:16'),(5,7,9,'2022-01-04 12:50:32','2022-01-04 12:45:33'),(7,8,7,NULL,'2022-01-06 16:36:57'),(8,8,8,NULL,'2022-01-07 23:50:03'),(9,9,13,NULL,'2022-01-11 21:44:18'),(10,9,7,NULL,'2022-01-11 21:44:32'),(13,10,8,'2022-01-19 12:56:03','2022-01-19 11:56:07');
 /*!40000 ALTER TABLE `discount_products` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_discount_products` BEFORE UPDATE ON `discount_products` FOR EACH ROW INSERT INTO discount_products_history SET 
+  discount_product_id = OLD.id,
+  `product_id` = OLD.product_id */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `discount_products_history`
@@ -476,7 +593,7 @@ CREATE TABLE `discount_products_history` (
   PRIMARY KEY (`id`),
   KEY `discount_product_id` (`discount_product_id`),
   CONSTRAINT `discount_products_history_ibfk_1` FOREIGN KEY (`discount_product_id`) REFERENCES `discount_products` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -485,7 +602,7 @@ CREATE TABLE `discount_products_history` (
 
 LOCK TABLES `discount_products_history` WRITE;
 /*!40000 ALTER TABLE `discount_products_history` DISABLE KEYS */;
-INSERT INTO `discount_products_history` VALUES (2,1,9,'2022-01-18 14:57:34'),(3,1,10,'2022-01-18 14:57:46');
+INSERT INTO `discount_products_history` VALUES (2,1,9,'2022-01-18 14:57:34'),(3,1,10,'2022-01-18 14:57:46'),(4,13,8,'2022-01-19 11:57:54'),(5,13,8,'2022-01-19 12:59:20'),(6,13,8,'2022-01-19 12:56:03');
 /*!40000 ALTER TABLE `discount_products_history` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -512,7 +629,7 @@ CREATE TABLE `discounts` (
   PRIMARY KEY (`id`),
   KEY `store_id` (`store_id`),
   CONSTRAINT `discounts_ibfk_1` FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -521,9 +638,32 @@ CREATE TABLE `discounts` (
 
 LOCK TABLES `discounts` WRITE;
 /*!40000 ALTER TABLE `discounts` DISABLE KEYS */;
-INSERT INTO `discounts` VALUES (5,5,'New year bonanza','percentage',10,3500,10,'2022-01-06 08:00:00','2022-01-20 08:00:00',NULL,NULL,'2022-01-04 01:14:16'),(7,5,'Eat off','percentage',10,NULL,2,'2022-01-07 08:00:00','2022-01-12 22:00:00',NULL,NULL,'2022-01-04 10:55:51'),(8,7,'Flip meal','amount',5,5000,NULL,'2022-01-05 08:00:00','2022-01-10 11:00:00',NULL,NULL,'2022-01-04 22:56:36'),(9,7,'January save','percentage',20,NULL,2,'2022-01-12 08:00:00','2022-01-20 11:00:00','2022-01-18 21:59:47',NULL,'2022-01-11 21:10:39');
+INSERT INTO `discounts` VALUES (5,5,'New year bonanza','percentage',10,3500,10,'2022-01-06 08:00:00','2022-01-20 08:00:00',NULL,NULL,'2022-01-04 01:14:16'),(7,5,'Eat off','percentage',10,NULL,2,'2022-01-07 08:00:00','2022-01-12 22:00:00',NULL,NULL,'2022-01-04 10:55:51'),(8,7,'Flip meal','amount',5,5000,NULL,'2022-01-05 08:00:00','2022-01-10 11:00:00',NULL,NULL,'2022-01-04 22:56:36'),(9,7,'January save','percentage',20,NULL,2,'2022-01-12 08:00:00','2022-01-20 11:00:00','2022-01-18 21:59:47',NULL,'2022-01-11 21:10:39'),(10,7,'Black monday','percentage',5,NULL,5,'2022-01-20 08:00:00','2022-01-20 11:00:00','2022-01-19 11:51:33',NULL,'2022-01-19 11:51:33');
 /*!40000 ALTER TABLE `discounts` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_discounts` BEFORE UPDATE ON `discounts` FOR EACH ROW INSERT INTO discounts_history SET 
+  discount_id = OLD.id,
+  `title` = OLD.title,
+  `type` = OLD.type,
+  `value` = OLD.value,
+  minimium_required_amount = OLD.minimium_required_amount,
+  minimium_required_quantity = OLD.minimium_required_quantity,
+  start_date = OLD.start_date,
+  end_date = OLD.end_date */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `discounts_history`
@@ -546,7 +686,7 @@ CREATE TABLE `discounts_history` (
   PRIMARY KEY (`id`),
   KEY `discount_id` (`discount_id`),
   CONSTRAINT `discounts_history_ibfk_1` FOREIGN KEY (`discount_id`) REFERENCES `discounts` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -555,7 +695,7 @@ CREATE TABLE `discounts_history` (
 
 LOCK TABLES `discounts_history` WRITE;
 /*!40000 ALTER TABLE `discounts_history` DISABLE KEYS */;
-INSERT INTO `discounts_history` VALUES (1,5,'New year bonanza','percentage',10,3500,10,'2022-01-06 08:00:00','2022-01-20 08:00:00','2022-01-18 14:54:49'),(2,5,'New year bonanza','percentage',10,35004,10,'2022-01-06 08:00:00','2022-01-20 08:00:00','2022-01-18 14:55:00'),(3,9,'January savers','percentage',20,NULL,2,'2022-01-12 08:00:00','2022-01-20 11:00:00','2022-01-18 21:59:47');
+INSERT INTO `discounts_history` VALUES (1,5,'New year bonanza','percentage',10,3500,10,'2022-01-06 08:00:00','2022-01-20 08:00:00','2022-01-18 14:54:49'),(2,5,'New year bonanza','percentage',10,35004,10,'2022-01-06 08:00:00','2022-01-20 08:00:00','2022-01-18 14:55:00'),(3,9,'January savers','percentage',20,NULL,2,'2022-01-12 08:00:00','2022-01-20 11:00:00','2022-01-18 21:59:47'),(4,10,'Black monday','percentage',5,NULL,5,'2022-01-20 08:00:00','2022-01-20 11:00:00','2022-01-19 11:53:50'),(5,10,'Black monday','percentage',5,NULL,5,'2022-01-20 08:00:00','2022-01-20 11:00:00','2022-01-19 12:55:58'),(6,10,'Black monday','percentage',5,NULL,5,'2022-01-20 08:00:00','2022-01-20 11:00:00','2022-01-19 11:57:54'),(7,10,'Black monday','percentage',5,NULL,5,'2022-01-20 08:00:00','2022-01-20 11:00:00','2022-01-19 12:59:06');
 /*!40000 ALTER TABLE `discounts_history` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -683,7 +823,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES (1,1,7,3,7,1,'0215876899','fulfilled','accepted','accepted','door','cashless','approved',NULL,15700,100,3140,'Add extra pepper to food','2022-01-12 19:01:44'),(2,1,7,NULL,NULL,NULL,'0670089684','cancelled','pending',NULL,'store','cashless','approved','failed',24000,0,0,NULL,'2022-01-12 22:02:59');
+INSERT INTO `orders` VALUES (1,1,7,3,7,1,'0215876899','fulfilled','accepted','accepted','door','cashless','approved',NULL,15700,100,3140,'Add extra pepper to food','2022-01-12 19:01:44'),(2,1,7,NULL,NULL,NULL,'0670089684','fulfilled','pending',NULL,'store','cashless','approved','failed',24000,0,0,NULL,'2022-01-12 22:02:59');
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -752,6 +892,27 @@ LOCK TABLES `product_variants` WRITE;
 INSERT INTO `product_variants` VALUES (2,7,'small',6500,20,1,2.56,'2022-01-18 21:57:13',NULL,'2021-12-27 21:10:07'),(3,8,'small',8000,3,1,5.6,NULL,NULL,'2021-12-27 21:27:40'),(4,8,'medium',10000,6,1,7.2,NULL,NULL,'2021-12-27 21:27:40'),(5,8,'large',15000,4,1,10.3,NULL,NULL,'2021-12-27 21:27:40'),(6,7,'large',12500,11,1,10.5,NULL,'2022-01-01 19:48:11','2021-12-27 22:39:59'),(7,9,'small plate',8000,3,1,5.6,NULL,NULL,'2021-12-29 02:38:24'),(8,9,'medium plate',10000,6,1,7.2,NULL,NULL,'2021-12-29 02:38:24'),(9,10,'small plate',7000,3,1,5.6,NULL,NULL,'2022-01-01 19:13:36'),(10,10,'medium plate',9500,6,1,7.2,NULL,NULL,'2022-01-01 19:13:36'),(11,7,'medium',9000,23,1,6.98,NULL,NULL,'2022-01-01 19:48:11'),(12,11,'small plate',8000,3,1,5.6,NULL,'2022-01-18 23:50:45','2022-01-01 19:55:23'),(13,11,'medium plate',10000,6,1,7.2,NULL,'2022-01-19 00:01:59','2022-01-01 19:55:23'),(14,7,'large',11000,11,1,9.32,NULL,'2022-01-04 18:40:45','2022-01-04 18:12:50'),(16,7,'large',1200,11,1,9.32,NULL,NULL,'2022-01-11 12:10:33'),(17,13,'small tin',2500,26,0,6.2,NULL,NULL,'2022-01-11 12:11:56');
 /*!40000 ALTER TABLE `product_variants` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_product_variants` BEFORE UPDATE ON `product_variants` FOR EACH ROW INSERT INTO product_variants_history SET 
+  product_variant_id = OLD.id,
+  `name` = OLD.name,
+  `price` = OLD.price,
+  `quantity` = OLD.quantity,
+  available = OLD.available,
+  weight = OLD.weight */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `product_variants_history`
@@ -808,7 +969,7 @@ CREATE TABLE `products` (
   KEY `sub_category_id` (`sub_category_id`),
   CONSTRAINT `products_ibfk_1` FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`),
   CONSTRAINT `products_ibfk_2` FOREIGN KEY (`sub_category_id`) REFERENCES `sub_categories` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -817,9 +978,30 @@ CREATE TABLE `products` (
 
 LOCK TABLES `products` WRITE;
 /*!40000 ALTER TABLE `products` DISABLE KEYS */;
-INSERT INTO `products` VALUES (7,7,6,'Vanilla cake','It is very sweet with vanilla taste','UIDSHSDFKSD','product-7.jpg',NULL,NULL,'2021-12-27 21:10:07'),(8,7,6,'strawberry cake','It is as sweet as strawberry','UIDSHSD334D',NULL,NULL,NULL,'2021-12-27 21:27:40'),(9,5,9,'Egusi and goat meat','Sweet soup','UIDSHSD334Q',NULL,NULL,NULL,'2021-12-29 02:38:24'),(10,5,9,'Egusi and Turkey meat','Sweet soup','UIDSHSD33AA',NULL,NULL,NULL,'2022-01-01 19:13:36'),(11,5,9,'Okra','Sweet soup','UIDSHSD3WQA',NULL,NULL,NULL,'2022-01-01 19:55:23'),(12,5,9,'Ofo soup','Sweet OFO soup','UIDSHSD3WAA',NULL,NULL,NULL,'2022-01-04 18:50:17'),(13,7,9,'Hot dog','Best hot dog in the state',NULL,NULL,'2022-01-18 21:53:59',NULL,'2022-01-11 11:48:36');
+INSERT INTO `products` VALUES (7,7,6,'Vanilla cake','It is very sweet with vanilla taste','UIDSHSDFKSD','product-7.jpg',NULL,NULL,'2021-12-27 21:10:07'),(8,7,6,'strawberry cake','It is as sweet as strawberry','UIDSHSD334D',NULL,NULL,NULL,'2021-12-27 21:27:40'),(9,5,9,'Egusi and goat meat','Sweet soup','UIDSHSD334Q',NULL,NULL,NULL,'2021-12-29 02:38:24'),(10,5,9,'Egusi and Turkey meat','Sweet soup','UIDSHSD33AA',NULL,NULL,NULL,'2022-01-01 19:13:36'),(11,5,9,'Okra','Sweet soup','UIDSHSD3WQA',NULL,NULL,NULL,'2022-01-01 19:55:23'),(12,5,9,'Ofo soup','Sweet OFO soup','UIDSHSD3WAA',NULL,NULL,NULL,'2022-01-04 18:50:17'),(13,7,9,'Hot dog','Best hot dog in the state',NULL,NULL,'2022-01-18 21:53:59',NULL,'2022-01-11 11:48:36'),(14,7,9,'Pen','Pan vil ejnda; djdnfd ',NULL,NULL,'2022-01-19 17:08:50',NULL,'2022-01-19 17:08:50');
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_products` BEFORE UPDATE ON `products` FOR EACH ROW INSERT INTO products_history SET 
+  product_id = OLD.id,
+  `sub_category_id` = OLD.sub_category_id,
+  `title` = OLD.title,
+  `description` = OLD.description,
+  code = OLD.code,
+  photo = OLD.photo */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `products_history`
@@ -980,6 +1162,23 @@ LOCK TABLES `stores` WRITE;
 INSERT INTO `stores` VALUES (5,5,1,NULL),(6,6,2,NULL),(7,7,1,'2022-01-18 21:48:01'),(8,8,4,NULL),(9,15,4,NULL);
 /*!40000 ALTER TABLE `stores` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_stores` BEFORE UPDATE ON `stores` FOR EACH ROW INSERT INTO stores_history SET 
+  store_id = OLD.id,
+  `sub_category_id` = OLD.sub_category_id */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `stores_history`
@@ -1026,7 +1225,7 @@ CREATE TABLE `sub_categories` (
   PRIMARY KEY (`id`),
   KEY `category_id` (`category_id`),
   CONSTRAINT `sub_categories_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1035,7 +1234,7 @@ CREATE TABLE `sub_categories` (
 
 LOCK TABLES `sub_categories` WRITE;
 /*!40000 ALTER TABLE `sub_categories` DISABLE KEYS */;
-INSERT INTO `sub_categories` VALUES (1,1,'African kitchen',NULL,NULL,'2021-12-25 13:44:32'),(2,2,'Longrich',NULL,NULL,'2021-12-25 13:45:52'),(3,2,'Fow-How',NULL,NULL,'2021-12-25 13:49:51'),(4,1,'Chinese restuarant',NULL,NULL,'2021-12-25 13:54:11'),(5,3,'Mini Mart','sub-category-5.jpg','Buy all you need','2021-12-25 13:55:11'),(6,6,'Cake',NULL,NULL,'2021-12-27 16:29:52'),(7,6,'Pizza',NULL,NULL,'2021-12-27 16:30:03'),(8,6,'Pie',NULL,NULL,'2021-12-27 16:30:24'),(9,7,'Egusi',NULL,NULL,'2021-12-27 16:30:37'),(10,7,'Okra',NULL,NULL,'2021-12-27 16:30:42'),(11,7,'Oha',NULL,NULL,'2021-12-27 16:30:48'),(12,7,'Banga',NULL,NULL,'2021-12-27 16:30:54');
+INSERT INTO `sub_categories` VALUES (1,1,'African kitchen',NULL,NULL,'2021-12-25 13:44:32'),(2,2,'Longrich',NULL,NULL,'2021-12-25 13:45:52'),(3,2,'Fow-How',NULL,NULL,'2021-12-25 13:49:51'),(4,1,'Chinese restuarant',NULL,NULL,'2021-12-25 13:54:11'),(5,3,'Mini Mart','sub-category-5.jpg','Buy all you need','2021-12-25 13:55:11'),(6,6,'Cake',NULL,NULL,'2021-12-27 16:29:52'),(7,6,'Pizza',NULL,NULL,'2021-12-27 16:30:03'),(8,6,'Pie',NULL,NULL,'2021-12-27 16:30:24'),(9,7,'Egusi',NULL,NULL,'2021-12-27 16:30:37'),(10,7,'Okra',NULL,NULL,'2021-12-27 16:30:42'),(11,7,'Oha',NULL,NULL,'2021-12-27 16:30:48'),(12,7,'Banga',NULL,NULL,'2021-12-27 16:30:54'),(13,9,'Body cream',NULL,NULL,'2022-01-20 13:00:28');
 /*!40000 ALTER TABLE `sub_categories` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1101,9 +1300,31 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'customer','Jasper Anelechukwu','jasperanels@gmail.com','08048490901','user-1.jpg','active','2022-01-18 21:43:46','2021-12-23 10:17:39'),(2,'customer','Richard Chukwu','richchuks@gmail.com','09039283744',NULL,'active',NULL,'2021-12-23 12:08:02'),(3,'customer','Fred Cake','cakefred@yahoo.com','08038476211',NULL,'active',NULL,'2021-12-25 15:31:20'),(4,'customer','White Black','wb@yahoo.com','07083745655',NULL,'active',NULL,'2021-12-25 15:34:59'),(5,'store','Yam zone','yamzone@gmail.com','09183571123',NULL,'activating',NULL,'2021-12-25 21:42:25'),(6,'store','Get-well','wellhealth@gmail.com','08187347666',NULL,'activating',NULL,'2021-12-25 21:51:35'),(7,'store','Shoppa','shoppax@gmail.com','08084837423','user-7.jpeg','active','2022-01-18 21:48:01','2021-12-25 22:13:26'),(8,'store','HappyBite','jasperanels@gmail.com','07094823744',NULL,'activating',NULL,'2021-12-26 12:17:21'),(9,'delivery_firm','Freeway logistics','freeway@gmail.com','09023839393',NULL,'active',NULL,'2021-12-27 23:54:52'),(10,'delivery_firm','Fast track delivery','fasttrack@gmail.com','09023839390',NULL,'activating',NULL,'2021-12-27 23:56:01'),(11,'delivery_firm','All round logistics','allroundlogistics@gmail.com','08039457321','delivery-firm-3.jpg','active',NULL,'2021-12-27 23:57:18'),(14,'customer','Husk Blue','huskb@ygmail.com','09093838722',NULL,'active',NULL,'2021-12-29 20:46:07'),(15,'store','Gray Foods','grayfoods@gmail.com','09048473888',NULL,'activating',NULL,'2021-12-29 20:55:47');
+INSERT INTO `users` VALUES (1,'customer','Jaspx Anelechukwu','jasperanels@gmail.com','08048490901','user-1.jpg','active','2022-01-20 11:26:07','2021-12-23 10:17:39'),(2,'customer','Richard Chukwu','richchuks@gmail.com','09039283744',NULL,'active',NULL,'2021-12-23 12:08:02'),(3,'customer','Fred Cake','cakefred@yahoo.com','08038476211',NULL,'active',NULL,'2021-12-25 15:31:20'),(4,'customer','White Black','wb@yahoo.com','07083745655',NULL,'active',NULL,'2021-12-25 15:34:59'),(5,'store','Yam zone','yamzone@gmail.com','09183571123',NULL,'activating',NULL,'2021-12-25 21:42:25'),(6,'store','Get-well','wellhealth@gmail.com','08187347666',NULL,'activating',NULL,'2021-12-25 21:51:35'),(7,'store','Shoppa','shoppax@gmail.com','08084837423','user-7.jpeg','active','2022-01-18 21:48:01','2021-12-25 22:13:26'),(8,'store','HappyBite','jasperanels@gmail.com','07094823744',NULL,'activating',NULL,'2021-12-26 12:17:21'),(9,'delivery_firm','Freeway logistics','freeway@gmail.com','09023839393',NULL,'active',NULL,'2021-12-27 23:54:52'),(10,'delivery_firm','Fast track delivery','fasttrack@gmail.com','09023839390',NULL,'activating',NULL,'2021-12-27 23:56:01'),(11,'delivery_firm','All round logistics','allroundlogistics@gmail.com','08039457321','delivery-firm-3.jpg','active',NULL,'2021-12-27 23:57:18'),(14,'customer','Husk Blue','huskb@ygmail.com','09093838722',NULL,'active',NULL,'2021-12-29 20:46:07'),(15,'store','Gray Foods','grayfoods@gmail.com','09048473888',NULL,'activating',NULL,'2021-12-29 20:55:47');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_users` BEFORE UPDATE ON `users` FOR EACH ROW INSERT INTO users_history SET 
+  user_id = OLD.id,
+  `type` = OLD.type,
+  `name` = OLD.name,
+  `email` = OLD.email,
+  `phone_number` = OLD.phone_number,
+  `photo`= OLD.photo,
+  status = OLD.status */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `users_history`
@@ -1125,7 +1346,7 @@ CREATE TABLE `users_history` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `users_history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1134,7 +1355,7 @@ CREATE TABLE `users_history` (
 
 LOCK TABLES `users_history` WRITE;
 /*!40000 ALTER TABLE `users_history` DISABLE KEYS */;
-INSERT INTO `users_history` VALUES (1,15,'store','Gray Foods','grayfoods@gmail.com','09048473888',NULL,'activating','2022-01-18 13:53:10'),(2,15,'store','Gray Foodsx','grayfoods@gmail.com','09048473888',NULL,'activating','2022-01-18 13:53:28'),(3,1,'customer','Jasper Anelechukwu','jasperanels@gmail.com','08048490901','user-1.jpg','active','2022-01-18 21:42:42'),(4,1,'customer','Jaspe Anelechukwu','jasperanels@gmail.com','08048490901','user-1.jpg','active','2022-01-18 21:43:46'),(5,7,'store','Shoppa','shoppax@gmail.com','08084837423','user-7.jpeg','active','2022-01-18 21:44:29'),(6,7,'store','Shoppas','shoppax@gmail.com','08084837423','user-7.jpeg','active','2022-01-18 21:48:01');
+INSERT INTO `users_history` VALUES (1,15,'store','Gray Foods','grayfoods@gmail.com','09048473888',NULL,'activating','2022-01-18 13:53:10'),(2,15,'store','Gray Foodsx','grayfoods@gmail.com','09048473888',NULL,'activating','2022-01-18 13:53:28'),(3,1,'customer','Jasper Anelechukwu','jasperanels@gmail.com','08048490901','user-1.jpg','active','2022-01-18 21:42:42'),(4,1,'customer','Jaspe Anelechukwu','jasperanels@gmail.com','08048490901','user-1.jpg','active','2022-01-18 21:43:46'),(5,7,'store','Shoppa','shoppax@gmail.com','08084837423','user-7.jpeg','active','2022-01-18 21:44:29'),(6,7,'store','Shoppas','shoppax@gmail.com','08084837423','user-7.jpeg','active','2022-01-18 21:48:01'),(7,1,'customer','Jasper Anelechukwu','jasperanels@gmail.com','08048490901','user-1.jpg','active','2022-01-19 17:29:09'),(8,1,'customer','Jasp Anelechukwu','jasperanels@gmail.com','08048490901','user-1.jpg','active','2022-01-20 11:26:07');
 /*!40000 ALTER TABLE `users_history` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1209,4 +1430,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-01-19  1:14:35
+-- Dump completed on 2022-01-20 18:35:31

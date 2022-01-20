@@ -24,6 +24,7 @@ module.exports = class WithdrawalAccountController {
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
+      console.log(error)
       next(new InternalServerException(error));
     }
   }
