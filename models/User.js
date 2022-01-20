@@ -19,7 +19,7 @@ class User extends Model {
   static STATUS_DEACTIVATED = 'deactivated';
 
 
-  static GET_ATTR = ['id', 'name', 'email', 'phone_number', 'photo', 'status', 'type'];
+  static GET_ATTR = ['id', 'name', 'email', 'phone_number', 'photo', 'status', 'type', 'updated_at'];
 
 }
 

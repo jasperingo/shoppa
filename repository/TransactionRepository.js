@@ -1,10 +1,12 @@
 const { Op } = require("sequelize");
 const Customer = require("../models/Customer");
+const CustomerHistory = require("../models/CustomerHistory");
 const DeliveryFirm = require("../models/DeliveryFirm");
 const Order = require("../models/Order");
 const Store = require("../models/Store");
 const Transaction = require("../models/Transaction");
 const User = require("../models/User");
+const UserHistory = require("../models/UserHistory");
 const sequelize = require("./DB");
 
 module.exports = {
@@ -15,17 +17,76 @@ module.exports = {
   },
 
   get(id) {
-    return Transaction.findOne({
-      where: { id },
-      include: [
-        {
-          model: User,
-          attributes: User.GET_ATTR
-        },
-        {
-          model: Order
+    return sequelize.transaction(async (transaction)=> {
+      const tx = await Transaction.findOne({
+        where: { id },
+        include: [
+          {
+            model: User,
+            attributes: User.GET_ATTR,
+            include: [
+              {
+                model: Customer,
+                attributes: Customer.GET_ATTR
+              },
+              {
+                model: Store,
+              },
+              {
+                model: DeliveryFirm,
+              }
+            ]
+          },
+          {
+            model: Order
+          }
+        ],
+        transaction
+      });
+
+      if (tx !== null) {
+
+        const txDate = (new Date(tx.created_at)).getTime();
+
+        const userUpdatedDate = (new Date(tx.user.updated_at)).getTime();
+
+        if (userUpdatedDate > txDate) {
+          const userHistory = await UserHistory.findOne({
+            where: {
+              user_id: tx.user.id,
+              created_at: { [Op.gt]: tx.created_at }
+            },
+            order: [['created_at', 'ASC']],
+            transaction
+          });
+
+          tx.user.name = userHistory.name;
+          tx.user.email = userHistory.email;
+          tx.user.phone_number = userHistory.phone_number;
+          tx.user.photo = userHistory.photo;
         }
-      ]
+        
+        if (tx.user.customer !== null) {
+
+          const customerUpdatedDate = (new Date(tx.user.customer.updated_at)).getTime();
+  
+          if (customerUpdatedDate > txDate) {
+            const customerHistory = await CustomerHistory.findOne({
+              where: {
+                customer_id: tx.user.customer.id,
+                created_at: { [Op.gt]: tx.created_at }
+              },
+              order: [['created_at', 'ASC']],
+              transaction
+            });
+  
+            tx.user.customer.first_name = customerHistory.first_name;
+            tx.user.customer.last_name = customerHistory.last_name;
+          }
+        }
+      }
+
+      return tx;
     });
   },
 

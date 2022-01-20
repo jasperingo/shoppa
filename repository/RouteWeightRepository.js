@@ -6,12 +6,12 @@ const RouteWeight = require("../models/RouteWeight");
 module.exports = {
 
   async idExists(id) {
-    const weight = await RouteWeight.findOne({ attributes: ['id'], where: { id, deleted_at: { [Op.is]: null } } });
+    const weight = await RouteWeight.findOne({ attributes: ['id'], where: { id } });
     return weight !== null;
   },
 
   async routeWeightExists({ delivery_route_id, minimium, maximium }) {
-    const weight = await RouteWeight.findOne({where: { delivery_route_id, minimium, maximium, deleted_at: { [Op.is]: null } } });
+    const weight = await RouteWeight.findOne({where: { delivery_route_id, minimium, maximium } });
     return weight !== null;
   },
 
@@ -21,30 +21,31 @@ module.exports = {
         minimium, 
         maximium, 
         delivery_route_id: routeWeight.delivery_route_id,
-        deleted_at: { [Op.is]: null },
-        [Op.not]: { id: routeWeight.id } 
+        id: { [Op.not]: routeWeight.id } 
       } 
     });
     return weight !== null;
   },
 
   get(id) {
-    return RouteWeight.findOne({
-      where: { 
-        id,
-        deleted_at: { [Op.is]: null }
-      }
-    });
+    return RouteWeight.findByPk(id);
   },
 
   getWithRoute(id) {
     return RouteWeight.findOne({
-      where: { 
-        id,
-        deleted_at: { [Op.is]: null }
-      },
+      where: { id },
       include: {
         model: Route
+      }
+    });
+  },
+
+  getByRouteAndWeight(delivery_route_id, weight) {
+    return RouteWeight.findOne({
+      where: {
+        delivery_route_id,
+        minimium: { [Op.lte]: weight },
+        maximium: { [Op.gte]: weight }
       }
     });
   },
@@ -58,19 +59,8 @@ module.exports = {
   },
 
   delete(routeWeight) {
-    return RouteWeight.update({ deleted_at: Date.now() }, { where: { id: routeWeight.id } });
+    return RouteWeight.destroy({ where: { id: routeWeight.id } });
   },
-
-  getByRouteAndWeight(delivery_route_id, weight) {
-    return RouteWeight.findOne({
-      where: {
-        delivery_route_id,
-        minimium: { [Op.lte]: weight },
-        maximium: { [Op.gte]: weight },
-        deleted_at: { [Op.is]: null }
-      }
-    });
-  }
 
 };
 

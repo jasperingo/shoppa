@@ -5,7 +5,7 @@ const User = require("./User");
 
 class Customer extends Model {
 
-  static GET_ATTR = ['id', 'first_name', 'last_name'];
+  static GET_ATTR = ['id', 'first_name', 'last_name', 'updated_at'];
 
   hidePassword() {
     this.password = undefined;

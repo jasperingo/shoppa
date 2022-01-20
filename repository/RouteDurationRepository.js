@@ -6,12 +6,12 @@ const RouteDuration = require("../models/RouteDuration");
 module.exports = {
 
   async idExists(id) {
-    const duration = await RouteDuration.findOne({ attributes: ['id'], where: { id, deleted_at: { [Op.is]: null } } });
+    const duration = await RouteDuration.findOne({ attributes: ['id'], where: { id } });
     return duration !== null;
   },
 
   async routeDurationExists({ delivery_route_id, minimium, maximium, unit }) {
-    const duration = await RouteDuration.findOne({where: { delivery_route_id, minimium, maximium, unit, deleted_at: { [Op.is]: null } } });
+    const duration = await RouteDuration.findOne({ where: { delivery_route_id, minimium, maximium, unit } });
     return duration !== null;
   },
 
@@ -22,8 +22,7 @@ module.exports = {
         minimium, 
         maximium, 
         delivery_route_id: routeDuration.delivery_route_id,
-        deleted_at: { [Op.is]: null },
-        [Op.not]: { id: routeDuration.id } 
+        id: { [Op.not]: routeDuration.id } 
       } 
     });
     return weight !== null;
@@ -31,24 +30,21 @@ module.exports = {
 
 
   get(id) {
-    return RouteDuration.findOne({
-      where: { 
-        id,
-        deleted_at: { [Op.is]: null }
-      }
-    });
+    return RouteDuration.findByPk(id);
   },
 
   getWithRoute(id) {
     return RouteDuration.findOne({
-      where: { 
-        id,
-        deleted_at: { [Op.is]: null }
-      },
+      where: { id },
       include: {
         model: Route
       }
     });
+  },
+
+  
+  getListByRoute(delivery_route_id) {
+    return RouteDuration.findAll({ where: { delivery_route_id } });
   },
 
   create({ delivery_route_id, minimium, maximium, fee, unit }) {
@@ -60,17 +56,8 @@ module.exports = {
   },
 
   delete(routeDuration) {
-    return RouteDuration.update({ deleted_at: Date.now() }, { where: { id: routeDuration.id } });
+    return RouteDuration.destroy({ where: { id: routeDuration.id } });
   },
-
-  getListByRoute(delivery_route_id) {
-    return RouteDuration.findAll({
-      where: {
-        delivery_route_id,
-        deleted_at: { [Op.is]: null }
-      }
-    })
-  }
 
 };
 

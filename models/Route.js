@@ -58,10 +58,6 @@ DeliveryFirm.hasMany(Route, { foreignKey });
 
 Route.belongsTo(DeliveryFirm, { foreignKey });
 
-const oForeignKey = {
-  name: 'origin_route_id',
-  type: DataTypes.BIGINT
-};
 
 Route.belongsTo(Route, { as: 'origin_route', foreignKey: {
   name: 'origin_route_id',

@@ -9,12 +9,12 @@ const sequelize = require("./DB");
 module.exports = {
 
   async idExists(id) {
-    const res = await Route.findOne({ attributes: ['id'], where: { id, deleted_at: { [Op.is]: null } } });
+    const res = await Route.findOne({ attributes: ['id'], where: { id } });
     return res !== null;
   },
 
   async idExistsForDeliveryFirm(id, delivery_firm_id) {
-    const route = await Route.findOne({ attributes: ['id'], where: { id, delivery_firm_id, deleted_at: { [Op.is]: null } } });
+    const route = await Route.findOne({ attributes: ['id'], where: { id, delivery_firm_id } });
     return route !== null;
   },
 
@@ -23,7 +23,6 @@ module.exports = {
       attributes: ['id'],
       where: { 
         id, 
-        deleted_at: { [Op.is]: null },
         origin_route_id: { [Op.not]: null },
         destination_route_id: { [Op.not]: null }
       } 
@@ -34,7 +33,7 @@ module.exports = {
   async routeExists(delivery_firm_id, { state, city }) {
     const route = await Route.findOne({ 
       attributes: ['id'],
-      where: { delivery_firm_id, state, city, deleted_at: { [Op.is]: null } } 
+      where: { delivery_firm_id, state, city } 
     });
     return route !== null;
   },
@@ -47,8 +46,7 @@ module.exports = {
         city,
         state, 
         id: { [Op.not]: route.id },
-        delivery_firm_id: route.delivery_firm_id,  
-        deleted_at: { [Op.is]: null } 
+        delivery_firm_id: route.delivery_firm_id
       } 
     });
     return res !== null;
@@ -59,7 +57,6 @@ module.exports = {
       attributes: ['id'],
       where: { 
         delivery_firm_id,
-        deleted_at: { [Op.is]: null },
         [Op.or]: [
           { origin_route_id, destination_route_id },
           { origin_route_id: destination_route_id, destination_route_id: origin_route_id }
@@ -75,7 +72,6 @@ module.exports = {
       where: { 
         id: { [Op.not]: route.id },
         delivery_firm_id: route.delivery_firm_id,
-        deleted_at: { [Op.is]: null },
         [Op.or]: [
           { origin_route_id, destination_route_id },
           { origin_route_id: destination_route_id, destination_route_id: origin_route_id }
@@ -87,12 +83,7 @@ module.exports = {
   
   get(id) {
     return Route.findOne({
-      where: { 
-        id,
-        deleted_at: { [Op.is]: null },
-        '$delivery_route_weights.deleted_at$': { [Op.is]: null },
-        '$delivery_route_durations.deleted_at$': { [Op.is]: null }
-      },
+      where: { id },
       include: [
         {
           model: Route,
@@ -122,10 +113,7 @@ module.exports = {
   async getListByDeliveryFirm(deliveryFirm, offset, limit) {
     
     const { count, rows } = await Route.findAndCountAll({
-      where: { 
-        delivery_firm_id: deliveryFirm.id,
-        deleted_at: { [Op.is]: null }
-      },
+      where: { delivery_firm_id: deliveryFirm.id },
       include: [
         {
           model: Route,
@@ -144,10 +132,7 @@ module.exports = {
     for (let [i, route] of rows.entries()) {
       let weight = await RouteWeight.findOne({
         attributes: ['id', 'fee'],
-        where: {
-          delivery_route_id: route.id,
-          deleted_at: { [Op.is]: null }
-        },
+        where: { delivery_route_id: route.id },
         order: [['fee', 'ASC']],
       });
 
@@ -164,7 +149,6 @@ module.exports = {
         origin_route_id: { [Op.is]: null },
         destination_route_id: { [Op.is]: null },
         delivery_firm_id: deliveryFirm.id,
-        deleted_at: { [Op.is]: null }
       },
       include: [
         {
@@ -199,26 +183,11 @@ module.exports = {
   },
 
   delete(route) {
-
     return sequelize.transaction(async (transaction)=> {
-
-      const deleted_at = Date.now();
-
       return await Promise.all([
-        Route.update(
-          { deleted_at }, 
-          { where: { id: route.id }, transaction }
-        ),
-
-        RouteWeight.update(
-          { deleted_at }, 
-          { where: { route_id: route.id, deleted_at: { [Op.is]: null } }, transaction }
-        ),
-
-        RouteDuration.update(
-          { deleted_at }, 
-          { where: { route_id: route.id, deleted_at: { [Op.is]: null } }, transaction }
-        )
+        Route.destroy({ where: { id: route.id }, transaction }),
+        RouteWeight.destroy({ where: { delivery_route_id: route.id }, transaction }),
+        RouteDuration.destroy({ where: { delivery_route_id: route.id }, transaction })
       ]);
     });
   },
@@ -244,7 +213,6 @@ module.exports = {
       ],
       where: {
         '$delivery_firm.user.status$': User.STATUS_ACTIVE,
-        deleted_at: { [Op.is]: null },
         [Op.or]: [
           {
             state: {

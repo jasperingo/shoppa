@@ -12,7 +12,7 @@ class Address extends Model {
   static TYPE_PICK_UP = 'pick_up';
 
 
-  static GET_ATTR = ['id', 'street', 'city', 'state'];
+  static GET_ATTR = ['id', 'street', 'city', 'state', 'updated_at'];
 
 }
 
