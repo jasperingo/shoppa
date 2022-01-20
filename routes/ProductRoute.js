@@ -13,9 +13,11 @@ const PaginationMiddleware = require('../middlewares/PaginationMiddleware');
 const ProductAddPermissionMiddleware = require('../middlewares/permissions/product/ProductAddPermissionMiddleware');
 const ProductFetchPermissionMiddleware = require('../middlewares/permissions/product/ProductFetchPermissionMiddleware');
 const ProductUpdatePermissionMiddleware = require('../middlewares/permissions/product/ProductUpdatePermissionMiddleware');
+const SearchParamsMiddleware = require('../middlewares/SearchParamsMiddleware');
 const ValidationMiddleware = require('../middlewares/ValidationMiddleware');
 const ProductAddValidation = require('../validation/product/ProductAddValidation');
 const ProductUpdateValidation = require('../validation/product/ProductUpdateValidation');
+const SearchValidation = require('../validation/search/SearchValidation');
 
 const router = express.Router();
 
@@ -58,6 +60,15 @@ router.delete(
   AuthMiddleware,
   ProductUpdatePermissionMiddleware,
   controller.delete
+);
+
+router.get(
+  '/search',
+  SearchValidation,
+  ValidationMiddleware(),
+  SearchParamsMiddleware,
+  PaginationMiddleware,
+  controller.getListBySearch
 );
 
 router.get(

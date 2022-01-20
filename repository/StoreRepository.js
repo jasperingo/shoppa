@@ -157,6 +157,58 @@ module.exports = {
       limit
     });
   },
+  
+  getListBySearch(offset, limit, { q, sub_category_id }) {
+
+    const where = { '$user.status$': User.STATUS_ACTIVE };
+
+    if (q) {
+      where['$user.name$'] = { [Op.like]: `%${q}%` };
+    }
+
+    if (sub_category_id) {
+      where.sub_category_id = sub_category_id;
+    }
+
+    return sequelize.transaction(async (transaction)=> {
+
+      const { count, rows } = await Store.findAndCountAll({
+        where,
+        include: [
+          {
+            model: User,
+            attributes: User.GET_ATTR,
+            
+          },
+          {
+            model: SubCategory,
+            attributes: SubCategory.GET_ATTR,
+            include: {
+              model: Category,
+              attributes: Category.GET_ATTR,
+            }
+          }
+        ],
+        order: [[User, 'name', 'ASC']],
+        offset,
+        limit,
+        transaction
+      });
+
+      for (let store of rows) {
+        
+        let address = await Address.findOne({
+          attributes: Address.GET_ATTR,
+          where: { user_id: store.user.id },
+          transaction
+        });
+        
+        store.setDataValue('addresses', [address]);
+      }
+
+      return { count, rows };
+    });
+  },
 
   getByName(name) {
     return Store.findOne({

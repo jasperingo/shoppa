@@ -76,67 +76,130 @@ module.exports = {
     });
   },
   
-  async getListByStore(store, offset, limit) {
-      
-    const { count, rows } = await Product.findAndCountAll({
-      where: { store_id: store.id },
-      include: [
-        {
-          model: Store,
-          include: {
-            model: User,
-            attributes: User.GET_ATTR
-          }
-        },
-        {
-          model: SubCategory,
-          attributes: SubCategory.GET_ATTR,
-          include: {
-            model: Category,
-            attributes: Category.GET_ATTR,
-          }
-        },
-      ],
-      order: [['created_at', 'DESC']],
-      offset,
-      limit
-    });
-    
-    for (let [i, product] of rows.entries()) {
-      let variant = await ProductVariant.findOne({
-        attributes: ['id', 'price'],
-        where: { product_id: product.id },
-        order: [['price', 'ASC']],
-      });
+  getListByStore(store, offset, limit) {
+    return sequelize.transaction(async (transaction)=> {
 
-      rows[i].setDataValue('product_variants', (variant === null ? [] : [variant]));
-    }
-    
-    return { count, rows };
+      const { count, rows } = await Product.findAndCountAll({
+        where: { store_id: store.id },
+        include: [
+          {
+            model: Store,
+            include: {
+              model: User,
+              attributes: User.GET_ATTR
+            }
+          },
+          {
+            model: SubCategory,
+            attributes: SubCategory.GET_ATTR,
+            include: {
+              model: Category,
+              attributes: Category.GET_ATTR,
+            }
+          },
+        ],
+        order: [['created_at', 'DESC']],
+        offset,
+        limit,
+        transaction
+      });
+      
+      for (let product of rows) {
+        let variant = await ProductVariant.findOne({
+          attributes: ['id', 'price'],
+          where: { product_id: product.id },
+          order: [['price', 'ASC']],
+          transaction
+        });
+
+        product.setDataValue('product_variants', (variant === null ? [] : [variant]));
+      }
+      
+      return { count, rows };
+    });
   },
   
-  async getListByStoreWithDiscount(store, discount_id, offset, limit) {
-    const { count, rows } = await Product.findAndCountAll({
-      where: { store_id: store.id },
-      order: [['created_at', 'DESC']],
-      offset,
-      limit,
-    });
+  getListByStoreWithDiscount(store, discount_id, offset, limit) {
+    return sequelize.transaction(async (transaction)=> {
 
-    for (let [i, product] of rows.entries()) {
-      let discountProduct = await DiscountProduct.findOne({
-        where: {
-          discount_id,
-          product_id: product.id
-        }
+      const { count, rows } = await Product.findAndCountAll({
+        where: { store_id: store.id },
+        order: [['created_at', 'DESC']],
+        offset,
+        limit,
+        transaction
       });
 
-      rows[i].setDataValue('discount_products', (discountProduct === null ? [] : [discountProduct]));
-    }
+      for (let product of rows) {
+        let discountProduct = await DiscountProduct.findOne({
+          where: {
+            discount_id,
+            product_id: product.id
+          },
+          transaction
+        });
 
-    return { count, rows };
+        product.setDataValue('discount_products', (discountProduct === null ? [] : [discountProduct]));
+      }
+
+      return { count, rows };
+    });
   },
 
+  getListBySearch(offset, limit, { q, sub_category_id }) {
+    
+    const where = { '$store.user.status$': User.STATUS_ACTIVE };
+
+    if (q) {
+      where.title = { [Op.like]: `%${q}%` };
+    }
+
+    if (sub_category_id) {
+      where.sub_category_id = sub_category_id;
+    }
+
+    return sequelize.transaction(async (transaction)=> {
+
+      const { count, rows } = await Product.findAndCountAll({
+        where,
+        include: [
+          {
+            model: Store,
+            include: {
+              model: User,
+              attributes: User.GET_ATTR
+            }
+          },
+          {
+            model: SubCategory,
+            attributes: SubCategory.GET_ATTR,
+            include: {
+              model: Category,
+              attributes: Category.GET_ATTR,
+            }
+          },
+        ],
+        order: [['created_at', 'DESC']],
+        offset,
+        limit,
+        transaction
+      });
+      
+      for (let product of rows) {
+        let variant = await ProductVariant.findOne({
+          attributes: ['id', 'price'],
+          where: { product_id: product.id },
+          order: [['price', 'ASC']],
+          transaction
+        });
+
+        product.setDataValue('product_variants', (variant === null ? [] : [variant]));
+      }
+      
+      return { count, rows };
+    });
+  },
+  
   create({ sub_category_id, title, description }, store_id) {
     return Product.create({ store_id, sub_category_id, title, description });
   },

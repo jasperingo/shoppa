@@ -182,7 +182,9 @@
 
       "_transaction_status_not_pending": "Transaction status must be pending for you to update it to {{ status }}",
 
-      "_user_withdrawal_account_do_not_exist": "User do not have a withdrawal account"
+      "_user_withdrawal_account_do_not_exist": "User do not have a withdrawal account",
+
+      "_search_params_required": "At least one search query parameter is required"
       
     }
 

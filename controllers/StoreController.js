@@ -144,6 +144,25 @@ module.exports = class StoreController {
     }
   }
 
+  async getListBySearch(req, res, next) {
+
+    try {
+
+      const { pager, searchParams } = req.data;
+
+      const { count, rows } = await StoreRepository.getListBySearch(pager.page_offset, pager.page_limit, searchParams);
+
+      const pagination = new Pagination(req, pager.page, pager.page_limit, count);
+
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._store'), rows, pagination);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      next(new InternalServerException(error));
+    }
+  }
+
 
 }
 

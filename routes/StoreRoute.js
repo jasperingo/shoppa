@@ -33,6 +33,8 @@ const OrderController = require('../controllers/OrderController');
 const TransactionController = require('../controllers/TransactionController');
 const ReviewController = require('../controllers/ReviewController');
 const OrderListFilterMiddleware = require('../middlewares/OrderListFilterMiddleware');
+const SearchParamsMiddleware = require('../middlewares/SearchParamsMiddleware');
+const SearchValidation = require('../validation/search/SearchValidation');
 
 const router = express.Router();
 
@@ -77,6 +79,15 @@ router.get(
   AdministratorPermissionMiddleware,
   PaginationMiddleware,
   controller.getList
+);
+
+router.get(
+  '/search',
+  SearchValidation,
+  ValidationMiddleware(),
+  SearchParamsMiddleware,
+  PaginationMiddleware,
+  controller.getListBySearch
 );
 
 router.put(

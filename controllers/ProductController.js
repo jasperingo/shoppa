@@ -138,6 +138,26 @@ module.exports = class ProductController {
     }
   }
 
+  async getListBySearch(req, res, next) {
+    
+    try {
+
+      const { pager, searchParams } = req.data;
+
+      const { count, rows } = await ProductRepository.getListBySearch(pager.page_offset, pager.page_limit, searchParams);
+
+      const pagination = new Pagination(req, pager.page, pager.page_limit, count);
+
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._product'), rows, pagination);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      console.error(error)
+      next(new InternalServerException(error));
+    }
+  }
+
 }
 
 
