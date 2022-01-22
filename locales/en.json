@@ -61,6 +61,7 @@
 
   "_fetched": {
     "_customer": "Customer fetched",
+    "_administrator": "Administrator fetched",
     "_address": "Address fetched",
     "_category": "Category fetched",
     "_sub_category": "Sub-category fetched",

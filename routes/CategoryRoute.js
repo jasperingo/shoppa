@@ -17,7 +17,7 @@ const router = express.Router();
 const controller = new CategoryController();
 
 router.post(
-  '/add', 
+  '/create', 
   AuthMiddleware,
   CategoryPermissionMiddleware,
   checkSchema(CategoryAddValidation),

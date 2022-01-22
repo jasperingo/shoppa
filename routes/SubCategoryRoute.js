@@ -17,7 +17,7 @@ const router = express.Router();
 const controller = new SubCategoryController();
 
 router.post(
-  '/add', 
+  '/create', 
   AuthMiddleware,
   CategoryPermissionMiddleware,
   checkSchema(SubCategoryAddValidation),

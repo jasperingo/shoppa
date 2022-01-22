@@ -47,5 +47,16 @@ module.exports = class AdministratorController {
     }
   }
 
+  get(req, res) {
+
+    const { administrator } = req.data;
+
+    administrator.hidePassword();
+
+    const response = new Response(Response.SUCCESS, req.__('_fetched._administrator'), administrator);
+
+    res.status(StatusCodes.OK).send(response);
+  }
+
 }
 

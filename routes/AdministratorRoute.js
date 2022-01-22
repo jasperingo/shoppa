@@ -50,5 +50,13 @@ router.get(
   transactionController.getBalanceByAdministrator
 );
 
+router.get(
+  '/:id(\\d+)', 
+  AdministratorFetchMiddleware,
+  AuthMiddleware,
+  AdministratorPermissionMiddleware,
+  controller.get
+);
+
 module.exports = router;
 

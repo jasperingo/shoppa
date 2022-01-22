@@ -1,4 +1,5 @@
 const InternalServerException = require('../../http/exceptions/InternalServerException');
+const WithdrawalAccount = require('../../models/WithdrawalAccount');
 const BankRepository = require('../../repository/BankRepository');
 const ValidationRules = require('../ValidationRules');
 
@@ -33,6 +34,10 @@ module.exports = {
 
   account_type: {
     notEmpty: ValidationRules.notEmpty,
+    isIn: {
+      options: [WithdrawalAccount.getTypes()],
+      errorMessage: (value, { req })=> req.__('_error._form._field_invalid')
+    },
   }
 
 };

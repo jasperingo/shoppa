@@ -30,7 +30,7 @@ module.exports = class SubCategoryController {
       
       await SubCategoryRepository.update(_subCategory, req.body);
 
-      const subCategory = SubCategoryRepository.get(_subCategory.id);
+      const subCategory = await SubCategoryRepository.get(_subCategory.id);
       
       const response = new Response(Response.SUCCESS, req.__('_updated._sub_category'), subCategory);
 
@@ -49,7 +49,7 @@ module.exports = class SubCategoryController {
 
       await SubCategoryRepository.updatePhoto(_subCategory, req.file.filename);
 
-      const subCategory = SubCategoryRepository.get(_subCategory.id);
+      const subCategory = await SubCategoryRepository.get(_subCategory.id);
 
       const response = new Response(Response.SUCCESS, req.__('_updated._photo'), subCategory);
 

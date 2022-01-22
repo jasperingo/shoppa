@@ -1,16 +1,12 @@
 
 const InternalServerException = require('../../http/exceptions/InternalServerException');
-const { notEmpty, categoryTypeIsIn } = require('../ValidationRules');
+const ValidationRules = require('../ValidationRules');
 const CategoryRepository = require('../../repository/CategoryRepository');
 
 module.exports = {
 
-  type: {
-    isIn: categoryTypeIsIn
-  },
-
   name: {
-    notEmpty,
+    notEmpty: ValidationRules.notEmpty,
     custom: {
       options: async (value, { req })=> {
         try {
@@ -23,8 +19,5 @@ module.exports = {
     }
   },
 
-  description: {
-    optional: true
-  }
 };
 

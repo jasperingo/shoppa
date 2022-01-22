@@ -193,6 +193,7 @@ module.exports = {
             if (!req.data || !req.data[user] || ! (await Hash.comparePassword(value, req.data[user].password)) )
               return Promise.reject(req.__('_error._form._password_invalid'));
           } catch (err) {
+            console.log(err)
             return Promise.reject(InternalServerException.TAG);
           }
         }

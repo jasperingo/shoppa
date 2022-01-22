@@ -65,6 +65,8 @@ module.exports = class CustomerController {
 
       const customer = await CustomerRepository.get(req.data.customer.id);
 
+      customer.hidePassword();
+
       const response = new Response(Response.SUCCESS, req.__('_updated._customer'), customer);
 
       res.status(StatusCodes.OK).send(response);
@@ -99,6 +101,8 @@ module.exports = class CustomerController {
       
       const customer = await CustomerRepository.get(req.data.customer.id);
 
+      customer.hidePassword();
+
       const response = new Response(Response.SUCCESS, req.__('_updated._photo'), customer);
 
       res.status(StatusCodes.OK).send(response);
@@ -116,6 +120,8 @@ module.exports = class CustomerController {
       
       const customer = await CustomerRepository.get(req.data.customer.id);
 
+      customer.hidePassword();
+
       const response = new Response(Response.SUCCESS, req.__('_updated._status'), customer);
 
       res.status(StatusCodes.OK).send(response);
@@ -126,6 +132,8 @@ module.exports = class CustomerController {
   }
 
   get(req, res) {
+
+    req.data.customer.hidePassword();
 
     const response = new Response(Response.SUCCESS, req.__('_fetched._customer'), req.data.customer);
 

@@ -4,7 +4,18 @@ const User = require("./User");
 
 class WithdrawalAccount extends Model {
 
+  static TYPE_SAVINGS = 'savings';
+
+  static TYPE_CURRENT = 'current';
+
   static GET_ATTR = ['id', 'bank_name', 'account_number', 'account_name', 'account_type'];
+
+  static getTypes() {
+    return [
+      WithdrawalAccount.TYPE_SAVINGS,
+      WithdrawalAccount.TYPE_CURRENT
+    ];
+  }
 
 }
 

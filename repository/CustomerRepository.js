@@ -72,7 +72,6 @@ module.exports = {
   get(id) {
     return Customer.findOne({
       where: { id },
-      attributes: { exclude: ['password'] },
       include: {
         model: User,
         include: {
