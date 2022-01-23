@@ -31,12 +31,12 @@ module.exports = class AdministratorController {
   }
 
   async updatePassword(req, res, next) {
-
+    
     try {
 
-      const hashedPassword = await Hash.hashPassword(req.body.password);
+      const hashedPassword = await Hash.hashPassword(req.body.new_password);
       
-      await AdministratorRepository.updatePassword(req.params.id, hashedPassword);
+      await AdministratorRepository.updatePassword(req.data.administrator.id, hashedPassword);
 
       const response = new Response(Response.SUCCESS, req.__('_updated._password'));
 

@@ -80,7 +80,7 @@ module.exports = class CustomerController {
 
     try {
 
-      const hashedPassword = await Hash.hashPassword(req.body.password);
+      const hashedPassword = await Hash.hashPassword(req.body.new_password);
       
       await CustomerRepository.updatePassword(req.data.customer, hashedPassword);
 

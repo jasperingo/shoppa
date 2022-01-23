@@ -1,5 +1,7 @@
 const Administrator = require("../models/Administrator");
 const Customer = require("../models/Customer");
+const DeliveryFirm = require("../models/DeliveryFirm");
+const Store = require("../models/Store");
 const User = require("../models/User");
 
 module.exports = {
@@ -7,12 +9,26 @@ module.exports = {
   get(id) {
     return Administrator.findOne({   
       where: { id },
-      include: {
-        model: Customer,
-        include: {
-          model: User
-        } 
-      } 
+      include: [
+        {
+          model: Customer,
+          include: {
+            model: User
+          } 
+        },
+        {
+          model: Store,
+          include: {
+            model: User
+          } 
+        },
+        {
+          model: DeliveryFirm,
+          include: {
+            model: User
+          } 
+        }  
+      ]
     });
   },
 
