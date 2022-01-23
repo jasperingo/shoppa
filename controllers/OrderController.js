@@ -197,9 +197,11 @@ module.exports = class OrderController {
         let quantity = product.product_variants.reduce((prev, variant)=> prev + variant.quantity, 0);
 
         let amount = product.product_variants.reduce((prev, variant)=> prev + variant.amount, 0);
-
+        
         product.product_variants =  product.product_variants.map(v=> {
           v.amount = undefined;
+          v.id = v.product_variant_id;
+          v.product_variant_id = undefined;
           return v;
         });
 

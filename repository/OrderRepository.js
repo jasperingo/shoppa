@@ -120,8 +120,10 @@ module.exports = {
             transaction
           });
 
-          order.customer.first_name = customerHistory.first_name;
-          order.customer.last_name = customerHistory.last_name;
+          if (customerHistory !== null) {
+            order.customer.first_name = customerHistory.first_name;
+            order.customer.last_name = customerHistory.last_name;
+          }
         }
 
         if (customerUserUpdatedDate > orderDate) {
@@ -134,10 +136,12 @@ module.exports = {
             transaction
           });
 
-          order.customer.user.name = customerUserHistory.name;
-          order.customer.user.email = customerUserHistory.email;
-          order.customer.user.phone_number = customerUserHistory.phone_number;
-          order.customer.user.photo = customerUserHistory.photo;
+          if (customerUserHistory !== null) {
+            order.customer.user.name = customerUserHistory.name;
+            order.customer.user.email = customerUserHistory.email;
+            order.customer.user.phone_number = customerUserHistory.phone_number;
+            order.customer.user.photo = customerUserHistory.photo;
+          }
         }
 
         if (storeUpdatedDate > orderDate) {
@@ -150,7 +154,8 @@ module.exports = {
             transaction
           });
 
-          order.store.sub_category_id = storeHistory.sub_category_id;
+          if (storeHistory !== null)
+            order.store.sub_category_id = storeHistory.sub_category_id;
         }
         
         if (storeUserUpdatedDate > orderDate) {
@@ -163,10 +168,12 @@ module.exports = {
             transaction
           });
 
-          order.store.user.name = storeUserHistory.name;
-          order.store.user.email = storeUserHistory.email;
-          order.store.user.phone_number = storeUserHistory.phone_number;
-          order.store.user.photo = storeUserHistory.photo;
+          if (storeUserHistory !== null) {
+            order.store.user.name = storeUserHistory.name;
+            order.store.user.email = storeUserHistory.email;
+            order.store.user.phone_number = storeUserHistory.phone_number;
+            order.store.user.photo = storeUserHistory.photo;
+          }
         }
 
         if (storeAddressUpdatedDate > orderDate) {
@@ -179,9 +186,11 @@ module.exports = {
             transaction
           });
 
-          order.store.user.address.city = storeAddressHistory.city;
-          order.store.user.address.street = storeAddressHistory.street;
-          order.store.user.address.state = storeAddressHistory.state;
+          if (storeAddressHistory !== null) {
+            order.store.user.addresses[0].city = storeAddressHistory.city;
+            order.store.user.addresses[0].street = storeAddressHistory.street;
+            order.store.user.addresses[0].state = storeAddressHistory.state;
+          }
         }
 
         if (order.address !== null) {
@@ -198,11 +207,13 @@ module.exports = {
               transaction
             });
             
-            order.address.city = addressHistory.city;
-            order.address.street = addressHistory.street;
-            order.address.state = addressHistory.state;
-            order.address.title = addressHistory.title;
-            order.address.type = addressHistory.type;
+            if (addressHistory !== null) {
+              order.address.city = addressHistory.city;
+              order.address.street = addressHistory.street;
+              order.address.state = addressHistory.state;
+              order.address.title = addressHistory.title;
+              order.address.type = addressHistory.type;
+            }
           }
         }
 
@@ -220,10 +231,12 @@ module.exports = {
               transaction
             });
             
-            order.delivery_firm.user.name = deliveryUserHistory.name;
-            order.delivery_firm.user.email = deliveryUserHistory.email;
-            order.delivery_firm.user.phone_number = deliveryUserHistory.phone_number;
-            order.delivery_firm.user.photo = deliveryUserHistory.photo;
+            if (deliveryUserHistory !== null) {
+              order.delivery_firm.user.name = deliveryUserHistory.name;
+              order.delivery_firm.user.email = deliveryUserHistory.email;
+              order.delivery_firm.user.phone_number = deliveryUserHistory.phone_number;
+              order.delivery_firm.user.photo = deliveryUserHistory.photo;
+            }
           }
         }
 
@@ -243,11 +256,13 @@ module.exports = {
               transaction
             });
             
-            item.product_variant.name = productVariantHistory.name;
-            item.product_variant.price = productVariantHistory.price;
-            item.product_variant.quantity = productVariantHistory.quantity;
-            item.product_variant.weight = productVariantHistory.weight;
-            item.product_variant.available = productVariantHistory.available;
+            if (productVariantHistory !== null) {
+              item.product_variant.name = productVariantHistory.name;
+              item.product_variant.price = productVariantHistory.price;
+              item.product_variant.quantity = productVariantHistory.quantity;
+              item.product_variant.weight = productVariantHistory.weight;
+              item.product_variant.available = productVariantHistory.available;
+            }
           }
 
           if (productUpdatedDate > orderDate) {
@@ -260,9 +275,11 @@ module.exports = {
               transaction
             });
             
-            item.product_variant.product.title = productHistory.title;
-            item.product_variant.product.code = productHistory.code;
-            item.product_variant.product.photo = productHistory.photo;
+            if (productHistory !== null) {
+              item.product_variant.product.title = productHistory.title;
+              item.product_variant.product.code = productHistory.code;
+              item.product_variant.product.photo = productHistory.photo;
+            }
           }
 
         }
@@ -291,7 +308,7 @@ module.exports = {
     });
   },
 
-  getListByStore(store, offset, limit) {
+  getListByStore(store, offset, limit, options) {
     return Order.findAndCountAll({
       where: { store_id: store.id, ...options },
       order: [['created_at', 'DESC']],
@@ -300,7 +317,7 @@ module.exports = {
     });
   },
 
-  getListByDeliveryFirm(deliveryFirm, offset, limit) {
+  getListByDeliveryFirm(deliveryFirm, offset, limit, options) {
     return Order.findAndCountAll({
       where: { delivery_firm_id: deliveryFirm.id, ...options },
       order: [['created_at', 'DESC']],

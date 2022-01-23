@@ -2,6 +2,7 @@ const { StatusCodes } = require("http-status-codes");
 const InternalServerException = require("../http/exceptions/InternalServerException");
 const Pagination = require("../http/Pagination");
 const Response = require("../http/Response");
+const AdministratorRepository = require("../repository/AdministratorRepository");
 const DeliveryFirmRepository = require("../repository/DeliveryFirmRepository");
 const ReviewRepository = require("../repository/ReviewRepository");
 const Hash = require("../security/Hash");
@@ -18,11 +19,17 @@ module.exports = class DeliveryFirmController {
       
       const result = await DeliveryFirmRepository.add(req.body, hashedPassword, req.data.customer);
 
-      const deliveryFirm = await DeliveryFirmRepository.getWithAdministrator(result.deliveryFirm.id, result.administrator.id);
+      const deliveryFirm = await DeliveryFirmRepository.get(result.deliveryFirm.id);
 
-      const token = await JWT.signDeliveryFirmJWT(deliveryFirm);
+      const administrator = await AdministratorRepository.get(result.administrator.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_created._store'), {
+      administrator.hidePassword();
+
+      deliveryFirm.setDataValue('administrators', [administrator]);
+
+      const token = await JWT.signDeliveryFirmJWT(deliveryFirm.toJSON());
+
+      const response = new Response(Response.SUCCESS, req.__('_created._delivery_firm'), {
         delivery_firm: deliveryFirm,
         api_token: token
       });

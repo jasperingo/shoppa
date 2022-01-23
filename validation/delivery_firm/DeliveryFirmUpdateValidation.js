@@ -31,12 +31,14 @@ module.exports = {
           return Promise.reject(InternalServerException.TAG);
         }
       }
-    }
+    },
+    normalizeEmail: true
   },
 
   phone_number: {
     notEmpty: ValidationRules.notEmpty,
     isLength: ValidationRules.isPhoneNumberLength,
+    isMobilePhone: ValidationRules.isMobilePhone,
     custom: {
       options: async (value, { req })=> {
         try {

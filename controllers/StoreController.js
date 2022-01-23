@@ -2,6 +2,7 @@ const { StatusCodes } = require("http-status-codes");
 const InternalServerException = require("../http/exceptions/InternalServerException");
 const Pagination = require("../http/Pagination");
 const Response = require("../http/Response");
+const AdministratorRepository = require("../repository/AdministratorRepository");
 const ReviewRepository = require("../repository/ReviewRepository");
 const StoreRepository = require("../repository/StoreRepository");
 const Hash = require("../security/Hash");
@@ -17,9 +18,15 @@ module.exports = class StoreController {
       
       const result = await StoreRepository.add(req.body, hashedPassword, req.data.customer.id);
 
-      const store = await StoreRepository.getWithAdministrator(result.store.id, result.administrator.id);
+      const store = await StoreRepository.get(result.store.id);
 
-      const token = await JWT.signStoreJWT(store);
+      const administrator = await AdministratorRepository.get(result.administrator.id);
+
+      administrator.hidePassword();
+
+      store.setDataValue('administrators', [administrator]);
+
+      const token = await JWT.signStoreJWT(store.toJSON());
 
       const response = new Response(Response.SUCCESS, req.__('_created._store'), {
         store,

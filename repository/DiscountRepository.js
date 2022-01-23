@@ -68,15 +68,15 @@ module.exports = {
 
   update(discount, { title, type, value, minimium_required_amount, minimium_required_quantity, start_date, end_date }) {
     
-    const values = { title, type, value, start_date, end_date };
-
-    if (minimium_required_amount !== undefined || minimium_required_amount !== null) {
-      values.minimium_required_amount = minimium_required_amount;
-    }
-
-    if (minimium_required_quantity !== undefined || minimium_required_quantity !== null) {
-      values.minimium_required_quantity = minimium_required_quantity;
-    }
+    const values = { 
+      title, 
+      type, 
+      value, 
+      start_date, 
+      end_date,
+      minimium_required_amount: minimium_required_amount ?? null,
+      minimium_required_quantity: minimium_required_quantity ?? null
+    };
 
     return Discount.update(values, { where: { id: discount.id } });
   },

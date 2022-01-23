@@ -160,7 +160,7 @@ router.get(
 );
 
 router.get(
-  '/:id(\\d+)/product/discount/:discountId(\\d+)',
+  '/:id(\\d+)/product/discount/:discountId(\\d+)/list',
   StoreFetchMiddleware,
   AuthMiddleware,
   StorePermissionMiddleware,

@@ -73,6 +73,11 @@ module.exports = {
     errorMessage: (value, { req })=> req.__('_error._form._email_invalid')
   },
 
+  isMobilePhone: {
+    bail: true,
+    errorMessage: (value, { req })=> req.__('_error._form._phone_number_invalid')
+  },
+
   isArray: {
     bail: true,
     options: { min: 1 },
