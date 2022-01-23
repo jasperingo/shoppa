@@ -17,10 +17,9 @@ module.exports = {
         const err = [];
 
         const invalidMessage = req.__('_error._form._field_invalid');
-        
-        try {
-          for (let [i, item] of value.entries()) {
 
+        for (let [i, item] of value.entries()) {
+          try {
             if (typeof item === 'object' && item !== null) {
 
               if (item.product_variant_id === undefined || 
@@ -37,9 +36,10 @@ module.exports = {
             } else {
               err.push({ message: invalidMessage, index: i });
             }
+            
+          } catch (error) {
+            err.push({ name: 'product_variant_id', message: InternalServerException.TAG, index: i });
           }
-        } catch (error) {
-          err.push({ name: 'product_variant_id', message: InternalServerException.TAG, index: i });
         }
 
         if (err.length > 0) throw err;

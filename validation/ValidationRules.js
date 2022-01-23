@@ -23,12 +23,18 @@ module.exports = {
   validationHasServerError(errors) {
     
     const errs = errors.array();
-    //TODO
-    // for (let i of errs) {
-    // TODO: check if message is an array
-    //   if (i.message === InternalServerException.TAG) 
-    //     return true;
-    // }
+    
+    for (let err of errs) {
+      if (Array.isArray(err.message)) {
+        for (let e of err.message) {
+          if (e.message === InternalServerException.TAG) {
+            return true;
+          }
+        }
+      } else if (err.message === InternalServerException.TAG) {
+        return true;
+      }
+    }
 
     return false;
   },

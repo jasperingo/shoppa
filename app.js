@@ -45,7 +45,7 @@ app.use(function(err, req, res, next) {
   const response = new MyResponse();
   response.status = MyResponse.ERROR;
   response.message = res.__(err.message || '');
-  response.data = err.data ? err.data : err;
+  response.data = err.data ?? undefined;
   
   res.status(err.status || StatusCodes.INTERNAL_SERVER_ERROR);
   res.json(response);
