@@ -1,5 +1,4 @@
 const { Model, DataTypes } = require("sequelize");
-const StringGenerator = require("../http/StringGenerator");
 const sequelize = require('../repository/DB');
 const Order = require("./Order");
 const User = require("./User");

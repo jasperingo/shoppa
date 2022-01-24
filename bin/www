@@ -7,6 +7,8 @@
 var app = require('../app');
 var debug = require('debug')('futo-medicals-api:server');
 var http = require('http');
+var { Server } = require('socket.io');
+const connection = require('../websocket/connection');
 
 /**
  * Get port from environment and store in Express.
@@ -20,6 +22,10 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+
+var io = new Server(server);
+
+io.on('connection', connection(io));
 
 /**
  * Listen on provided port, on all network interfaces.
