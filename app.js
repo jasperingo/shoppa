@@ -5,6 +5,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var i18n = require('i18n');
+var cors = require('cors');
 
 var MyResponse = require('./http/Response');
 var apiRouter = require('./routes/EndPoints');
@@ -26,6 +27,8 @@ i18n.configure({
   autoReload: true,
 });
 
+
+app.use(cors());
 app.use(i18n.init);
 app.use(logger('dev'));
 app.use(express.json());
