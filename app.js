@@ -28,7 +28,9 @@ i18n.configure({
 });
 
 
-app.use(cors());
+app.use(cors({
+  preflightContinue: true
+}));
 
 app.use(i18n.init);
 app.use(logger('dev'));
