@@ -39,6 +39,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.options('*', cors());
 
 app.use('/api', apiRouter);
 
@@ -48,6 +49,8 @@ app.use(function(req, res, next) {
 });
 
 app.use(function(err, req, res, next) {
+
+  console.log(err);
 
   const response = new MyResponse();
   response.status = MyResponse.ERROR;
