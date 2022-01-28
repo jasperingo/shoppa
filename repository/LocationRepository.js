@@ -23,8 +23,8 @@ module.exports = {
   },
 
   getCities(state) {
-    const state = Locations.lgas(state);
-    return state ? state.lgas : [];
+    const s = Locations.lgas(state);
+    return s ? s.lgas : [];
   }
 
 };
