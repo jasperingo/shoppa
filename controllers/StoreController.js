@@ -123,6 +123,13 @@ module.exports = class StoreController {
 
       store.review_summary = await ReviewRepository.getSummaryForStore(store);
 
+      if (req.auth !== undefined && req.auth.customerId !== undefined) {
+
+        const review = await ReviewRepository.getByStoreAndCutomer(store.id, req.auth.customerId);
+
+        store.setDataValue('reviews', review === null ? [] : [review]);
+      }
+      
       const response = new Response(Response.SUCCESS, req.__('_fetched._store'), store);
 
       res.status(StatusCodes.OK).send(response);
@@ -151,6 +158,23 @@ module.exports = class StoreController {
     }
   }
 
+  async getRandomList(req, res, next) {
+
+    try {
+
+      const { pager } = req.data;
+
+      const stores = await StoreRepository.getRandomList(pager.page_limit);
+
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._store'), stores);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      next(new InternalServerException(error));
+    }
+  }
+
   async getListBySearch(req, res, next) {
 
     try {
@@ -169,7 +193,6 @@ module.exports = class StoreController {
       next(new InternalServerException(error));
     }
   }
-
 
 }
 

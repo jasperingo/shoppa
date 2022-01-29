@@ -73,23 +73,6 @@ router.post(
   controller.login
 );
 
-router.get(
-  '/list', 
-  AuthMiddleware, 
-  AdministratorPermissionMiddleware,
-  PaginationMiddleware,
-  controller.getList
-);
-
-router.get(
-  '/search',
-  SearchValidation,
-  ValidationMiddleware(),
-  SearchParamsMiddleware,
-  PaginationMiddleware,
-  controller.getListBySearch
-);
-
 router.put(
   '/:id(\\d+)/update',
   StoreFetchMiddleware,
@@ -148,6 +131,29 @@ router.put(
   checkSchema(WithdrawalAccountUpdateValidation),
   ValidationMiddleware(),
   withdrawalAccountController.updateStoreWithdrawalAccount
+);
+
+router.get(
+  '/list', 
+  AuthMiddleware, 
+  AdministratorPermissionMiddleware,
+  PaginationMiddleware,
+  controller.getList
+);
+
+router.get(
+  '/random/list', 
+  PaginationMiddleware,
+  controller.getRandomList
+);
+
+router.get(
+  '/search',
+  SearchValidation,
+  ValidationMiddleware(),
+  SearchParamsMiddleware,
+  PaginationMiddleware,
+  controller.getListBySearch
 );
 
 router.get(

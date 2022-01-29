@@ -63,6 +63,12 @@ router.delete(
 );
 
 router.get(
+  '/random/list',
+  PaginationMiddleware,
+  controller.getRandomList
+);
+
+router.get(
   '/search',
   SearchValidation,
   ValidationMiddleware(),
@@ -78,6 +84,15 @@ router.get(
   ProductFetchPermissionMiddleware,
   PaginationMiddleware,
   reviewController.getListByProduct
+);
+
+router.get(
+  '/:id(\\d+)/related/list',
+  ProductFetchMiddleware, 
+  OptionalAuthMiddleware,
+  ProductFetchPermissionMiddleware,
+  PaginationMiddleware,
+  controller.getRelatedList
 );
 
 router.get(

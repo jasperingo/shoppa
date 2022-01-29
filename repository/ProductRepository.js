@@ -146,6 +146,48 @@ module.exports = {
     });
   },
 
+  getRandomList(limit) {
+    return sequelize.transaction(async (transaction)=> {
+
+      const rows = await Product.findAll({
+        where: { '$store.user.status$': User.STATUS_ACTIVE },
+        include: [
+          {
+            model: Store,
+            include: {
+              model: User,
+              attributes: User.GET_ATTR
+            }
+          },
+          {
+            model: SubCategory,
+            attributes: SubCategory.GET_ATTR,
+            include: {
+              model: Category,
+              attributes: Category.GET_ATTR,
+            }
+          },
+        ],
+        order: sequelize.random(),
+        limit,
+        transaction
+      });
+      
+      for (let product of rows) {
+        let variant = await ProductVariant.findOne({
+          attributes: ['id', 'price'],
+          where: { product_id: product.id },
+          order: [['price', 'ASC']],
+          transaction
+        });
+
+        product.setDataValue('product_variants', (variant === null ? [] : [variant]));
+      }
+      
+      return rows;
+    });
+  },
+
   getListBySearch(offset, limit, { q, sub_category_id }) {
     
     const where = { '$store.user.status$': User.STATUS_ACTIVE };
@@ -162,6 +204,52 @@ module.exports = {
 
       const { count, rows } = await Product.findAndCountAll({
         where,
+        include: [
+          {
+            model: Store,
+            include: {
+              model: User,
+              attributes: User.GET_ATTR
+            }
+          },
+          {
+            model: SubCategory,
+            attributes: SubCategory.GET_ATTR,
+            include: {
+              model: Category,
+              attributes: Category.GET_ATTR,
+            }
+          },
+        ],
+        order: [['created_at', 'DESC']],
+        offset,
+        limit,
+        transaction
+      });
+      
+      for (let product of rows) {
+        let variant = await ProductVariant.findOne({
+          attributes: ['id', 'price'],
+          where: { product_id: product.id },
+          order: [['price', 'ASC']],
+          transaction
+        });
+
+        product.setDataValue('product_variants', (variant === null ? [] : [variant]));
+      }
+      
+      return { count, rows };
+    });
+  },
+
+  getRelatedList(product, offset, limit) {
+    return sequelize.transaction(async (transaction)=> {
+
+      const { count, rows } = await Product.findAndCountAll({
+        where: { 
+          store_id: product.store.id,
+          '$sub_category.category.id$': product.sub_category.category.id
+        },
         include: [
           {
             model: Store,

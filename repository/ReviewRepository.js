@@ -108,6 +108,54 @@ module.exports = {
     });
   },
 
+  getByProductAndCutomer(product_id, customer_id) {
+    return Review.findOne({
+      where: { product_id, customer_id },
+      include: [
+        {
+          model: Customer,
+          attributes: Customer.GET_ATTR,
+          include: {
+            model: User,
+            attributes: User.GET_ATTR
+          }
+        }
+      ]
+    });
+  },
+
+  getByStoreAndCutomer(store_id, customer_id) {
+    return Review.findOne({
+      where: { store_id, customer_id },
+      include: [
+        {
+          model: Customer,
+          attributes: Customer.GET_ATTR,
+          include: {
+            model: User,
+            attributes: User.GET_ATTR
+          }
+        }
+      ]
+    });
+  },
+
+  getByDeliveryFirmAndCutomer(delivery_firm_id, customer_id) {
+    return Review.findOne({
+      where: { delivery_firm_id, customer_id },
+      include: [
+        {
+          model: Customer,
+          attributes: Customer.GET_ATTR,
+          include: {
+            model: User,
+            attributes: User.GET_ATTR
+          }
+        }
+      ]
+    });
+  },
+
   getListByProduct(product, offset, limit) {
     return Review.findAndCountAll({ 
       where: { product_id: product.id },

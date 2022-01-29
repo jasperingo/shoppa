@@ -87,8 +87,11 @@ module.exports = class ProductController {
         
         const fav = await FavoriteRepository.getIdByProductAndCustomer(product.id, req.auth.customerId);
 
-        product.setDataValue('favorite', fav);
+        product.setDataValue('favorites', fav === null ? [] : [fav]);
 
+        const review = await ReviewRepository.getByProductAndCutomer(product.id, req.auth.customerId);
+
+        product.setDataValue('reviews', review === null ? [] : [review]);
       }
       
       const response = new Response(Response.SUCCESS, req.__('_fetched._product'), product);
@@ -138,6 +141,23 @@ module.exports = class ProductController {
     }
   }
 
+  async getRandomList(req, res, next) {
+    
+    try {
+
+      const { pager } = req.data;
+
+      const products = await ProductRepository.getRandomList(pager.page_limit);
+
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._product'), products);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      next(new InternalServerException(error));
+    }
+  }
+
   async getListBySearch(req, res, next) {
     
     try {
@@ -153,7 +173,25 @@ module.exports = class ProductController {
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      console.error(error)
+      next(new InternalServerException(error));
+    }
+  }
+
+  async getRelatedList(req, res, next) {
+    
+    try {
+
+      const { pager, product } = req.data;
+
+      const { count, rows } = await ProductRepository.getRelatedList(product, pager.page_offset, pager.page_limit);
+
+      const pagination = new Pagination(req, pager.page, pager.page_limit, count);
+
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._product'), rows, pagination);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
       next(new InternalServerException(error));
     }
   }

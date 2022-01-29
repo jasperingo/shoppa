@@ -7,6 +7,7 @@ const AuthMiddleware = require('../middlewares/AuthMiddleware');
 const CategoryFetchMiddleware = require('../middlewares/fetch/CategoryFetchMiddleware');
 const FileUploadMiddleware = require('../middlewares/FileUploadMiddleware');
 const FileUploadValidationMiddleware = require('../middlewares/FileUploadValidationMiddleware');
+const PaginationMiddleware = require('../middlewares/PaginationMiddleware');
 const CategoryPermissionMiddleware = require('../middlewares/permissions/CategoryPermissionMiddleware');
 const ValidationMiddleware = require('../middlewares/ValidationMiddleware');
 const CategoryAddValidation = require('../validation/category/CategoryAddValidation');
@@ -43,6 +44,12 @@ router.put(
   FileUploadMiddleware(Files.CATEGORY_PHOTO_PATH).single('photo'), 
   FileUploadValidationMiddleware('photo'), 
   controller.updatePhoto
+);
+
+router.get(
+  '/random/list',
+  PaginationMiddleware,
+  controller.getRandomList
 );
 
 router.get(

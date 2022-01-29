@@ -157,6 +157,43 @@ module.exports = {
       limit
     });
   },
+
+  getRandomList(limit) {
+    return sequelize.transaction(async (transaction)=> {
+      const rows = await Store.findAll({
+        where: { '$user.status$': User.STATUS_ACTIVE },
+        include: [
+          {
+            model: User,
+            attributes: User.GET_ATTR,
+          },
+          {
+            model: SubCategory,
+            attributes: SubCategory.GET_ATTR,
+            include: {
+              model: Category,
+              attributes: Category.GET_ATTR,
+            }
+          }
+        ],
+        order: sequelize.random(),
+        limit
+      });
+
+      for (let store of rows) {
+          
+        let address = await Address.findOne({
+          attributes: Address.GET_ATTR,
+          where: { user_id: store.user.id },
+          transaction
+        });
+        
+        store.setDataValue('addresses', [address]);
+      }
+
+      return rows;
+    });
+  },
   
   getListBySearch(offset, limit, { q, sub_category_id }) {
 

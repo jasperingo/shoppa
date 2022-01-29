@@ -124,6 +124,13 @@ module.exports = class DeliveryFirmController {
 
       deliveryFirm.review_summary = await ReviewRepository.getSummaryForDeliveryFirm(deliveryFirm);
 
+      if (req.auth !== undefined && req.auth.customerId !== undefined) {
+
+        const review = await ReviewRepository.getByDeliveryFirmAndCutomer(deliveryFirm.id, req.auth.customerId);
+
+        deliveryFirm.setDataValue('reviews', review === null ? [] : [review]);
+      }
+
       const response = new Response(Response.SUCCESS, req.__('_fetched._delivery_firm'), deliveryFirm);
 
       res.status(StatusCodes.OK).send(response);

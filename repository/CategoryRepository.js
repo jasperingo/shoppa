@@ -1,6 +1,7 @@
 const { Op } = require("sequelize");
 const Category = require("../models/Category");
 const SubCategory = require("../models/SubCategory");
+const sequelize = require("./DB");
 
 
 module.exports = {
@@ -33,6 +34,16 @@ module.exports = {
       }
     });
   },
+
+  getRandomList(limit) {
+    return Category.findAll({ 
+      include: {
+        model: SubCategory
+      },
+      order: sequelize.random(),
+      limit,
+    });
+  },
   
   getListStore() {
     return Category.findAll({ 
@@ -40,7 +51,7 @@ module.exports = {
       include: {
         model: SubCategory
       },
-      order: [['created_at', 'DESC']] 
+      order: [['name', 'ASC']] 
     });
   },
 
@@ -50,7 +61,7 @@ module.exports = {
       include: {
         model: SubCategory
       },
-      order: [['created_at', 'DESC']] 
+      order: [['name', 'ASC']] 
     });
   },
 

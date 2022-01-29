@@ -68,6 +68,23 @@ module.exports = class CategoryController {
     res.status(StatusCodes.OK).send(response);
   }
 
+  async getRandomList(req, res, next) {
+
+    try {
+
+      const { pager } = req.data;
+
+      const categories = await CategoryRepository.getRandomList(pager.page_limit);
+
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._category'), categories);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      next(new InternalServerException(error));
+    }
+  }
+
   async getListByStore(req, res, next) {
 
     try {
