@@ -188,7 +188,7 @@ module.exports = {
           transaction
         });
         
-        store.setDataValue('addresses', [address]);
+        store.user.setDataValue('addresses', [address]);
       }
 
       return rows;
@@ -240,7 +240,7 @@ module.exports = {
           transaction
         });
         
-        store.setDataValue('addresses', [address]);
+        store.user.setDataValue('addresses', [address]);
       }
 
       return { count, rows };

@@ -125,6 +125,8 @@ module.exports = class StoreController {
 
       if (req.auth !== undefined && req.auth.customerId !== undefined) {
 
+        store.review_summary.customer_can_review = await ReviewRepository.canReviewStore(store.id, req.auth.customerId);
+
         const review = await ReviewRepository.getByStoreAndCutomer(store.id, req.auth.customerId);
 
         store.setDataValue('reviews', review === null ? [] : [review]);

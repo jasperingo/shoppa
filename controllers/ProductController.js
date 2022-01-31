@@ -84,6 +84,8 @@ module.exports = class ProductController {
       product.review_summary = await ReviewRepository.getSummaryForProduct(product);
       
       if (req.auth !== undefined && req.auth.customerId !== undefined) {
+
+        product.review_summary.customer_can_review = await ReviewRepository.canReviewProduct(product.id, req.auth.customerId);
         
         const fav = await FavoriteRepository.getIdByProductAndCustomer(product.id, req.auth.customerId);
 

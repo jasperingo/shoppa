@@ -248,6 +248,7 @@ module.exports = {
       const { count, rows } = await Product.findAndCountAll({
         where: { 
           store_id: product.store.id,
+          '$store.user.status$': User.STATUS_ACTIVE,
           '$sub_category.category.id$': product.sub_category.category.id
         },
         include: [

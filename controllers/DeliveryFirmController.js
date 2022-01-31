@@ -126,6 +126,8 @@ module.exports = class DeliveryFirmController {
 
       if (req.auth !== undefined && req.auth.customerId !== undefined) {
 
+        deliveryFirm.review_summary.customer_can_review = await ReviewRepository.canReviewDeliveryFirm(deliveryFirm.id, req.auth.customerId);
+
         const review = await ReviewRepository.getByDeliveryFirmAndCutomer(deliveryFirm.id, req.auth.customerId);
 
         deliveryFirm.setDataValue('reviews', review === null ? [] : [review]);
