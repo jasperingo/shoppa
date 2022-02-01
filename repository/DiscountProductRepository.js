@@ -2,6 +2,9 @@ const { Op } = require("sequelize");
 const Discount = require("../models/Discount");
 const DiscountProduct = require("../models/DiscountProduct");
 const Product = require("../models/Product");
+const ProductVariant = require("../models/ProductVariant");
+const Store = require("../models/Store");
+const User = require("../models/User");
 const sequelize = require("./DB");
 
 module.exports = {
@@ -36,15 +39,38 @@ module.exports = {
   },
 
   getListByDiscount(discount, offset, limit) {
-    return DiscountProduct.findAndCountAll({
-      where: { discount_id: discount.id },
-      include: {
-        model: Product,
-        attributes: Product.GET_ATTR
-      },
-      order: [['created_at', 'DESC']],
-      offset,
-      limit,
+    return sequelize.transaction(async (transaction)=> {
+
+      const { count, rows } = await  DiscountProduct.findAndCountAll({
+        where: { discount_id: discount.id },
+        include: {
+          model: Product,
+          attributes: Product.GET_ATTR,
+          include: {
+            model: Store,
+            include: {
+              model: User,
+              attributes: User.GET_ATTR
+            }
+          }
+        },
+        order: [['created_at', 'DESC']],
+        offset,
+        limit,
+      });
+
+      for (let discount of rows) {
+        let variant = await ProductVariant.findOne({
+          attributes: ['id', 'price'],
+          where: { product_id: discount.product.id },
+          order: [['price', 'ASC']],
+          transaction
+        });
+
+        discount.product.setDataValue('product_variants', (variant === null ? [] : [variant]));
+      }
+      
+      return { count, rows };
     });
   },
 
