@@ -32,7 +32,9 @@ module.exports = class ProductController {
 
       await ProductRepository.update(req.data.product, req.body);
 
-      const product = await ProductRepository.get(req.params.id);
+      const product = await ProductRepository.get(req.data.product.id);
+
+      product.review_summary = await ReviewRepository.getSummaryForProduct(product);
 
       const response = new Response(Response.SUCCESS, req.__('_updated._product'), product);
 
@@ -49,9 +51,30 @@ module.exports = class ProductController {
 
       await ProductRepository.updatePhoto(req.data.product, req.file.filename);
       
-      const product = await ProductRepository.get(req.params.id);
+      const product = await ProductRepository.get(req.data.product.id);
+
+      product.review_summary = await ReviewRepository.getSummaryForProduct(product);
 
       const response = new Response(Response.SUCCESS, req.__('_updated._photo'), product);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch (error) {
+      next(new InternalServerException(error));
+    }
+  }
+
+  async updateRecommended(req, res, next) {
+
+    try {
+
+      await ProductRepository.updateRecommended(req.data.product, req.body.recommended);
+
+      const product = await ProductRepository.get(req.data.product.id);
+
+      product.review_summary = await ReviewRepository.getSummaryForProduct(product);
+
+      const response = new Response(Response.SUCCESS, req.__('_updated._product'), product);
 
       res.status(StatusCodes.OK).send(response);
 
@@ -150,6 +173,23 @@ module.exports = class ProductController {
       const { pager } = req.data;
 
       const products = await ProductRepository.getRandomList(pager.page_limit);
+
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._product'), products);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      next(new InternalServerException(error));
+    }
+  }
+
+  async getListByRecommeded(req, res, next) {
+    
+    try {
+
+      const { pager } = req.data;
+
+      const products = await ProductRepository.getListByRecommended(pager.page_limit);
 
       const response = new Response(Response.SUCCESS, req.__('_list_fetched._product'), products);
 

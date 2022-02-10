@@ -5,6 +5,7 @@ const AdministratorRepository = require("../repository/AdministratorRepository")
 const InternalServerException = require("../http/exceptions/InternalServerException");
 const JWT = require("../security/JWT");
 const Hash = require("../security/Hash");
+const CustomerRepository = require("../repository/CustomerRepository");
 
 module.exports = class AdministratorController {
 
@@ -22,6 +23,44 @@ module.exports = class AdministratorController {
         administrator,
         api_token: token
       });
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch (error) {
+      next(new InternalServerException(error));
+    }
+  }
+
+  async update(req, res, next) {
+
+    try {
+      
+      await CustomerRepository.update(req.data.administrator.customer, req.body);
+
+      const administrator = await AdministratorRepository.get(req.data.administrator.id);
+
+      administrator.hidePassword();
+
+      const response = new Response(Response.SUCCESS, req.__('_updated._administrator'), administrator);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch (error) {
+      next(new InternalServerException(error));
+    }
+  }
+
+  async updatePhoto(req, res, next) {
+
+    try {
+
+      await CustomerRepository.updatePhoto(req.data.administrator.customer, req.file.filename);
+      
+      const administrator = await AdministratorRepository.get(req.data.administrator.customer.id);
+
+      administrator.hidePassword();
+
+      const response = new Response(Response.SUCCESS, req.__('_updated._photo'), administrator);
 
       res.status(StatusCodes.OK).send(response);
 

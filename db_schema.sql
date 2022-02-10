@@ -195,7 +195,7 @@ CREATE TABLE `customers` (
 
 LOCK TABLES `customers` WRITE;
 /*!40000 ALTER TABLE `customers` DISABLE KEYS */;
-INSERT INTO `customers` VALUES (1,1,'Jasper','Anelechukwu','$2b$10$YdUJMaI6gA6use9YXRbeD.TAJm0Wp3zCLv4U4vNjYY1Jbvk4KVDXK','2022-01-23 22:30:16'),(2,2,'Richard','Chukwu','$2b$10$aXuVPBNUdvqlm6fGpfjYNOqn.um0K2oXXu7a5UqRc2Vioa/d9NfRO',NULL),(3,3,'Fred','Cake','$2b$10$zkl9QtVS2Z8ZSayGmByLY.UlHC1DMEx9AGZv4XR/ydpMpKlVOoAZm',NULL),(4,4,'White','Black','$2b$10$atK.zjusD8vdZB7B2pBsBOq58muLRqIEiPOmf4z0Ynnj4Ka576fwK',NULL),(7,14,'Husk','Blue','$2b$10$Nma.peF34.cXoXH/um.M6eLNxxzHK1puA5EO6N5PWenGSGNJmNI6i',NULL),(8,16,'Bullet','Gun','$2b$10$txqrIG/XTUcb40kfd2RdeOoum8CptEAWINinojyaQTEh.MMqHfNK.','2022-01-20 17:49:57'),(9,17,'Round','Ball','$2b$10$XnbV9xSWST03/nBsq.SEg.wu9pC147QtDhBtUIoGF32H8r6748vj6','2022-01-21 18:12:32');
+INSERT INTO `customers` VALUES (1,1,'Jasper','Anelechukwu','$2b$10$YdUJMaI6gA6use9YXRbeD.TAJm0Wp3zCLv4U4vNjYY1Jbvk4KVDXK','2022-02-10 15:49:59'),(2,2,'Richard','Chukwu','$2b$10$aXuVPBNUdvqlm6fGpfjYNOqn.um0K2oXXu7a5UqRc2Vioa/d9NfRO',NULL),(3,3,'Fred','Cake','$2b$10$zkl9QtVS2Z8ZSayGmByLY.UlHC1DMEx9AGZv4XR/ydpMpKlVOoAZm',NULL),(4,4,'White','Black','$2b$10$atK.zjusD8vdZB7B2pBsBOq58muLRqIEiPOmf4z0Ynnj4Ka576fwK',NULL),(7,14,'Husk','Blue','$2b$10$Nma.peF34.cXoXH/um.M6eLNxxzHK1puA5EO6N5PWenGSGNJmNI6i',NULL),(8,16,'Bullet','Gun','$2b$10$txqrIG/XTUcb40kfd2RdeOoum8CptEAWINinojyaQTEh.MMqHfNK.','2022-01-20 17:49:57'),(9,17,'Round','Ball','$2b$10$XnbV9xSWST03/nBsq.SEg.wu9pC147QtDhBtUIoGF32H8r6748vj6','2022-01-21 18:12:32');
 /*!40000 ALTER TABLE `customers` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -235,7 +235,7 @@ CREATE TABLE `customers_history` (
   PRIMARY KEY (`id`),
   KEY `customer_id` (`customer_id`),
   CONSTRAINT `customers_history_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -244,7 +244,7 @@ CREATE TABLE `customers_history` (
 
 LOCK TABLES `customers_history` WRITE;
 /*!40000 ALTER TABLE `customers_history` DISABLE KEYS */;
-INSERT INTO `customers_history` VALUES (1,7,'Husk','Blue','$2b$10$Nma.peF34.cXoXH/um.M6eLNxxzHK1puA5EO6N5PWenGSGNJmNI6i','2022-01-18 22:47:09'),(2,7,'Husku','Blue','$2b$10$Nma.peF34.cXoXH/um.M6eLNxxzHK1puA5EO6N5PWenGSGNJmNI6i','2022-01-18 22:47:09'),(5,1,'Jasper','Anelechukwu','$2b$10$30mKxCxOCMlcuJw7KfG2GuHe4PuHi5CDRga6B1aLewee8rDuuxJnC','2022-01-19 17:29:09'),(6,1,'Jasp','Anelechukwu','$2b$10$30mKxCxOCMlcuJw7KfG2GuHe4PuHi5CDRga6B1aLewee8rDuuxJnC','2022-01-20 11:26:07'),(7,1,'Jaspx','Anelechukwu','$2b$10$30mKxCxOCMlcuJw7KfG2GuHe4PuHi5CDRga6B1aLewee8rDuuxJnC','2022-01-21 18:17:15'),(8,1,'Jasper','Anelechukwu','$2b$10$30mKxCxOCMlcuJw7KfG2GuHe4PuHi5CDRga6B1aLewee8rDuuxJnC','2022-01-21 18:26:23'),(9,1,'Jasper','Anelechukwu','$2b$10$0i1hJ6Rd2W/KHfjNFzCSWuMxy6EfJaSLrYFtbhMS8CSeK3I7r8rNe','2022-01-23 14:32:51'),(10,1,'Jasper','Anelechukwu','$2b$10$JYjovCZY05M5k4Vmqri4g.8aIrscvV8G2lR8ha1DQCsyP3fC6/sGq','2022-01-23 22:26:39'),(11,1,'Jasper','Anelechukwu','$2b$10$JYjovCZY05M5k4Vmqri4g.8aIrscvV8G2lR8ha1DQCsyP3fC6/sGq','2022-01-23 22:26:55'),(12,1,'Jasper','Anelechukwu','$2b$10$rC/ZZQsyIvs6PfERc4kpu.A/Uh1Aoas78ZpUiB8jMfxotRv0VoJ6a','2022-01-23 22:27:00'),(13,1,'Jasper','Anelechukwu','$2b$10$VGTvT.Vj.Ak7oVlvHCCHH.e44I1fhytXnpZqzso8y6l6HegbvWZMW','2022-01-23 22:30:16');
+INSERT INTO `customers_history` VALUES (1,7,'Husk','Blue','$2b$10$Nma.peF34.cXoXH/um.M6eLNxxzHK1puA5EO6N5PWenGSGNJmNI6i','2022-01-18 22:47:09'),(2,7,'Husku','Blue','$2b$10$Nma.peF34.cXoXH/um.M6eLNxxzHK1puA5EO6N5PWenGSGNJmNI6i','2022-01-18 22:47:09'),(5,1,'Jasper','Anelechukwu','$2b$10$30mKxCxOCMlcuJw7KfG2GuHe4PuHi5CDRga6B1aLewee8rDuuxJnC','2022-01-19 17:29:09'),(6,1,'Jasp','Anelechukwu','$2b$10$30mKxCxOCMlcuJw7KfG2GuHe4PuHi5CDRga6B1aLewee8rDuuxJnC','2022-01-20 11:26:07'),(7,1,'Jaspx','Anelechukwu','$2b$10$30mKxCxOCMlcuJw7KfG2GuHe4PuHi5CDRga6B1aLewee8rDuuxJnC','2022-01-21 18:17:15'),(8,1,'Jasper','Anelechukwu','$2b$10$30mKxCxOCMlcuJw7KfG2GuHe4PuHi5CDRga6B1aLewee8rDuuxJnC','2022-01-21 18:26:23'),(9,1,'Jasper','Anelechukwu','$2b$10$0i1hJ6Rd2W/KHfjNFzCSWuMxy6EfJaSLrYFtbhMS8CSeK3I7r8rNe','2022-01-23 14:32:51'),(10,1,'Jasper','Anelechukwu','$2b$10$JYjovCZY05M5k4Vmqri4g.8aIrscvV8G2lR8ha1DQCsyP3fC6/sGq','2022-01-23 22:26:39'),(11,1,'Jasper','Anelechukwu','$2b$10$JYjovCZY05M5k4Vmqri4g.8aIrscvV8G2lR8ha1DQCsyP3fC6/sGq','2022-01-23 22:26:55'),(12,1,'Jasper','Anelechukwu','$2b$10$rC/ZZQsyIvs6PfERc4kpu.A/Uh1Aoas78ZpUiB8jMfxotRv0VoJ6a','2022-01-23 22:27:00'),(13,1,'Jasper','Anelechukwu','$2b$10$VGTvT.Vj.Ak7oVlvHCCHH.e44I1fhytXnpZqzso8y6l6HegbvWZMW','2022-01-23 22:30:16'),(14,1,'Jasper','Anelechukwu','$2b$10$YdUJMaI6gA6use9YXRbeD.TAJm0Wp3zCLv4U4vNjYY1Jbvk4KVDXK','2022-02-10 15:48:42'),(15,1,'Jasperice','Anelechukwu','$2b$10$YdUJMaI6gA6use9YXRbeD.TAJm0Wp3zCLv4U4vNjYY1Jbvk4KVDXK','2022-02-10 15:49:06'),(16,1,'Jasperice','Anelechukwu','$2b$10$YdUJMaI6gA6use9YXRbeD.TAJm0Wp3zCLv4U4vNjYY1Jbvk4KVDXK','2022-02-10 15:49:18'),(17,1,'Jasper','Anelechukwu','$2b$10$YdUJMaI6gA6use9YXRbeD.TAJm0Wp3zCLv4U4vNjYY1Jbvk4KVDXK','2022-02-10 15:49:59');
 /*!40000 ALTER TABLE `customers_history` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -745,7 +745,7 @@ CREATE TABLE `messages` (
   `receiver_id` bigint(20) DEFAULT NULL,
   `application` enum('receiver','sender') DEFAULT NULL,
   `notification` enum('order_created','order_accepted','order_declined','order_cancelled','transaction_created','transaction_cancelled','transaction_declined','transaction_processing','transaction_failed','transaction_approved','order_item_processing','order_item_transported','order_item_delivered') DEFAULT NULL,
-  `content` varchar(50) NOT NULL,
+  `content` varchar(250) DEFAULT NULL,
   `delivery_status` enum('sent','delivered') NOT NULL,
   `created_at` datetime DEFAULT (now()),
   PRIMARY KEY (`id`),
@@ -1001,6 +1001,7 @@ CREATE TABLE `products` (
   `description` longtext NOT NULL,
   `code` varchar(50) DEFAULT NULL,
   `photo` varchar(50) DEFAULT NULL,
+  `recommended` tinyint(4) DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL,
   `created_at` datetime DEFAULT (now()),
@@ -1018,7 +1019,7 @@ CREATE TABLE `products` (
 
 LOCK TABLES `products` WRITE;
 /*!40000 ALTER TABLE `products` DISABLE KEYS */;
-INSERT INTO `products` VALUES (7,7,6,'Vanilla cake','It is very sweet with vanilla taste','UIDSHSDFKSD','product-7.jpg','2022-01-23 12:21:54',NULL,'2021-12-27 21:10:07'),(8,7,6,'strawberry cake','It is as sweet as strawberry','UIDSHSD334D',NULL,NULL,NULL,'2021-12-27 21:27:40'),(9,5,9,'Egusi and goat meat','Sweet soup','UIDSHSD334Q',NULL,NULL,NULL,'2021-12-29 02:38:24'),(10,5,9,'Egusi and Turkey meat','Sweet soup','UIDSHSD33AA',NULL,NULL,NULL,'2022-01-01 19:13:36'),(11,5,9,'Okra','Sweet soup','UIDSHSD3WQA',NULL,NULL,NULL,'2022-01-01 19:55:23'),(12,5,9,'Ofo soup','Sweet OFO soup','UIDSHSD3WAA',NULL,NULL,NULL,'2022-01-04 18:50:17'),(13,7,9,'Hot dog','Best hot dog in the state',NULL,NULL,'2022-01-18 21:53:59',NULL,'2022-01-11 11:48:36'),(14,7,9,'Egusi and turkey','Egusi soup with matured turkey meat.',NULL,NULL,'2022-01-23 12:19:29',NULL,'2022-01-19 17:08:50'),(15,7,13,'Red soap','It removes black spots',NULL,NULL,'2022-01-23 12:15:42','2022-01-23 12:26:26','2022-01-23 12:15:42');
+INSERT INTO `products` VALUES (7,7,6,'Vanilla cake','It is very sweet with vanilla taste','UIDSHSDFKSD','product-7.jpg',1,'2022-02-10 16:53:30',NULL,'2021-12-27 21:10:07'),(8,7,6,'strawberry cake','It is as sweet as strawberry','UIDSHSD334D',NULL,NULL,NULL,NULL,'2021-12-27 21:27:40'),(9,5,9,'Egusi and goat meat','Sweet soup','UIDSHSD334Q',NULL,NULL,NULL,NULL,'2021-12-29 02:38:24'),(10,5,9,'Egusi and Turkey meat','Sweet soup','UIDSHSD33AA',NULL,NULL,NULL,NULL,'2022-01-01 19:13:36'),(11,5,9,'Okra','Sweet soup','UIDSHSD3WQA',NULL,NULL,NULL,NULL,'2022-01-01 19:55:23'),(12,5,9,'Ofo soup','Sweet OFO soup','UIDSHSD3WAA',NULL,NULL,NULL,NULL,'2022-01-04 18:50:17'),(13,7,9,'Hot dog','Best hot dog in the state',NULL,NULL,NULL,'2022-01-18 21:53:59',NULL,'2022-01-11 11:48:36'),(14,7,9,'Egusi and turkey','Egusi soup with matured turkey meat.',NULL,NULL,NULL,'2022-01-23 12:19:29',NULL,'2022-01-19 17:08:50'),(15,7,13,'Red soap','It removes black spots',NULL,NULL,NULL,'2022-01-23 12:15:42','2022-01-23 12:26:26','2022-01-23 12:15:42');
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -1062,7 +1063,7 @@ CREATE TABLE `products_history` (
   PRIMARY KEY (`id`),
   KEY `product_id` (`product_id`),
   CONSTRAINT `products_history_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1071,7 +1072,7 @@ CREATE TABLE `products_history` (
 
 LOCK TABLES `products_history` WRITE;
 /*!40000 ALTER TABLE `products_history` DISABLE KEYS */;
-INSERT INTO `products_history` VALUES (1,7,6,'Vanilla cake pro','It is very sweet with vanilla taste','UIDSHSDFKSD','product-7.jpg','2022-01-18 14:45:15'),(2,13,9,'Hot dog','Best hot dog in town',NULL,NULL,'2022-01-18 21:53:59'),(3,11,9,'Okra','Sweet soup','UIDSHSD3WQA',NULL,'2022-01-18 23:41:57'),(4,11,9,'Okra','Sweet soup','UIDSHSD3WQA',NULL,'2022-01-18 22:42:42'),(5,11,9,'Okra','Sweet soup','UIDSHSD3WQA',NULL,'2022-01-18 23:43:23'),(6,11,9,'Okra','Sweet soup','UIDSHSD3WQA',NULL,'2022-01-18 22:43:40'),(7,11,9,'Okra','Sweet soup','UIDSHSD3WQA',NULL,'2022-01-18 23:48:02'),(8,11,9,'Okra','Sweet soup','UIDSHSD3WQA',NULL,'2022-01-18 22:52:45'),(9,7,6,'Vanilla cake','It is very sweet with vanilla taste','UIDSHSDFKSD','product-7.jpg','2022-01-18 23:00:28'),(10,7,6,'Vanilla cake','It is very sweet with vanilla taste','UIDSHSDFKSD','product-7.jpg','2022-01-19 00:01:46'),(11,11,9,'Okra','Sweet soup','UIDSHSD3WQA',NULL,'2022-01-19 00:50:18'),(12,11,9,'Okra','Sweet soup','UIDSHSD3WQA',NULL,'2022-01-18 23:50:45'),(13,11,9,'Okra','Sweet soup','UIDSHSD3WQA',NULL,'2022-01-19 01:01:55'),(14,14,9,'Pen','Pan vil ejnda; djdnfd ',NULL,NULL,'2022-01-23 12:19:08'),(15,14,9,'Egusi and turkey','Egusi soup with matured turkey meat.',NULL,NULL,'2022-01-23 12:19:29'),(16,7,6,'Vanilla cake','It is very sweet with vanilla taste','UIDSHSDFKSD','product-7.jpg','2022-01-23 12:21:54'),(17,15,13,'Red soap','It removes black spots',NULL,NULL,'2022-01-23 12:26:26');
+INSERT INTO `products_history` VALUES (1,7,6,'Vanilla cake pro','It is very sweet with vanilla taste','UIDSHSDFKSD','product-7.jpg','2022-01-18 14:45:15'),(2,13,9,'Hot dog','Best hot dog in town',NULL,NULL,'2022-01-18 21:53:59'),(3,11,9,'Okra','Sweet soup','UIDSHSD3WQA',NULL,'2022-01-18 23:41:57'),(4,11,9,'Okra','Sweet soup','UIDSHSD3WQA',NULL,'2022-01-18 22:42:42'),(5,11,9,'Okra','Sweet soup','UIDSHSD3WQA',NULL,'2022-01-18 23:43:23'),(6,11,9,'Okra','Sweet soup','UIDSHSD3WQA',NULL,'2022-01-18 22:43:40'),(7,11,9,'Okra','Sweet soup','UIDSHSD3WQA',NULL,'2022-01-18 23:48:02'),(8,11,9,'Okra','Sweet soup','UIDSHSD3WQA',NULL,'2022-01-18 22:52:45'),(9,7,6,'Vanilla cake','It is very sweet with vanilla taste','UIDSHSDFKSD','product-7.jpg','2022-01-18 23:00:28'),(10,7,6,'Vanilla cake','It is very sweet with vanilla taste','UIDSHSDFKSD','product-7.jpg','2022-01-19 00:01:46'),(11,11,9,'Okra','Sweet soup','UIDSHSD3WQA',NULL,'2022-01-19 00:50:18'),(12,11,9,'Okra','Sweet soup','UIDSHSD3WQA',NULL,'2022-01-18 23:50:45'),(13,11,9,'Okra','Sweet soup','UIDSHSD3WQA',NULL,'2022-01-19 01:01:55'),(14,14,9,'Pen','Pan vil ejnda; djdnfd ',NULL,NULL,'2022-01-23 12:19:08'),(15,14,9,'Egusi and turkey','Egusi soup with matured turkey meat.',NULL,NULL,'2022-01-23 12:19:29'),(16,7,6,'Vanilla cake','It is very sweet with vanilla taste','UIDSHSDFKSD','product-7.jpg','2022-01-23 12:21:54'),(17,15,13,'Red soap','It removes black spots',NULL,NULL,'2022-01-23 12:26:26'),(18,7,6,'Vanilla cake','It is very sweet with vanilla taste','UIDSHSDFKSD','product-7.jpg','2022-02-10 16:53:30');
 /*!40000 ALTER TABLE `products_history` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1184,6 +1185,7 @@ CREATE TABLE `stores` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `user_id` bigint(20) NOT NULL,
   `sub_category_id` bigint(20) NOT NULL,
+  `recommended` tinyint(4) DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `sub_category_id` (`sub_category_id`),
@@ -1199,7 +1201,7 @@ CREATE TABLE `stores` (
 
 LOCK TABLES `stores` WRITE;
 /*!40000 ALTER TABLE `stores` DISABLE KEYS */;
-INSERT INTO `stores` VALUES (5,5,1,NULL),(6,6,2,NULL),(7,7,1,'2022-01-22 16:08:51'),(8,8,4,NULL),(9,15,4,NULL),(12,20,2,'2022-01-22 15:59:03');
+INSERT INTO `stores` VALUES (5,5,1,NULL,NULL),(6,6,2,NULL,NULL),(7,7,1,1,'2022-02-10 17:17:57'),(8,8,4,NULL,NULL),(9,15,4,NULL,NULL),(12,20,2,NULL,'2022-01-22 15:59:03');
 /*!40000 ALTER TABLE `stores` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -1235,7 +1237,7 @@ CREATE TABLE `stores_history` (
   PRIMARY KEY (`id`),
   KEY `store_id` (`store_id`),
   CONSTRAINT `stores_history_ibfk_1` FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1244,7 +1246,7 @@ CREATE TABLE `stores_history` (
 
 LOCK TABLES `stores_history` WRITE;
 /*!40000 ALTER TABLE `stores_history` DISABLE KEYS */;
-INSERT INTO `stores_history` VALUES (1,5,1,'2022-01-18 22:46:02'),(2,5,3,'2022-01-18 22:46:02'),(3,7,1,'2022-01-18 22:46:02'),(4,7,1,'2022-01-18 21:48:01'),(5,7,1,'2022-01-22 16:08:51');
+INSERT INTO `stores_history` VALUES (1,5,1,'2022-01-18 22:46:02'),(2,5,3,'2022-01-18 22:46:02'),(3,7,1,'2022-01-18 22:46:02'),(4,7,1,'2022-01-18 21:48:01'),(5,7,1,'2022-01-22 16:08:51'),(6,7,1,'2022-02-10 17:17:57');
 /*!40000 ALTER TABLE `stores_history` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1340,7 +1342,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'customer','Jasper Anelechukwu','jasperanels@gmail.com','08048490901','customer-1.jpg','active','2022-01-23 22:26:39','2021-12-23 10:17:39'),(2,'customer','Richard Chukwu','richchuks@gmail.com','09039283744',NULL,'active',NULL,'2021-12-23 12:08:02'),(3,'customer','Fred Cake','cakefred@yahoo.com','08038476211',NULL,'active',NULL,'2021-12-25 15:31:20'),(4,'customer','White Black','wb@yahoo.com','07083745655',NULL,'active',NULL,'2021-12-25 15:34:59'),(5,'store','Yam zone','yamzone@gmail.com','09183571123',NULL,'activating',NULL,'2021-12-25 21:42:25'),(6,'store','Get-well','wellhealth@gmail.com','08187347666',NULL,'activating',NULL,'2021-12-25 21:51:35'),(7,'store','Shoppa','shoppax@gmail.com','08084837423','store-7.jpeg','active','2022-01-22 16:11:05','2021-12-25 22:13:26'),(8,'store','HappyBite','jasperanels@gmail.com','07094823744',NULL,'activating','2022-01-22 16:22:39','2021-12-26 12:17:21'),(9,'delivery_firm','Freeway logistics','freeway@gmail.com','09023839393',NULL,'active',NULL,'2021-12-27 23:54:52'),(10,'delivery_firm','Fast track delivery','fasttrack@gmail.com','09023839390',NULL,'activating','2022-01-23 11:52:07','2021-12-27 23:56:01'),(11,'delivery_firm','All round logistics','allroundlogistics@gmail.com','08039457321','delivery-firm-3.jpg','active','2022-01-23 11:52:17','2021-12-27 23:57:18'),(14,'customer','Husk Blue','huskb@ygmail.com','09093838722',NULL,'active',NULL,'2021-12-29 20:46:07'),(15,'store','Gray Foods','grayfoods@gmail.com','09048473888',NULL,'activating',NULL,'2021-12-29 20:55:47'),(16,'customer','Bullet Gun','bulletgun@ygmail.com','09093838790',NULL,'active','2022-01-20 17:49:57','2022-01-20 17:49:57'),(17,'customer','Round Ball','roundball@ygmail.com','09093838721',NULL,'active','2022-01-21 18:12:32','2022-01-21 18:12:33'),(20,'store','Black health','blackhealth@gmail.com','09048473881',NULL,'activating','2022-01-22 15:59:03','2022-01-22 15:59:03'),(21,'delivery_firm','Real roads','realroadsdelivery@gmail.com','09023839311',NULL,'activating','2022-01-22 18:00:27','2022-01-22 18:00:27');
+INSERT INTO `users` VALUES (1,'customer','Jasper Anelechukwu','jasperanels@gmail.com','08048490901','customer-1.png','active','2022-02-10 16:10:42','2021-12-23 10:17:39'),(2,'customer','Richard Chukwu','richchuks@gmail.com','09039283744',NULL,'active',NULL,'2021-12-23 12:08:02'),(3,'customer','Fred Cake','cakefred@yahoo.com','08038476211',NULL,'active',NULL,'2021-12-25 15:31:20'),(4,'customer','White Black','wb@yahoo.com','07083745655',NULL,'active',NULL,'2021-12-25 15:34:59'),(5,'store','Yam zone','yamzone@gmail.com','09183571123',NULL,'activating',NULL,'2021-12-25 21:42:25'),(6,'store','Get-well','wellhealth@gmail.com','08187347666',NULL,'activating',NULL,'2021-12-25 21:51:35'),(7,'store','Shoppa','shoppax@gmail.com','08084837423','store-7.jpeg','active','2022-01-22 16:11:05','2021-12-25 22:13:26'),(8,'store','HappyBite','jasperanels@gmail.com','07094823744',NULL,'activating','2022-01-22 16:22:39','2021-12-26 12:17:21'),(9,'delivery_firm','Freeway logistics','freeway@gmail.com','09023839393',NULL,'active',NULL,'2021-12-27 23:54:52'),(10,'delivery_firm','Fast track delivery','fasttrack@gmail.com','09023839390',NULL,'activating','2022-01-23 11:52:07','2021-12-27 23:56:01'),(11,'delivery_firm','All round logistics','allroundlogistics@gmail.com','08039457321','delivery-firm-3.jpg','active','2022-01-23 11:52:17','2021-12-27 23:57:18'),(14,'customer','Husk Blue','huskb@ygmail.com','09093838722',NULL,'active',NULL,'2021-12-29 20:46:07'),(15,'store','Gray Foods','grayfoods@gmail.com','09048473888',NULL,'activating',NULL,'2021-12-29 20:55:47'),(16,'customer','Bullet Gun','bulletgun@ygmail.com','09093838790',NULL,'active','2022-01-20 17:49:57','2022-01-20 17:49:57'),(17,'customer','Round Ball','roundball@ygmail.com','09093838721',NULL,'active','2022-01-21 18:12:32','2022-01-21 18:12:33'),(20,'store','Black health','blackhealth@gmail.com','09048473881',NULL,'activating','2022-01-22 15:59:03','2022-01-22 15:59:03'),(21,'delivery_firm','Real roads','realroadsdelivery@gmail.com','09023839311',NULL,'activating','2022-01-22 18:00:27','2022-01-22 18:00:27');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -1386,7 +1388,7 @@ CREATE TABLE `users_history` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `users_history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1395,7 +1397,7 @@ CREATE TABLE `users_history` (
 
 LOCK TABLES `users_history` WRITE;
 /*!40000 ALTER TABLE `users_history` DISABLE KEYS */;
-INSERT INTO `users_history` VALUES (1,15,'store','Gray Foods','grayfoods@gmail.com','09048473888',NULL,'activating','2022-01-18 13:53:10'),(2,15,'store','Gray Foodsx','grayfoods@gmail.com','09048473888',NULL,'activating','2022-01-18 13:53:28'),(3,1,'customer','Jasper Anelechukwu','jasperanels@gmail.com','08048490901','user-1.jpg','active','2022-01-18 21:42:42'),(4,1,'customer','Jaspe Anelechukwu','jasperanels@gmail.com','08048490901','user-1.jpg','active','2022-01-18 21:43:46'),(5,7,'store','Shoppa','shoppax@gmail.com','08084837423','user-7.jpeg','active','2022-01-18 21:44:29'),(6,7,'store','Shoppas','shoppax@gmail.com','08084837423','user-7.jpeg','active','2022-01-18 21:48:01'),(7,1,'customer','Jasper Anelechukwu','jasperanels@gmail.com','08048490901','user-1.jpg','active','2022-01-19 17:29:09'),(8,1,'customer','Jasp Anelechukwu','jasperanels@gmail.com','08048490901','user-1.jpg','active','2022-01-20 11:26:07'),(9,1,'customer','Jaspx Anelechukwu','jasperanels@gmail.com','08048490901','user-1.jpg','active','2022-01-21 18:17:15'),(10,1,'customer','Jasper Anelechukwu','jasperanels@gmail.com','08048490901','user-1.jpg','active','2022-01-21 18:27:49'),(11,1,'customer','Jasper Anelechukwu','jasperanels@gmail.com','08048490901','customer-1.jpg','active','2022-01-21 18:48:47'),(12,7,'store','Shoppa','shoppax@gmail.com','08084837423','user-7.jpeg','active','2022-01-22 16:08:51'),(13,7,'store','Shoppa','shoppax@gmail.com','08084837423','user-7.jpeg','active','2022-01-22 16:11:05'),(14,8,'store','HappyBite','jasperanels@gmail.com','07094823744',NULL,'activating','2022-01-22 16:22:39'),(15,11,'delivery_firm','All round logistics','allroundlogistics@gmail.com','08039457321','delivery-firm-3.jpg','active','2022-01-22 18:21:55'),(16,11,'delivery_firm','All round logistics','allroundlogistics@gmail.com','08039457321','delivery-firm-3.jpg','active','2022-01-22 18:23:30'),(17,10,'delivery_firm','Fast track delivery','fasttrack@gmail.com','09023839390',NULL,'activating','2022-01-23 11:52:07'),(18,11,'delivery_firm','All round logistics','allroundlogistics@gmail.com','08039457321','delivery-firm-3.jpg','active','2022-01-23 11:52:17'),(19,1,'customer','Jasper Anelechukwu','jasperanels@gmail.com','08048490901','customer-1.jpg','active','2022-01-23 22:26:39');
+INSERT INTO `users_history` VALUES (1,15,'store','Gray Foods','grayfoods@gmail.com','09048473888',NULL,'activating','2022-01-18 13:53:10'),(2,15,'store','Gray Foodsx','grayfoods@gmail.com','09048473888',NULL,'activating','2022-01-18 13:53:28'),(3,1,'customer','Jasper Anelechukwu','jasperanels@gmail.com','08048490901','user-1.jpg','active','2022-01-18 21:42:42'),(4,1,'customer','Jaspe Anelechukwu','jasperanels@gmail.com','08048490901','user-1.jpg','active','2022-01-18 21:43:46'),(5,7,'store','Shoppa','shoppax@gmail.com','08084837423','user-7.jpeg','active','2022-01-18 21:44:29'),(6,7,'store','Shoppas','shoppax@gmail.com','08084837423','user-7.jpeg','active','2022-01-18 21:48:01'),(7,1,'customer','Jasper Anelechukwu','jasperanels@gmail.com','08048490901','user-1.jpg','active','2022-01-19 17:29:09'),(8,1,'customer','Jasp Anelechukwu','jasperanels@gmail.com','08048490901','user-1.jpg','active','2022-01-20 11:26:07'),(9,1,'customer','Jaspx Anelechukwu','jasperanels@gmail.com','08048490901','user-1.jpg','active','2022-01-21 18:17:15'),(10,1,'customer','Jasper Anelechukwu','jasperanels@gmail.com','08048490901','user-1.jpg','active','2022-01-21 18:27:49'),(11,1,'customer','Jasper Anelechukwu','jasperanels@gmail.com','08048490901','customer-1.jpg','active','2022-01-21 18:48:47'),(12,7,'store','Shoppa','shoppax@gmail.com','08084837423','user-7.jpeg','active','2022-01-22 16:08:51'),(13,7,'store','Shoppa','shoppax@gmail.com','08084837423','user-7.jpeg','active','2022-01-22 16:11:05'),(14,8,'store','HappyBite','jasperanels@gmail.com','07094823744',NULL,'activating','2022-01-22 16:22:39'),(15,11,'delivery_firm','All round logistics','allroundlogistics@gmail.com','08039457321','delivery-firm-3.jpg','active','2022-01-22 18:21:55'),(16,11,'delivery_firm','All round logistics','allroundlogistics@gmail.com','08039457321','delivery-firm-3.jpg','active','2022-01-22 18:23:30'),(17,10,'delivery_firm','Fast track delivery','fasttrack@gmail.com','09023839390',NULL,'activating','2022-01-23 11:52:07'),(18,11,'delivery_firm','All round logistics','allroundlogistics@gmail.com','08039457321','delivery-firm-3.jpg','active','2022-01-23 11:52:17'),(19,1,'customer','Jasper Anelechukwu','jasperanels@gmail.com','08048490901','customer-1.jpg','active','2022-01-23 22:26:39'),(20,1,'customer','Jasper Anelechukwu','jasperanels@gmail.com','08048490901','customer-1.jpg','active','2022-02-10 15:48:42'),(21,1,'customer','Jasperice Anelechukwu','jasperanels@gmail.com','08048490901','customer-1.jpg','active','2022-02-10 15:49:06'),(22,1,'customer','Jasperice Anelechukwu','jasperanels@gmail.com','08048490901','customer-1.jpg','active','2022-02-10 15:49:18'),(23,1,'customer','Jasper Anelechukwu','jasperanels@gmail.com','08048490901','customer-1.jpg','active','2022-02-10 15:49:59'),(24,1,'customer','Jasper Anelechukwu','jasperanels@gmail.com','08048490901','customer-1.jpg','active','2022-02-10 16:10:42');
 /*!40000 ALTER TABLE `users_history` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1470,4 +1472,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-01-25 13:44:32
+-- Dump completed on 2022-02-10 19:30:27

@@ -188,6 +188,51 @@ module.exports = {
     });
   },
 
+  getListByRecommended(limit) {
+    return sequelize.transaction(async (transaction)=> {
+
+      const rows = await Product.findAll({
+        where: { 
+          recommended: true,
+          '$store.user.status$': User.STATUS_ACTIVE 
+        },
+        include: [
+          {
+            model: Store,
+            include: {
+              model: User,
+              attributes: User.GET_ATTR
+            }
+          },
+          {
+            model: SubCategory,
+            attributes: SubCategory.GET_ATTR,
+            include: {
+              model: Category,
+              attributes: Category.GET_ATTR,
+            }
+          },
+        ],
+        order: sequelize.random(),
+        limit,
+        transaction
+      });
+      
+      for (let product of rows) {
+        let variant = await ProductVariant.findOne({
+          attributes: ['id', 'price'],
+          where: { product_id: product.id },
+          order: [['price', 'ASC']],
+          transaction
+        });
+
+        product.setDataValue('product_variants', (variant === null ? [] : [variant]));
+      }
+      
+      return rows;
+    });
+  },
+
   getListBySearch(offset, limit, { q, sub_category_id }) {
     
     const where = { '$store.user.status$': User.STATUS_ACTIVE };
@@ -302,6 +347,10 @@ module.exports = {
 
   updatePhoto(product, photo) {
     return Product.update({ photo }, { where : { id: product.id } });
+  },
+
+  updateRecommended(product, recommended) {
+    return Product.update({ recommended }, { where : { id: product.id } });
   },
 
   delete(product) {

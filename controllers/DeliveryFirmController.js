@@ -23,6 +23,8 @@ module.exports = class DeliveryFirmController {
 
       const administrator = await AdministratorRepository.get(result.administrator.id);
 
+      deliveryFirm.review_summary = await ReviewRepository.getSummaryForDeliveryFirm(deliveryFirm);
+
       administrator.hidePassword();
 
       deliveryFirm.setDataValue('administrators', [administrator]);
@@ -46,6 +48,8 @@ module.exports = class DeliveryFirmController {
     try {
 
       const { deliveryFirm, administrator } = req.data;
+
+      deliveryFirm.review_summary = await ReviewRepository.getSummaryForDeliveryFirm(deliveryFirm);
 
       administrator.hidePassword();
 
@@ -73,6 +77,8 @@ module.exports = class DeliveryFirmController {
 
       const deliveryFirm = await DeliveryFirmRepository.get(req.data.deliveryFirm.id);
 
+      deliveryFirm.review_summary = await ReviewRepository.getSummaryForDeliveryFirm(deliveryFirm);
+
       const response = new Response(Response.SUCCESS, req.__('_updated._delivery_firm'), deliveryFirm);
 
       res.status(StatusCodes.OK).send(response);
@@ -90,6 +96,8 @@ module.exports = class DeliveryFirmController {
       
       const deliveryFirm = await DeliveryFirmRepository.get(req.data.deliveryFirm.id);
 
+      deliveryFirm.review_summary = await ReviewRepository.getSummaryForDeliveryFirm(deliveryFirm);
+
       const response = new Response(Response.SUCCESS, req.__('_updated._delivery_firm'), deliveryFirm);
 
       res.status(StatusCodes.OK).send(response);
@@ -106,6 +114,8 @@ module.exports = class DeliveryFirmController {
       await DeliveryFirmRepository.updateStatus(req.data.deliveryFirm, req.body.status);
       
       const deliveryFirm = await DeliveryFirmRepository.get(req.data.deliveryFirm.id);
+
+      deliveryFirm.review_summary = await ReviewRepository.getSummaryForDeliveryFirm(deliveryFirm);
 
       const response = new Response(Response.SUCCESS, req.__('_updated._status'), deliveryFirm);
 

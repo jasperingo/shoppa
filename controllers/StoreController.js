@@ -22,6 +22,8 @@ module.exports = class StoreController {
 
       const administrator = await AdministratorRepository.get(result.administrator.id);
 
+      store.review_summary = await ReviewRepository.getSummaryForStore(store);
+
       administrator.hidePassword();
 
       store.setDataValue('administrators', [administrator]);
@@ -45,6 +47,8 @@ module.exports = class StoreController {
     try {
 
       const { store, administrator } = req.data;
+
+      store.review_summary = await ReviewRepository.getSummaryForStore(store);
 
       administrator.hidePassword();
 
@@ -72,6 +76,8 @@ module.exports = class StoreController {
 
       const store = await StoreRepository.get(req.data.store.id);
 
+      store.review_summary = await ReviewRepository.getSummaryForStore(store);
+
       const response = new Response(Response.SUCCESS, req.__('_updated._store'), store);
 
       res.status(StatusCodes.OK).send(response);
@@ -89,6 +95,8 @@ module.exports = class StoreController {
       
       const store = await StoreRepository.get(req.data.store.id);
 
+      store.review_summary = await ReviewRepository.getSummaryForStore(store);
+
       const response = new Response(Response.SUCCESS, req.__('_updated._photo'), store);
 
       res.status(StatusCodes.OK).send(response);
@@ -105,6 +113,46 @@ module.exports = class StoreController {
       await StoreRepository.updateStatus(req.data.store, req.body.status);
       
       const store = await StoreRepository.get(req.data.store.id);
+
+      store.review_summary = await ReviewRepository.getSummaryForStore(store);
+
+      const response = new Response(Response.SUCCESS, req.__('_updated._status'), store);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch (error) {
+      next(new InternalServerException(error));
+    }
+  }
+
+  async updateRecommended(req, res, next) {
+    
+    try {
+
+      await StoreRepository.updateRecommended(req.data.store, req.body.recommended);
+      
+      const store = await StoreRepository.get(req.data.store.id);
+
+      store.review_summary = await ReviewRepository.getSummaryForStore(store);
+
+      const response = new Response(Response.SUCCESS, req.__('_updated._store'), store);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch (error) {
+      next(new InternalServerException(error));
+    }
+  }
+
+  async updateStatus(req, res, next) {
+    
+    try {
+
+      await StoreRepository.updateStatus(req.data.store, req.body.status);
+      
+      const store = await StoreRepository.get(req.data.store.id);
+
+      store.review_summary = await ReviewRepository.getSummaryForStore(store);
 
       const response = new Response(Response.SUCCESS, req.__('_updated._status'), store);
 
@@ -167,6 +215,23 @@ module.exports = class StoreController {
       const { pager } = req.data;
 
       const stores = await StoreRepository.getRandomList(pager.page_limit);
+
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._store'), stores);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      next(new InternalServerException(error));
+    }
+  }
+
+  async getListByRecommended(req, res, next) {
+
+    try {
+
+      const { pager } = req.data;
+
+      const stores = await StoreRepository.getListByRecommended(pager.page_limit);
 
       const response = new Response(Response.SUCCESS, req.__('_list_fetched._store'), stores);
 

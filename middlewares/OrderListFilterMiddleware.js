@@ -1,5 +1,4 @@
 
-
 module.exports = (req, res, next)=> {
 
   const options = req.query.status ? { status: req.query.status } : null;
@@ -11,6 +10,3 @@ module.exports = (req, res, next)=> {
 
   next();
 }
-
-
-

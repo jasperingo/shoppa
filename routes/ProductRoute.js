@@ -10,12 +10,14 @@ const FileUploadMiddleware = require('../middlewares/FileUploadMiddleware');
 const FileUploadValidationMiddleware = require('../middlewares/FileUploadValidationMiddleware');
 const OptionalAuthMiddleware = require('../middlewares/OptionalAuthMiddleware');
 const PaginationMiddleware = require('../middlewares/PaginationMiddleware');
+const AdministratorPermissionMiddleware = require('../middlewares/permissions/AdministratorPermissionMiddleware');
 const ProductAddPermissionMiddleware = require('../middlewares/permissions/product/ProductAddPermissionMiddleware');
 const ProductFetchPermissionMiddleware = require('../middlewares/permissions/product/ProductFetchPermissionMiddleware');
 const ProductUpdatePermissionMiddleware = require('../middlewares/permissions/product/ProductUpdatePermissionMiddleware');
 const SearchParamsMiddleware = require('../middlewares/SearchParamsMiddleware');
 const ValidationMiddleware = require('../middlewares/ValidationMiddleware');
 const ProductAddValidation = require('../validation/product/ProductAddValidation');
+const ProductRecommendedUpdateValidation = require('../validation/product/ProductRecommendedUpdateValidation');
 const ProductUpdateValidation = require('../validation/product/ProductUpdateValidation');
 const SearchValidation = require('../validation/search/SearchValidation');
 
@@ -54,6 +56,16 @@ router.put(
   controller.updatePhoto
 );
 
+router.put(
+  '/:id(\\d+)/recommended/update',
+  ProductFetchMiddleware, 
+  AuthMiddleware,
+  AdministratorPermissionMiddleware, 
+  checkSchema(ProductRecommendedUpdateValidation),
+  ValidationMiddleware(),
+  controller.updateRecommended
+);
+
 router.delete(
   '/:id(\\d+)/delete',
   ProductFetchMiddleware, 
@@ -66,6 +78,12 @@ router.get(
   '/random/list',
   PaginationMiddleware,
   controller.getRandomList
+);
+
+router.get(
+  '/recommended/list',
+  PaginationMiddleware,
+  controller.getListByRecommeded
 );
 
 router.get(

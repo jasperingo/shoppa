@@ -17,6 +17,7 @@ const PaymentTransactionCreateValidation = require('../validation/transaction/Pa
 const TransactionFetchPermissionMiddleware = require('../middlewares/permissions/transaction/TransactionFetchPermissionMiddleware');
 const AdministratorPermissionMiddleware = require('../middlewares/permissions/AdministratorPermissionMiddleware');
 const PaginationMiddleware = require('../middlewares/PaginationMiddleware');
+const TransactionListFilterMiddleware = require('../middlewares/TransactionListFilterMiddleware');
 
 const router = express.Router();
 
@@ -70,6 +71,7 @@ router.get(
   AuthMiddleware,
   AdministratorPermissionMiddleware,
   PaginationMiddleware,
+  TransactionListFilterMiddleware,
   controller.getList
 );
 

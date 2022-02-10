@@ -24,6 +24,7 @@
   
   "_updated": {
     "_customer": "Customer updated",
+    "_administrator": "Administrator updated",
     "_password": "Password updated",
     "_photo": "Photo updated",
     "_status": "Status updated",

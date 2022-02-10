@@ -101,9 +101,11 @@ module.exports = class OrderController {
         }
       }
       
-      const _order = await OrderRepository.create(data);
+      const result = await OrderRepository.create(data);
 
-      const order = await OrderRepository.get(_order.id);
+      //emit message in result;
+      
+      const order = await OrderRepository.get(result.order.id);
 
       const response = new Response(Response.SUCCESS, req.__('_created._order'), order);
 

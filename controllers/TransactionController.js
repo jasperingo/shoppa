@@ -126,9 +126,9 @@ module.exports = class TransactionController {
 
     try {
 
-      const { pager } = req.data;
+      const { pager, transactionFilter } = req.data;
 
-      const { count, rows } = await TransactionRepository.getList(pager.page_offset, pager.page_limit);
+      const { count, rows } = await TransactionRepository.getList(pager.page_offset, pager.page_limit, transactionFilter);
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 

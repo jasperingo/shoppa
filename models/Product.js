@@ -45,6 +45,10 @@ Product.init({
     }
   },
 
+  recommended: {
+    type: DataTypes.BOOLEAN
+  },
+
   updated_at: {
     type: DataTypes.DATE
   },

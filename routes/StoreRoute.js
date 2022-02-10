@@ -35,6 +35,7 @@ const ReviewController = require('../controllers/ReviewController');
 const OrderListFilterMiddleware = require('../middlewares/OrderListFilterMiddleware');
 const SearchParamsMiddleware = require('../middlewares/SearchParamsMiddleware');
 const SearchValidation = require('../validation/search/SearchValidation');
+const ProductRecommendedUpdateValidation = require('../validation/product/ProductRecommendedUpdateValidation');
 
 const router = express.Router();
 
@@ -94,6 +95,16 @@ router.put(
 );
 
 router.put(
+  '/:id(\\d+)/recommended/update',
+  StoreFetchMiddleware, 
+  AuthMiddleware,
+  AdministratorPermissionMiddleware, 
+  checkSchema(ProductRecommendedUpdateValidation),
+  ValidationMiddleware(),
+  controller.updateRecommended
+);
+
+router.put(
   '/:id(\\d+)/status/update', 
   StoreFetchMiddleware, 
   AuthMiddleware,
@@ -145,6 +156,12 @@ router.get(
   '/random/list', 
   PaginationMiddleware,
   controller.getRandomList
+);
+
+router.get(
+  '/recommended/list', 
+  PaginationMiddleware,
+  controller.getListByRecommended
 );
 
 router.get(

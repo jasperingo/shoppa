@@ -13,6 +13,10 @@ Store.init({
     autoIncrement: true
   },
 
+  recommended: {
+    type: DataTypes.BOOLEAN
+  },
+
   updated_at: {
     type: DataTypes.DATE
   },

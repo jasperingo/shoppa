@@ -4,6 +4,7 @@ const AddressHistory = require("../models/AddressHistory");
 const Customer = require("../models/Customer");
 const CustomerHistory = require("../models/CustomerHistory");
 const DeliveryFirm = require("../models/DeliveryFirm");
+const Message = require("../models/Message");
 const Order = require("../models/Order");
 const OrderItem = require("../models/OrderItem");
 const Product = require("../models/Product");
@@ -391,7 +392,42 @@ module.exports = {
         );
       }
 
-      return order;
+      const customer = await Customer.findByPk(customer_id, { attributes: ['user_id'] });
+
+      const store = await Store.findByPk(store_id, { attributes: ['user_id'] });
+
+      const message = await Message.create(
+        { 
+          order_id: order.id, 
+          sender_id: customer.user_id,
+          receiver_id: store.user_id,
+          notification: Message.NOTIFICATION_ORDER_CREATED,
+          delivery_status: Message.DELIVERY_STATUS_SENT
+        },
+        { transaction }
+      );
+      
+      const messages = [message];
+
+      if (delivery_method === Order.DELIVERY_METHOD_DOOR) {
+
+        const deliveryFirm = DeliveryFirm.findByPk(delivery_firm_id, { attributes: ['user_id'] });
+
+        const message2 = await Message.create(
+          { 
+            order_id: order.id, 
+            sender_id: customer.user_id,
+            receiver_id: deliveryFirm.user_id,
+            notification: Message.NOTIFICATION_ORDER_CREATED,
+            delivery_status: Message.DELIVERY_STATUS_SENT
+          },
+          { transaction }
+        );
+
+        messages.push(message2);
+      }
+
+      return { order, messages };
     });
   },
   

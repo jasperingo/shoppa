@@ -90,8 +90,8 @@ module.exports = {
     });
   },
 
-  getBalance(user_id) {
-    return Transaction.sum('amount', { 
+  async getBalance(user_id) {
+    const balance = await Transaction.sum('amount', { 
       where: { 
         user_id,
         status: {
@@ -99,16 +99,21 @@ module.exports = {
         }
       } 
     });
+
+    return balance ?? 0;
   },
   
-  getBalanceByAdministrator() {
-    return Transaction.sum('amount', { 
+  async getBalanceByAdministrator() {
+    const balance = await Transaction.sum('amount', { 
       where: { application: true } 
     });
+
+    return balance ?? 0;
   },
 
-  getList(offset, limit) {
+  getList(offset, limit, options) {
     return Transaction.findAndCountAll({ 
+      where: options ?? undefined,
       order: [['created_at', 'DESC']],
       offset,
       limit

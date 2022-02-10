@@ -12,7 +12,11 @@ const StoreAdministratorPermissionMiddleware = require('../middlewares/permissio
 const AdministratorPermissionMiddleware = require('../middlewares/permissions/AdministratorPermissionMiddleware');
 const ValidationMiddleware = require('../middlewares/ValidationMiddleware');
 const AdministratorLoginValidation = require('../validation/administrator/AdministratorLoginValidation');
+const AdministratorUpdateValidation = require('../validation/administrator/AdministratorUpdateValidation');
 const AdministratorPasswordUpdateValidation = require('../validation/administrator/AdministratorPasswordUpdateValidation');
+const FileUploadMiddleware = require('../middlewares/FileUploadMiddleware');
+const FileUploadValidationMiddleware = require('../middlewares/FileUploadValidationMiddleware');
+const Files = require('../http/Files');
 
 const router = express.Router();
 
@@ -25,6 +29,26 @@ router.post(
   checkSchema(AdministratorLoginValidation),
   ValidationMiddleware(UnauthorizedException),
   controller.login
+);
+
+router.put(
+  '/:id(\\d+)/update', 
+  AdministratorFetchMiddleware,
+  AuthMiddleware, 
+  AdministratorPermissionMiddleware, 
+  checkSchema(AdministratorUpdateValidation), 
+  ValidationMiddleware(), 
+  controller.update
+);
+
+router.put(
+  '/:id(\\d+)/photo/update',
+  AdministratorFetchMiddleware, 
+  AuthMiddleware,
+  AdministratorPermissionMiddleware, 
+  FileUploadMiddleware(Files.USER_PHOTO_PATHS.customer).single('photo'), 
+  FileUploadValidationMiddleware('photo'), 
+  controller.updatePhoto
 );
 
 router.put(

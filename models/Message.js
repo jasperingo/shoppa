@@ -44,6 +44,24 @@ class Message extends Model {
     ];
   }
 
+  static getNotifications() {
+    return [
+      Message.NOTIFICATION_ORDER_CREATED,
+      Message.NOTIFICATION_ORDER_ACCEPTED,
+      Message.NOTIFICATION_ORDER_DECLINED,
+      Message.NOTIFICATION_ORDER_CANCELLED,
+      Message.NOTIFICATION_TRANSACTION_CREATED,
+      Message.NOTIFICATION_TRANSACTION_CANCELLED,
+      Message.NOTIFICATION_TRANSACTION_DECLINED,
+      Message.NOTIFICATION_TRANSACTION_PROCESSING,
+      Message.NOTIFICATION_TRANSACTION_FAILED,
+      Message.NOTIFICATION_TRANSACTION_APPROVED,
+      Message.NOTIFICATION_ORDER_ITEM_PROCESSING,
+      Message.NOTIFICATION_ORDER_ITEM_TRANSPORTED,
+      Message.NOTIFICATION_ORDER_ITEM_DELIVERED
+    ];
+  }
+
 }
 
 Message.init({
@@ -56,16 +74,19 @@ Message.init({
   },
   
   application: {
-    type: DataTypes.ENUM(),
+    type: DataTypes.ENUM(...Message.getApplicationRoles()),
+  },
+
+  notification: {
+    type: DataTypes.ENUM(...Message.getDeliveryStatuses()),
   },
 
   content: {
-    type: DataTypes.STRING,
-    allowNull: false
+    type: DataTypes.STRING
   },
 
   delivery_status: {
-    type: DataTypes.ENUM(),
+    type: DataTypes.ENUM(...Message.getDeliveryStatuses()),
   },
 
   created_at: {
