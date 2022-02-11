@@ -4,7 +4,9 @@ const { checkSchema } = require('express-validator');
 const RouteWeightController = require('../controllers/RouteWeightController');
 const AuthMiddleware = require('../middlewares/AuthMiddleware');
 const RouteWeightFetchMiddleware = require('../middlewares/fetch/RouteWeightFetchMiddleware');
+const OptionalAuthMiddleware = require('../middlewares/OptionalAuthMiddleware');
 const RouteWeightCreatePermissionMiddleware = require('../middlewares/permissions/route/RouteWeightAndDurationCreatePermissionMiddleware');
+const RouteWeightFetchPermissionMiddleware = require('../middlewares/permissions/route/RouteWeightFetchPermissionMiddleware');
 const RouteWeightUpdatePermissionMiddleware = require('../middlewares/permissions/route/RouteWeightUpdatePermissionMiddleware');
 const ValidationMiddleware = require('../middlewares/ValidationMiddleware');
 const RouteWeightCreateUniqueValidation = require('../validation/route/RouteWeightCreateUniqueValidation');
@@ -43,6 +45,15 @@ router.delete(
   RouteWeightUpdatePermissionMiddleware,
   controller.delete
 );
+
+router.get(
+  '/:id(\\d+)',
+  RouteWeightFetchMiddleware,
+  OptionalAuthMiddleware,
+  RouteWeightFetchPermissionMiddleware,
+  controller.get
+);
+
 
 module.exports = router;
 

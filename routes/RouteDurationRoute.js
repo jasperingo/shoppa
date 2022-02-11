@@ -10,6 +10,8 @@ const RouteDurationValidation = require('../validation/route/RouteDurationValida
 const RouteDurationFetchMiddleware = require('../middlewares/fetch/RouteDurationFetchMiddleware');
 const RouteDurationUpdatePermissionMiddleware = require('../middlewares/permissions/route/RouteDurationUpdatePermissionMiddleware');
 const RouteDurationUpdateUniqueValidation = require('../validation/route/RouteDurationUpdateUniqueValidation');
+const OptionalAuthMiddleware = require('../middlewares/OptionalAuthMiddleware');
+const RouteDurationFetchPermissionMiddleware = require('../middlewares/permissions/route/RouteDurationFetchPermissionMiddleware');
 
 const router = express.Router();
 
@@ -42,6 +44,14 @@ router.delete(
   AuthMiddleware,
   RouteDurationUpdateUniqueValidation,
   controller.delete
+);
+
+router.get(
+  '/:id(\\d+)',
+  RouteDurationFetchMiddleware,
+  OptionalAuthMiddleware,
+  RouteDurationFetchPermissionMiddleware,
+  controller.get
 );
 
 module.exports = router;

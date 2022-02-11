@@ -55,6 +55,12 @@ module.exports = class RouteWeightController {
     }
   }
   
+  get(req, res) {
+
+    const response = new Response(Response.SUCCESS, req.__('_fetched._route_weight'), req.data.routeWeight);
+
+    res.status(StatusCodes.OK).send(response);
+  }
 }
 
 

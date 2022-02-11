@@ -53,6 +53,12 @@ module.exports = class RouteDurationController {
       next(new InternalServerException(error));
     }
   }
-  
+
+  get(req, res) {
+
+    const response = new Response(Response.SUCCESS, req.__('_fetched._route_duration'), req.data.routeDuration);
+
+    res.status(StatusCodes.OK).send(response);
+  }
 };
 

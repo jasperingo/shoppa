@@ -4,7 +4,9 @@ const { checkSchema } = require('express-validator');
 const ProductVariantController = require('../controllers/ProductVariantController');
 const AuthMiddleware = require('../middlewares/AuthMiddleware');
 const ProductVariantFetchMiddleware = require('../middlewares/fetch/ProductVariantFetchMiddleware');
+const OptionalAuthMiddleware = require('../middlewares/OptionalAuthMiddleware');
 const ProductVariantCreatePermissionMiddleware = require('../middlewares/permissions/product/ProductVariantCreatePermissionMiddleware');
+const ProductVariantFetchPermissionMiddleware = require('../middlewares/permissions/product/ProductVariantFetchPermissionMiddleware');
 const ProductVariantUpdatePermissionMiddleware = require('../middlewares/permissions/product/ProductVariantUpdatePermissionMiddleware');
 const ValidationMiddleware = require('../middlewares/ValidationMiddleware');
 const ProductVariantCreateValidation = require('../validation/product/ProductVariantCreateValidation');
@@ -41,6 +43,13 @@ router.delete(
   controller.delete
 );
 
+router.get(
+  '/:id(\\d+)',
+  ProductVariantFetchMiddleware, 
+  OptionalAuthMiddleware,
+  ProductVariantFetchPermissionMiddleware,
+  controller.get
+);
 
 module.exports = router;
 
