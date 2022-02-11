@@ -25,6 +25,8 @@ module.exports = class TransactionController {
         await TransactionRepository.updateTransferFailed(req.body.data.reference);
 
       }
+
+      //send message...
       
       res.status(StatusCodes.OK).send({ reference: req.body.data.reference });
 
@@ -96,8 +98,10 @@ module.exports = class TransactionController {
       
       switch (req.body.status) {
         case Transaction.STATUS_CANCELLED:
+          await TransactionRepository.updateStatusToCancelled(req.data.transaction, req.body.status);
+          break;
         case Transaction.STATUS_DECLINED:
-          await TransactionRepository.updateStatusToDeclinedOrCancelled(req.data.transaction, req.body.status);
+          await TransactionRepository.updateStatusToDeclined(req.data.transaction, req.body.status);
           break;
         case Transaction.STATUS_PROCESSING:
           await TransactionRepository.updateStatusToProcessing(req.data.transaction); //send to paystack

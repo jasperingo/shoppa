@@ -439,7 +439,36 @@ module.exports = {
         { where: { id: order.id }, transaction }
       );
 
-      return orderUpdate;
+      const message = await Message.create(
+        { 
+          order_id: order.id, 
+          sender_id: order.customer.user.id,
+          receiver_id: order.store.user.id,
+          notification: Message.NOTIFICATION_ORDER_CANCELLED,
+          delivery_status: Message.DELIVERY_STATUS_SENT
+        },
+        { transaction }
+      );
+      
+      const messages = [message];
+      
+      if (order.delivery_method === Order.DELIVERY_METHOD_DOOR) {
+
+        const message2 = await Message.create(
+          { 
+            order_id: order.id, 
+            sender_id: order.customer.user.id,
+            receiver_id: order.delivery_firm.user.id,
+            notification: Message.NOTIFICATION_ORDER_CANCELLED,
+            delivery_status: Message.DELIVERY_STATUS_SENT
+          },
+          { transaction }
+        );
+
+        messages.push(message2);
+      }
+
+      return { orderUpdate, messages };
     });
   },
 
@@ -467,15 +496,42 @@ module.exports = {
         );
       }
 
-      return orderUpdate;
+      const message = await Message.create(
+        { 
+          order_id: order.id, 
+          sender_id: order.store.user.id,
+          receiver_id: order.customer.user.id,
+          notification: Message.NOTIFICATION_ORDER_ACCEPTED,
+          delivery_status: Message.DELIVERY_STATUS_SENT
+        },
+        { transaction }
+      );
+
+      return { orderUpdate, message };
     });
   },
 
   updateStoreStatusToDeclined(order) {
-    return Order.update(
-      { store_status: Order.STORE_STATUS_DECLINED, status: Order.STATUS_DECLINED }, 
-      { where: { id: order.id } }
-    );
+    return sequelize.transaction(async (transaction)=> {
+
+      const orderUpdate = await Order.update(
+        { store_status: Order.STORE_STATUS_DECLINED, status: Order.STATUS_DECLINED }, 
+        { where: { id: order.id }, transaction }
+      );
+  
+      const message = await Message.create(
+        { 
+          order_id: order.id, 
+          sender_id: order.store.user.id,
+          receiver_id: order.customer.user.id,
+          notification: Message.NOTIFICATION_ORDER_DECLINED,
+          delivery_status: Message.DELIVERY_STATUS_SENT
+        },
+        { transaction }
+      );
+
+      return { orderUpdate, message };
+    });
   },
 
   updateDeliveryFirmStatusToAccepted(order, referenceGenerator) {
@@ -502,15 +558,42 @@ module.exports = {
         );
       }
 
-      return orderUpdate;
+      const message = await Message.create(
+        { 
+          order_id: order.id, 
+          sender_id: order.delivery_firm.user.id,
+          receiver_id: order.customer.user.id,
+          notification: Message.NOTIFICATION_ORDER_ACCEPTED,
+          delivery_status: Message.DELIVERY_STATUS_SENT
+        },
+        { transaction }
+      );
+
+      return { orderUpdate, message };
     });
   },
 
   updateDeliveryFirmStatusToDeclined(order) {
-    return Order.update(
-      { delivery_firm_status: Order.DELIVERY_FIRM_STATUS_DECLINED, status: Order.STATUS_DECLINED }, 
-      { where: { id: order.id } }
-    );
+    return sequelize.transaction(async (transaction)=> {    
+
+      const orderUpdate = await Order.update(
+        { delivery_firm_status: Order.DELIVERY_FIRM_STATUS_DECLINED, status: Order.STATUS_DECLINED }, 
+        { where: { id: order.id }, transaction }
+      );
+
+      const message = await Message.create(
+        { 
+          order_id: order.id, 
+          sender_id: order.delivery_firm.user.id,
+          receiver_id: order.customer.user.id,
+          notification: Message.NOTIFICATION_ORDER_DECLINED,
+          delivery_status: Message.DELIVERY_STATUS_SENT
+        },
+        { transaction }
+      );
+
+      return { orderUpdate, message };
+    });
   },
 
   async reduceOrderItemProductQuantity(order, transaction) {

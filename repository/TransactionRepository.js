@@ -2,6 +2,7 @@ const { Op } = require("sequelize");
 const Customer = require("../models/Customer");
 const CustomerHistory = require("../models/CustomerHistory");
 const DeliveryFirm = require("../models/DeliveryFirm");
+const Message = require("../models/Message");
 const Order = require("../models/Order");
 const Store = require("../models/Store");
 const Transaction = require("../models/Transaction");
@@ -139,13 +140,31 @@ module.exports = {
   },
   
   createWithdrawal({ amount }, reference, user_id) {
-    return Transaction.create({ 
-      user_id,
-      reference,
-      amount: -amount,
-      application: false,
-      status: Transaction.STATUS_PENDING,
-      type: Transaction.TYPE_WITHDRAWAL
+    return sequelize.transaction(async (transaction)=> {
+      const tx = await Transaction.create(
+          { 
+          user_id,
+          reference,
+          amount: -amount,
+          application: false,
+          status: Transaction.STATUS_PENDING,
+          type: Transaction.TYPE_WITHDRAWAL
+        },
+        { transaction }
+      );
+      
+      const message = await Message.create(
+        { 
+          transaction_id: tx.id, 
+          sender_id: tx.user_id,
+          application: Message.APPLICATION_ROLE_RECEIVER,
+          notification: Message.NOTIFICATION_TRANSACTION_CREATED,
+          delivery_status: Message.DELIVERY_STATUS_SENT
+        },
+        { transaction }
+      );
+
+      return { transaction: tx, message };
     });
   },
 
@@ -194,8 +213,19 @@ module.exports = {
         { refund_status: Order.REFUND_STATUS_PENDING }, 
         { where: { id: order.id }, transaction }
       );
+      
+      const message = await Message.create(
+        { 
+          transaction_id: tx.id, 
+          sender_id: tx.user_id,
+          application: Message.APPLICATION_ROLE_RECEIVER,
+          notification: Message.NOTIFICATION_TRANSACTION_CREATED,
+          delivery_status: Message.DELIVERY_STATUS_SENT
+        },
+        { transaction }
+      );
 
-      return tx;
+      return { transaction: tx, message };
     });
   },
 
@@ -224,15 +254,35 @@ module.exports = {
 
       if (tx === null) return false;
 
-      await Transaction.update({ status: Transaction.STATUS_APPROVED }, { where: { reference }, transaction });
+      await Transaction.update(
+        { status: Transaction.STATUS_APPROVED }, 
+        { where: { reference }, transaction }
+      );
 
-      await Order.update({ payment_status: Order.PAYMENT_STATUS_APPROVED }, { where: { id: tx.order.id }, transaction });
+      await Order.update(
+        { payment_status: Order.PAYMENT_STATUS_APPROVED }, 
+        { where: { id: tx.order.id }, transaction }
+      );
       
       if (tx.order.status === Order.STATUS_PROCESSING || tx.order.status === Order.STATUS_FULFILLED) {
-        await Transaction.bulkCreate(await Transaction.distributeOrderPayment(tx.order, referenceGenerator), { transaction });
+        await Transaction.bulkCreate(
+          await Transaction.distributeOrderPayment(tx.order, referenceGenerator), 
+          { transaction }
+        );
       }
 
-      return true;
+      const message = await Message.create(
+        { 
+          transaction_id: tx.id, 
+          receiver_id: tx.user_id,
+          application: Message.APPLICATION_ROLE_SENDER,
+          notification: Message.NOTIFICATION_TRANSACTION_APPROVED,
+          delivery_status: Message.DELIVERY_STATUS_SENT
+        },
+        { transaction }
+      );
+      
+      return message;
     });
   },
 
@@ -248,12 +298,30 @@ module.exports = {
 
       if (tx === null) return false;
 
-      await Transaction.update({ status: Transaction.STATUS_APPROVED }, { where: { reference }, transaction });
+      await Transaction.update(
+        { status: Transaction.STATUS_APPROVED }, 
+        { where: { reference }, transaction }
+      );
 
-      if (tx.type === Transaction.TYPE_REFUND)
-        await Order.update({ refund_status: Order.REFUND_STATUS_APPROVED }, { where: { id: tx.order.id }, transaction });
+      if (tx.type === Transaction.TYPE_REFUND) {
+        await Order.update(
+          { refund_status: Order.REFUND_STATUS_APPROVED }, 
+          { where: { id: tx.order.id }, transaction }
+        );
+      }
+
+      const message = await Message.create(
+        { 
+          transaction_id: tx.id, 
+          receiver_id: tx.user_id,
+          application: Message.APPLICATION_ROLE_SENDER,
+          notification: Message.NOTIFICATION_TRANSACTION_APPROVED,
+          delivery_status: Message.DELIVERY_STATUS_SENT
+        },
+        { transaction }
+      );
       
-      return true;
+      return message;
     });
   },
 
@@ -269,32 +337,113 @@ module.exports = {
 
       if (tx === null) return false;
 
-      await Transaction.update({ status: Transaction.STATUS_FAILED }, { where: { reference }, transaction });
+      await Transaction.update(
+        { status: Transaction.STATUS_FAILED }, 
+        { where: { reference }, transaction }
+      );
 
-      if (tx.type === Transaction.TYPE_REFUND)
-        await Order.update({ refund_status: Order.REFUND_STATUS_FAILED }, { where: { id: tx.order.id }, transaction });
+      if (tx.type === Transaction.TYPE_REFUND) {
+        await Order.update(
+          { refund_status: Order.REFUND_STATUS_FAILED }, 
+          { where: { id: tx.order.id }, transaction }
+        );
+      }
+
+      const message = await Message.create(
+        { 
+          transaction_id: tx.id, 
+          receiver_id: tx.user_id,
+          application: Message.APPLICATION_ROLE_SENDER,
+          notification: Message.NOTIFICATION_TRANSACTION_FAILED,
+          delivery_status: Message.DELIVERY_STATUS_SENT
+        },
+        { transaction }
+      );
       
-      return true;
+      return message;
     });
   },
   
-  updateStatusToDeclinedOrCancelled(tx, status) {
+  updateStatusCancelled(tx, status) {
+
     return sequelize.transaction(async (transaction)=> {
 
       const update = await Transaction.update({ status }, { where: { id: tx.id }, transaction });
 
-      if (tx.type === Transaction.TYPE_REFUND && status === Transaction.STATUS_CANCELLED) {
-        await Order.update({ refund_status: Order.REFUND_STATUS_CANCELLED }, { where: { id: tx.order.id }, transaction });
-      } else if (tx.type === Transaction.TYPE_REFUND && status === Transaction.STATUS_DECLINED) {
-        await Order.update({ refund_status: Order.REFUND_STATUS_DECLINED }, { where: { id: tx.order.id }, transaction });
+      if (tx.type === Transaction.TYPE_REFUND) {
+        await Order.update(
+          { refund_status: Order.REFUND_STATUS_CANCELLED }, 
+          { where: { id: tx.order.id }, transaction }
+        );
       }
 
-      return update;
+      const message = await Message.create(
+        { 
+          transaction_id: tx.id, 
+          sender_id: tx.user_id,
+          application: Message.APPLICATION_ROLE_RECEIVER,
+          notification: Message.NOTIFICATION_TRANSACTION_CANCELLED,
+          delivery_status: Message.DELIVERY_STATUS_SENT
+        },
+        { transaction }
+      );
+
+      return { update, message };
+    });
+  },
+
+  updateStatusToDeclined(tx, status) {
+
+    return sequelize.transaction(async (transaction)=> {
+
+      const update = await Transaction.update({ status }, { where: { id: tx.id }, transaction });
+
+      if (tx.type === Transaction.TYPE_REFUND) {
+        await Order.update(
+          { refund_status: Order.REFUND_STATUS_DECLINED }, 
+          { where: { id: tx.order.id }, transaction }
+        );
+      }
+
+      const message = await Message.create(
+        { 
+          transaction_id: tx.id, 
+          receiver_id: tx.user_id,
+          application: Message.APPLICATION_ROLE_SENDER,
+          notification: Message.NOTIFICATION_TRANSACTION_DECLINED,
+          delivery_status: Message.DELIVERY_STATUS_SENT
+        },
+        { transaction }
+      );
+
+      return { update, message };
     });
   },
 
   updateStatusToProcessing(tx) {
-    return Transaction.update({ status: Transaction.STATUS_PROCESSING }, { where: { id: tx.id } });
+    
+    // send request to paystack;
+
+    return sequelize.transaction(async (transaction)=> {
+
+      const update = await Transaction.update(
+        { status: Transaction.STATUS_PROCESSING }, 
+        { where: { id: tx.id }, transaction }
+      );
+      
+      const message = await Message.create(
+        { 
+          transaction_id: tx.id, 
+          receiver_id: tx.user_id,
+          application: Message.APPLICATION_ROLE_SENDER,
+          notification: Message.NOTIFICATION_TRANSACTION_PROCESSING,
+          delivery_status: Message.DELIVERY_STATUS_SENT
+        },
+        { transaction }
+      );
+      
+      return { update, message };
+    });
   },
 
 

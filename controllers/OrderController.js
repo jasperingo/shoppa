@@ -230,8 +230,12 @@ module.exports = class OrderController {
     
     try {
       
-      if (req.body.status === Order.STATUS_CANCELLED)
-        await OrderRepository.updateStatusToCancel(req.data.order);
+      if (req.body.status === Order.STATUS_CANCELLED) {
+
+        const result = await OrderRepository.updateStatusToCancel(req.data.order);
+
+        //emit message in result;
+      }
 
       const order = await OrderRepository.get(req.data.order.id);
 
@@ -256,6 +260,8 @@ module.exports = class OrderController {
           await OrderRepository.updateStoreStatusToDeclined(req.data.order);
           break;
       }
+
+      //send message
       
       const order = await OrderRepository.get(req.data.order.id);
 
@@ -280,6 +286,8 @@ module.exports = class OrderController {
           await OrderRepository.updateDeliveryFirmStatusToDeclined(req.data.order);
           break;
       }
+
+      //send message
 
       const order = await OrderRepository.get(req.data.order.id);
 
