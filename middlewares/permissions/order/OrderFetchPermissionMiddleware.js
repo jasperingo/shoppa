@@ -2,6 +2,7 @@
 const ForbiddenException = require("../../../http/exceptions/ForbiddenException");
 const InternalServerException = require("../../../http/exceptions/InternalServerException");
 const CustomerRepository = require("../../../repository/CustomerRepository");
+const DeliveryFirmRepository = require("../../../repository/DeliveryFirmRepository");
 const StoreRepository = require("../../../repository/StoreRepository");
 const JWT = require("../../../security/JWT");
 
