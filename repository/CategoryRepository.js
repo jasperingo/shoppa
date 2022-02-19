@@ -65,6 +65,10 @@ module.exports = {
     });
   },
 
+  getCount() {
+    return Category.count();
+  },
+
   add({ name, type, description }) {
     return Category.create({ name, type, description });
   },

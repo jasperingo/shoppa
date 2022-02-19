@@ -162,6 +162,10 @@ module.exports = {
       limit
     });
   },
+
+  getCount() {
+    return DeliveryFirm.count();
+  },
   
   async add(data, password, customer) {
 

@@ -78,7 +78,8 @@
     "_discount": "Discount fetched",
     "_discount_product": "Discount product fetched",
     "_order": "Order fetched",
-    "_transaction": "Transaction fetched"
+    "_transaction": "Transaction fetched",
+    "_statistics": "Statistics"
   },
 
   "_list_fetched": {

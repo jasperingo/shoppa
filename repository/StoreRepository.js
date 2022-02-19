@@ -158,6 +158,10 @@ module.exports = {
     });
   },
 
+  getCount() {
+    return Store.count();
+  },
+
   getRandomList(limit) {
     return sequelize.transaction(async (transaction)=> {
       const rows = await Store.findAll({

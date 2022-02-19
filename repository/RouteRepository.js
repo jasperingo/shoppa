@@ -185,7 +185,16 @@ module.exports = {
   delete(route) {
     return sequelize.transaction(async (transaction)=> {
       return await Promise.all([
-        Route.destroy({ where: { id: route.id }, transaction }),
+        Route.destroy({ 
+          where: { 
+            [Op.or]: [
+              { id: route.id },
+              { origin_route_id: route.id },
+              { destination_route_id: route.id }
+            ]
+          }, 
+          transaction 
+        }),
         RouteWeight.destroy({ where: { delivery_route_id: route.id }, transaction }),
         RouteDuration.destroy({ where: { delivery_route_id: route.id }, transaction })
       ]);

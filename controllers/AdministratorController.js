@@ -6,6 +6,12 @@ const InternalServerException = require("../http/exceptions/InternalServerExcept
 const JWT = require("../security/JWT");
 const Hash = require("../security/Hash");
 const CustomerRepository = require("../repository/CustomerRepository");
+const StoreRepository = require("../repository/StoreRepository");
+const DeliveryFirmRepository = require("../repository/DeliveryFirmRepository");
+const CategoryRepository = require("../repository/CategoryRepository");
+const ProductRepository = require("../repository/ProductRepository");
+const OrderRepository = require("../repository/OrderRepository");
+const TransactionRepository = require("../repository/TransactionRepository");
 
 module.exports = class AdministratorController {
 
@@ -95,6 +101,36 @@ module.exports = class AdministratorController {
     const response = new Response(Response.SUCCESS, req.__('_fetched._administrator'), administrator);
 
     res.status(StatusCodes.OK).send(response);
+  }
+
+
+  async getStatistics(req, res, next) {
+
+    try {
+
+      const statistics = {};
+
+      statistics.nummber_of_customers = await CustomerRepository.getCount();
+
+      statistics.nummber_of_stores = await StoreRepository.getCount();
+
+      statistics.nummber_of_delivery_firms = await DeliveryFirmRepository.getCount();
+
+      statistics.nummber_of_categories = await CategoryRepository.getCount();
+
+      statistics.nummber_of_products = await ProductRepository.getCount();
+
+      statistics.nummber_of_orders = await OrderRepository.getCount();
+
+      statistics.total_earnings = await TransactionRepository.getBalanceByAdministrator();
+
+      const response = new Response(Response.SUCCESS, req.__('_fetched._statistics'), statistics);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      next(new InternalServerException(error));
+    }
   }
 
 }

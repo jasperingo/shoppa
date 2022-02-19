@@ -75,6 +75,10 @@ module.exports = {
       ]
     });
   },
+
+  getCount() {
+    return Product.count();
+  },
   
   getListByStore(store, offset, limit) {
     return sequelize.transaction(async (transaction)=> {
@@ -104,16 +108,7 @@ module.exports = {
         transaction
       });
       
-      for (let product of rows) {
-        let variant = await ProductVariant.findOne({
-          attributes: ['id', 'price'],
-          where: { product_id: product.id },
-          order: [['price', 'ASC']],
-          transaction
-        });
-
-        product.setDataValue('product_variants', (variant === null ? [] : [variant]));
-      }
+      await this.getProductsLeastPriceVariant(rows, transaction);
       
       return { count, rows };
     });
@@ -173,16 +168,7 @@ module.exports = {
         transaction
       });
       
-      for (let product of rows) {
-        let variant = await ProductVariant.findOne({
-          attributes: ['id', 'price'],
-          where: { product_id: product.id },
-          order: [['price', 'ASC']],
-          transaction
-        });
-
-        product.setDataValue('product_variants', (variant === null ? [] : [variant]));
-      }
+      await this.getProductsLeastPriceVariant(rows, transaction);
       
       return rows;
     });
@@ -218,16 +204,7 @@ module.exports = {
         transaction
       });
       
-      for (let product of rows) {
-        let variant = await ProductVariant.findOne({
-          attributes: ['id', 'price'],
-          where: { product_id: product.id },
-          order: [['price', 'ASC']],
-          transaction
-        });
-
-        product.setDataValue('product_variants', (variant === null ? [] : [variant]));
-      }
+      await this.getProductsLeastPriceVariant(rows, transaction);
       
       return rows;
     });
@@ -272,16 +249,7 @@ module.exports = {
         transaction
       });
       
-      for (let product of rows) {
-        let variant = await ProductVariant.findOne({
-          attributes: ['id', 'price'],
-          where: { product_id: product.id },
-          order: [['price', 'ASC']],
-          transaction
-        });
-
-        product.setDataValue('product_variants', (variant === null ? [] : [variant]));
-      }
+      await this.getProductsLeastPriceVariant(rows, transaction);
       
       return { count, rows };
     });
@@ -292,6 +260,7 @@ module.exports = {
 
       const { count, rows } = await Product.findAndCountAll({
         where: { 
+          id: { [Op.not]: product.id },
           store_id: product.store.id,
           '$store.user.status$': User.STATUS_ACTIVE,
           '$sub_category.category.id$': product.sub_category.category.id
@@ -319,19 +288,23 @@ module.exports = {
         transaction
       });
       
-      for (let product of rows) {
-        let variant = await ProductVariant.findOne({
-          attributes: ['id', 'price'],
-          where: { product_id: product.id },
-          order: [['price', 'ASC']],
-          transaction
-        });
-
-        product.setDataValue('product_variants', (variant === null ? [] : [variant]));
-      }
+      await this.getProductsLeastPriceVariant(rows, transaction);
       
       return { count, rows };
     });
+  },
+
+  async getProductsLeastPriceVariant(products, transaction) {
+    for (let product of products) {
+      let variant = await ProductVariant.findOne({
+        attributes: ['id', 'price'],
+        where: { product_id: product.id },
+        order: [['price', 'ASC']],
+        transaction
+      });
+
+      product.setDataValue('product_variants', (variant === null ? [] : [variant]));
+    }
   },
   
   create({ sub_category_id, title, description }, store_id) {

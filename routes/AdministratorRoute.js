@@ -97,6 +97,13 @@ router.get(
 );
 
 router.get(
+  '/statistics', 
+  AuthMiddleware,
+  AdministratorPermissionMiddleware,
+  controller.getStatistics
+);
+
+router.get(
   '/:id(\\d+)', 
   AdministratorFetchMiddleware,
   AuthMiddleware,

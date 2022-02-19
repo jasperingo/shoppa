@@ -299,6 +299,10 @@ module.exports = {
       limit
     });
   },
+
+  getCount() {
+    return Order.count();
+  },
   
   getListByCustomer(customer, offset, limit, options) {
     return Order.findAndCountAll({

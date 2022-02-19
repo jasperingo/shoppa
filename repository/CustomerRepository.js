@@ -94,6 +94,10 @@ module.exports = {
       limit
     });
   },
+
+  getCount() {
+    return Customer.count();
+  },
   
   add({ first_name, last_name, email, phone_number }, password) {
 

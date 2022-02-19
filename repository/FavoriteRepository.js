@@ -48,7 +48,10 @@ module.exports = {
     return sequelize.transaction(async (transaction)=> {
 
       const { count, rows } = await Favorite.findAndCountAll({
-        where: { customer_id: customer.id },
+        where: { 
+          customer_id: customer.id,
+          '$product.store.user.status$': User.STATUS_ACTIVE 
+        },
         include: {
           model: Product,
           include: [
@@ -75,14 +78,14 @@ module.exports = {
         transaction
       });
 
-      for (let [i, fav] of rows.entries()) {
+      for (let fav of rows) {
         let variant = await ProductVariant.findOne({
           attributes: ['id', 'price'],
           where: { product_id: fav.product.id },
           order: [['price', 'ASC']],
         });
         
-        rows[i].product.setDataValue('product_variants', (variant === null ? [] : [variant]));
+        fav.product.setDataValue('product_variants', (variant === null ? [] : [variant]));
       }
 
       return { count, rows };
