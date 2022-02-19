@@ -62,7 +62,7 @@ module.exports = class TransactionController {
 
       const _transaction = await TransactionRepository.createWithdrawal(req.body, reference, req.auth.userId);
 
-      const transaction = await TransactionRepository.get(_transaction.id);
+      const transaction = await TransactionRepository.get(_transaction.transaction.id);
 
       const response = new Response(Response.SUCCESS, req.__('_created._transaction'), transaction);
 
