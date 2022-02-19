@@ -110,17 +110,17 @@ module.exports = class AdministratorController {
 
       const statistics = {};
 
-      statistics.nummber_of_customers = await CustomerRepository.getCount();
+      statistics.number_of_customers = await CustomerRepository.getCount();
 
-      statistics.nummber_of_stores = await StoreRepository.getCount();
+      statistics.number_of_stores = await StoreRepository.getCount();
 
-      statistics.nummber_of_delivery_firms = await DeliveryFirmRepository.getCount();
+      statistics.number_of_delivery_firms = await DeliveryFirmRepository.getCount();
 
-      statistics.nummber_of_categories = await CategoryRepository.getCount();
+      statistics.number_of_categories = await CategoryRepository.getCount();
 
-      statistics.nummber_of_products = await ProductRepository.getCount();
+      statistics.number_of_products = await ProductRepository.getCount();
 
-      statistics.nummber_of_orders = await OrderRepository.getCount();
+      statistics.number_of_orders = await OrderRepository.getCount();
 
       statistics.total_earnings = await TransactionRepository.getBalanceByAdministrator();
 
