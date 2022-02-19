@@ -364,7 +364,7 @@ module.exports = {
     });
   },
   
-  updateStatusCancelled(tx, status) {
+  updateStatusToCancelled(tx, status) {
 
     return sequelize.transaction(async (transaction)=> {
 
