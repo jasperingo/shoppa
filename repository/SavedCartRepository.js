@@ -2,6 +2,8 @@ const Product = require("../models/Product");
 const ProductVariant = require("../models/ProductVariant");
 const SavedCart = require("../models/SavedCart");
 const SavedCartItem = require("../models/SavedCartItem");
+const Store = require("../models/Store");
+const User = require("../models/User");
 const sequelize = require("./DB");
 
 
@@ -13,31 +15,30 @@ module.exports = {
   },
 
   get(id) {
-    return SavedCart.findOne({
-      where: { id },
-      include: {
-        model: SavedCartItem,
-        include: {
-          model: ProductVariant,
-          include: {
-            model: Product,
-            attributes: Product.GET_ATTR
-          }
-        }
-      }
-    });
+    return this.getBy({ id });
   },
   
   getByCode(code) {
+    return this.getBy({ code });
+  },
+  
+  getBy(where) {
     return SavedCart.findOne({
-      where: { code },
+      where,
       include: {
         model: SavedCartItem,
         include: {
           model: ProductVariant,
           include: {
             model: Product,
-            attributes: Product.GET_ATTR
+            attributes: Product.GET_ATTR,
+            include: {
+              model: Store,
+              include: {
+                model: User,
+                attributes: User.GET_ATTR
+              }
+            }
           }
         }
       }
