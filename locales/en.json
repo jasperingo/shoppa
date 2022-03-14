@@ -19,7 +19,8 @@
     "_order": "Order created",
     "_transaction": "Transaction created",
     "_password_reset": "Password reset created",
-    "_review": "Review created"
+    "_review": "Review created",
+    "_promotion": "Promotion created"
   },
   
   "_updated": {

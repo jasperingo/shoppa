@@ -23,6 +23,7 @@ const TransactionRoute = require('./TransactionRoute');
 const PasswordResetRoute = require('./PasswordResetRoute');
 const ReviewRoute = require('./ReviewRoute');
 const BankRoute = require('./BankRoute');
+const PromotionRoute = require('./PromotionRoute');
 
 const router = express.Router();
 
@@ -71,6 +72,8 @@ router.use('/password-reset', PasswordResetRoute);
 router.use('/review', ReviewRoute);
 
 router.use('/bank', BankRoute);
+
+router.use('/promotion', PromotionRoute);
 
 module.exports = router;
 
