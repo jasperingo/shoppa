@@ -1,5 +1,6 @@
 const { Op } = require("sequelize");
 const Category = require("../models/Category");
+const Product = require("../models/Product");
 const SubCategory = require("../models/SubCategory");
 const sequelize = require("./DB");
 
@@ -62,6 +63,22 @@ module.exports = {
         model: SubCategory
       },
       order: [['name', 'ASC']] 
+    });
+  },
+
+  getListByProductInStore(store) {
+    return Category.findAll({
+      where: { 
+        type: Category.TYPE_PRODUCT,
+        '$sub_categories.products.store_id$': store.id
+      }, 
+      include: {
+        model: SubCategory,
+        include: {
+          model: Product,
+          attributes: []
+        }
+      },
     });
   },
 

@@ -80,11 +80,11 @@ module.exports = {
     return Product.count();
   },
   
-  getListByStore(store, offset, limit) {
+  getListByStore(store, offset, limit, options) {
     return sequelize.transaction(async (transaction)=> {
 
       const { count, rows } = await Product.findAndCountAll({
-        where: { store_id: store.id },
+        where: { store_id: store.id, ...options },
         include: [
           {
             model: Store,

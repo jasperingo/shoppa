@@ -232,7 +232,8 @@ module.exports = class OrderController {
       
       if (req.body.status === Order.STATUS_CANCELLED) {
 
-        const result = await OrderRepository.updateStatusToCancel(req.data.order);
+        // const result =
+        await OrderRepository.updateStatusToCancel(req.data.order);
 
         //emit message in result;
       }

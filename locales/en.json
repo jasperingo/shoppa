@@ -59,7 +59,8 @@
     "_saved_cart": "Saved cart deleted",
     "_discount": "Discount deleted",
     "_discount_product": "Discount product deleted",
-    "_review": "Review deleted"
+    "_review": "Review deleted",
+    "_promotion": "Promotion deleted"
   },
 
   "_fetched": {
@@ -80,7 +81,8 @@
     "_discount_product": "Discount product fetched",
     "_order": "Order fetched",
     "_transaction": "Transaction fetched",
-    "_statistics": "Statistics"
+    "_statistics": "Statistics",
+    "_promotion": "Promotion fetched"
   },
 
   "_list_fetched": {
@@ -99,7 +101,8 @@
     "_discount_product": "Discount product list fetched",
     "_order": "Order list fetched",
     "_transaction": "Transaction list fetched",
-    "_review": "Review list fetched"
+    "_review": "Review list fetched",
+    "_promotion": "Promotion list fetched"
   },
 
   "_login": "Login successfully",

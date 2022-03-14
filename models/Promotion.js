@@ -1,5 +1,6 @@
 
 const { Model, DataTypes } = require("sequelize");
+const Files = require("../http/Files");
 const sequelize = require('../repository/DB');
 
 class Promotion extends Model {}
@@ -33,7 +34,14 @@ Promotion.init({
   },
 
   photo: {
-    type: DataTypes.STRING
+    type: DataTypes.STRING,
+    get() {
+      const photoName = this.getDataValue('photo');
+      return {
+        name: photoName,
+        href: Files.getPromotionPhotoPath(photoName)
+      };
+    }
   },
 
   duration: {

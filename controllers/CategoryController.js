@@ -115,5 +115,23 @@ module.exports = class CategoryController {
     }
   }
 
+  async getListByProductInStore(req, res, next) {
+
+    try {
+
+      const { store } = req.data;
+
+      const categories = await CategoryRepository.getListByProductInStore(store);
+
+      const response = new Response(Response.SUCCESS, req.__('_list_fetched._category'), categories);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      next(new InternalServerException(error));
+    }
+  }
+
+
 }
 

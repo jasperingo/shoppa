@@ -26,6 +26,10 @@ module.exports = {
   
   SUB_CATEGORY_DEFAULT_PATH: 'default.jpg',
 
+  PROMOTION_PHOTO_PATH: 'promotion/',
+
+  PROMOTION_DEFAULT_PATH: 'default.jpg',
+
   getUserPhotoPath(photoName, type) {
     return `${process.env.PHOTOS_PATH}${this.USER_PHOTO_PATHS[type]}${photoName ? photoName : this.USER_DEFAULT_PHOTOS[type]}`;
   },
@@ -42,5 +46,8 @@ module.exports = {
     return `${process.env.PHOTOS_PATH}${this.SUB_CATEGORY_PHOTO_PATH}${photoName ? photoName : this.SUB_CATEGORY_DEFAULT_PATH}`;
   },
 
+  getPromotionPhotoPath(photoName) {
+    return `${process.env.PHOTOS_PATH}${this.PROMOTION_PHOTO_PATH}${photoName ? photoName : this.PROMOTION_DEFAULT_PATH}`;
+  },
 };
 

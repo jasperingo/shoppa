@@ -36,10 +36,14 @@ const OrderListFilterMiddleware = require('../middlewares/OrderListFilterMiddlew
 const SearchParamsMiddleware = require('../middlewares/SearchParamsMiddleware');
 const SearchValidation = require('../validation/search/SearchValidation');
 const ProductRecommendedUpdateValidation = require('../validation/product/ProductRecommendedUpdateValidation');
+const CategoryController = require('../controllers/CategoryController');
+const ProductListFilterMiddleware = require('../middlewares/ProductListFilterMiddleware');
 
 const router = express.Router();
 
 const controller = new StoreController();
+
+const categoryController = new CategoryController();
 
 const productController = new ProductController();
 
@@ -179,7 +183,16 @@ router.get(
   OptionalAuthMiddleware,
   StoreFetchPermissionMiddleware,
   PaginationMiddleware,
+  ProductListFilterMiddleware,
   productController.getListByStore
+);
+
+router.get(
+  '/:id(\\d+)/category/product/list',
+  StoreFetchMiddleware,
+  OptionalAuthMiddleware,
+  StoreFetchPermissionMiddleware,
+  categoryController.getListByProductInStore
 );
 
 router.get(
@@ -208,7 +221,6 @@ router.get(
   PaginationMiddleware,
   discountController.getListByStore
 );
-
 
 router.get(
   '/:id(\\d+)/order/list', 

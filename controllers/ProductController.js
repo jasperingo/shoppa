@@ -132,9 +132,9 @@ module.exports = class ProductController {
     
     try {
 
-      const { pager, store } = req.data;
+      const { pager, store, productFilter } = req.data;
 
-      const { count, rows } = await ProductRepository.getListByStore(store, pager.page_offset, pager.page_limit);
+      const { count, rows } = await ProductRepository.getListByStore(store, pager.page_offset, pager.page_limit, productFilter);
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
