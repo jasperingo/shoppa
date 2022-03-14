@@ -12,7 +12,7 @@ module.exports = async function permit(req, res, next) {
       (req.auth.authType === JWT.AUTH_APP_ADMIN) 
       || 
       (req.auth.authType === JWT.AUTH_CUSTOMER && 
-      req.data.order.customer_id === req.auth.userId &&
+      req.data.order.customer_id === req.auth.customerId &&
       await CustomerRepository.statusIsActive(req.auth.userId)) 
       ||
       (req.auth.authType === JWT.AUTH_STORE_ADMIN && 
