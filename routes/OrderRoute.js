@@ -22,10 +22,13 @@ const OrderFetchPermissionMiddleware = require('../middlewares/permissions/order
 const AdministratorPermissionMiddleware = require('../middlewares/permissions/AdministratorPermissionMiddleware');
 const PaginationMiddleware = require('../middlewares/PaginationMiddleware');
 const OrderListFilterMiddleware = require('../middlewares/OrderListFilterMiddleware');
+const TransactionController = require('../controllers/TransactionController');
 
 const router = express.Router();
 
 const controller = new OrderController();
+
+const transactionController = new TransactionController();
 
 router.post(
   '/create',
@@ -94,6 +97,14 @@ router.get(
   PaginationMiddleware,
   OrderListFilterMiddleware,
   controller.getList
+);
+
+router.get(
+  '/:id(\\d+)/transaction/payment/pending',
+  OrderFetchMiddleware,
+  AuthMiddleware,
+  OrderFetchPermissionMiddleware,
+  transactionController.getByOrder
 );
 
 router.get(

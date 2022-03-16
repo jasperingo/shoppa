@@ -91,6 +91,38 @@ module.exports = {
     });
   },
 
+  getByOrder(order_id) {
+    return Transaction.findOne({ 
+      where: { 
+        order_id,
+        type: Transaction.TYPE_PAYMENT,
+        status: Transaction.STATUS_PENDING
+      },
+      include: [
+        {
+          model: User,
+          attributes: User.GET_ATTR,
+          include: [
+            {
+              model: Customer,
+              attributes: Customer.GET_ATTR
+            },
+            {
+              model: Store,
+            },
+            {
+              model: DeliveryFirm,
+            }
+          ]
+        },
+        {
+          model: Order
+        }
+      ],
+      order: [['created_at', 'DESC']]
+    });
+  },
+
   async getBalance(user_id) {
     const balance = await Transaction.sum('amount', { 
       where: { 

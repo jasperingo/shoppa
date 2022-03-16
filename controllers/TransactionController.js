@@ -145,7 +145,22 @@ module.exports = class TransactionController {
     }
   }
 
-  getListByCustomer = async (req, res, next)=> {
+  async getByOrder(req, res, next) {
+    
+    try {
+
+      const transaction = await TransactionRepository.getByOrder(req.data.order.id);
+
+      const response = new Response(Response.SUCCESS, req.__('_fetched._transaction'), transaction);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      next(new InternalServerException(error));
+    }
+  }
+
+  async getListByCustomer(req, res, next) {
     
     try {
 
@@ -164,7 +179,7 @@ module.exports = class TransactionController {
     }
   }
 
-  getListByStore = async (req, res, next)=> {
+  async getListByStore(req, res, next) {
     
     try {
 
@@ -183,7 +198,7 @@ module.exports = class TransactionController {
     }
   }
   
-  getBalanceByStore = async (req, res, next)=> {
+  async getBalanceByStore(req, res, next) {
     
     try {
 
@@ -200,7 +215,7 @@ module.exports = class TransactionController {
     }
   }
   
-  getListByDeliveryFirm = async (req, res, next)=> {
+  async getListByDeliveryFirm(req, res, next) {
     
     try {
 
@@ -219,7 +234,7 @@ module.exports = class TransactionController {
     }
   }
 
-  getBalanceByDeliveryFirm = async (req, res, next)=> {
+  async getBalanceByDeliveryFirm(req, res, next) {
     
     try {
 
@@ -236,7 +251,7 @@ module.exports = class TransactionController {
     }
   }
 
-  getListByAdministrator = async (req, res, next)=> {
+  async getListByAdministrator(req, res, next) {
     
     try {
 
@@ -255,7 +270,7 @@ module.exports = class TransactionController {
     }
   }
 
-  getBalanceByAdministrator = async (req, res, next)=> {
+  async getBalanceByAdministrator(req, res, next) {
     
     try {
 
