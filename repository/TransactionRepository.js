@@ -8,6 +8,7 @@ const Store = require("../models/Store");
 const Transaction = require("../models/Transaction");
 const User = require("../models/User");
 const UserHistory = require("../models/UserHistory");
+const { messageSender } = require("../websocket");
 const sequelize = require("./DB");
 
 module.exports = {
@@ -135,14 +136,6 @@ module.exports = {
 
     return balance ?? 0;
   },
-  
-  async getBalanceByAdministrator() {
-    const balance = await Transaction.sum('amount', { 
-      where: { application: true } 
-    });
-
-    return balance ?? 0;
-  },
 
   getList(offset, limit, options) {
     return Transaction.findAndCountAll({ 
@@ -161,15 +154,6 @@ module.exports = {
       limit
     });
   },
-
-  getListByAdministrator(offset, limit) {
-    return Transaction.findAndCountAll({
-      where: { application: true },
-      order: [['created_at', 'DESC']],
-      offset,
-      limit
-    });
-  },
   
   createWithdrawal({ amount }, reference, user_id) {
     return sequelize.transaction(async (transaction)=> {
@@ -178,14 +162,13 @@ module.exports = {
           user_id,
           reference,
           amount: -amount,
-          application: false,
           status: Transaction.STATUS_PENDING,
           type: Transaction.TYPE_WITHDRAWAL
         },
         { transaction }
       );
       
-      const message = await Message.create(
+      const message = await messageSender(
         { 
           transaction_id: tx.id, 
           sender_id: tx.user_id,
@@ -193,7 +176,7 @@ module.exports = {
           notification: Message.NOTIFICATION_TRANSACTION_CREATED,
           delivery_status: Message.DELIVERY_STATUS_SENT
         },
-        { transaction }
+        transaction
       );
 
       return { transaction: tx, message };
@@ -206,7 +189,6 @@ module.exports = {
       const tx = await Transaction.create(
         { 
           reference,
-          application: false, 
           order_id: order.id, 
           amount: -order.total,
           user_id: order.customer.user.id,
@@ -231,7 +213,6 @@ module.exports = {
       const tx = await Transaction.create(
         { 
           reference,
-          application: false, 
           order_id: order.id, 
           amount: order.total,
           user_id: order.customer.user.id,
@@ -246,11 +227,10 @@ module.exports = {
         { where: { id: order.id }, transaction }
       );
       
-      const message = await Message.create(
+      const message = await messageSender(
         { 
           transaction_id: tx.id, 
           sender_id: tx.user_id,
-          application: Message.APPLICATION_ROLE_RECEIVER,
           notification: Message.NOTIFICATION_TRANSACTION_CREATED,
           delivery_status: Message.DELIVERY_STATUS_SENT
         },
@@ -303,11 +283,10 @@ module.exports = {
         );
       }
 
-      const message = await Message.create(
+      const message = await messageSender(
         { 
           transaction_id: tx.id, 
           receiver_id: tx.user_id,
-          application: Message.APPLICATION_ROLE_SENDER,
           notification: Message.NOTIFICATION_TRANSACTION_APPROVED,
           delivery_status: Message.DELIVERY_STATUS_SENT
         },
@@ -342,15 +321,14 @@ module.exports = {
         );
       }
 
-      const message = await Message.create(
+      const message = await messageSender(
         { 
           transaction_id: tx.id, 
           receiver_id: tx.user_id,
-          application: Message.APPLICATION_ROLE_SENDER,
           notification: Message.NOTIFICATION_TRANSACTION_APPROVED,
           delivery_status: Message.DELIVERY_STATUS_SENT
         },
-        { transaction }
+        transaction
       );
       
       return message;
@@ -381,11 +359,10 @@ module.exports = {
         );
       }
 
-      const message = await Message.create(
+      const message = await messageSender(
         { 
           transaction_id: tx.id, 
           receiver_id: tx.user_id,
-          application: Message.APPLICATION_ROLE_SENDER,
           notification: Message.NOTIFICATION_TRANSACTION_FAILED,
           delivery_status: Message.DELIVERY_STATUS_SENT
         },
@@ -409,11 +386,10 @@ module.exports = {
         );
       }
 
-      const message = await Message.create(
+      const message = await messageSender(
         { 
           transaction_id: tx.id, 
           sender_id: tx.user_id,
-          application: Message.APPLICATION_ROLE_RECEIVER,
           notification: Message.NOTIFICATION_TRANSACTION_CANCELLED,
           delivery_status: Message.DELIVERY_STATUS_SENT
         },
@@ -437,11 +413,10 @@ module.exports = {
         );
       }
 
-      const message = await Message.create(
+      const message = await messageSender(
         { 
           transaction_id: tx.id, 
           receiver_id: tx.user_id,
-          application: Message.APPLICATION_ROLE_SENDER,
           notification: Message.NOTIFICATION_TRANSACTION_DECLINED,
           delivery_status: Message.DELIVERY_STATUS_SENT
         },
@@ -463,11 +438,10 @@ module.exports = {
         { where: { id: tx.id }, transaction }
       );
       
-      const message = await Message.create(
+      const message = await messageSender(
         { 
           transaction_id: tx.id, 
           receiver_id: tx.user_id,
-          application: Message.APPLICATION_ROLE_SENDER,
           notification: Message.NOTIFICATION_TRANSACTION_PROCESSING,
           delivery_status: Message.DELIVERY_STATUS_SENT
         },

@@ -15,13 +15,13 @@ function signCustomerJWT(customer) {
 }
 
 function signAdminJWT(admin) {
+  console.log(admin);
   return signJWT({
     adminId : admin.id,
     adminRole: admin.role,
     adminType: admin.type,
     authType: AUTH_APP_ADMIN,
-    customerId: admin.customer.id,
-    userId: admin.customer.user.id
+    userId: admin.application.id
   });
 }
 

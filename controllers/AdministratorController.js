@@ -21,7 +21,7 @@ module.exports = class AdministratorController {
       
       const { administrator } = req.data;
 
-      const token = await JWT.signAdminJWT(administrator);
+      const token = await JWT.signAdminJWT(administrator.toJSON());
 
       administrator.hidePassword();
 

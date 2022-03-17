@@ -32,8 +32,8 @@ module.exports = {
     });
   },
 
-  getByEmail(email) {
-    return Administrator.findOne({   
+  async getByEmail(email) {
+    const admin =  await Administrator.findOne({   
       where: { '$customer.user.email$': email },
       include: {
         model: Customer,
@@ -42,6 +42,10 @@ module.exports = {
         } 
       } 
     });
+
+    admin.application = await User.findOne({ where: { type: User.TYPE_APPLICATION }});
+
+    return admin;
   },
 
   getByEmailAndStore(email, store_id) {

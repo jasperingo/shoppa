@@ -148,11 +148,6 @@ Transaction.init({
     autoIncrement: true
   },
 
-  application: {
-    type: DataTypes.BOOLEAN,
-    allowNull: false
-  },
-
   reference: {
     type: DataTypes.STRING,
     allowNull: false
@@ -187,7 +182,8 @@ Transaction.init({
 
 const uForeignKey = {
   name: 'user_id',
-  type: DataTypes.BIGINT
+  type: DataTypes.BIGINT,
+  allowNull: false
 };
 
 User.hasMany(Transaction, { foreignKey: uForeignKey });

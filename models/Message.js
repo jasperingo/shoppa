@@ -1,15 +1,12 @@
 const { Model, DataTypes } = require("sequelize");
 const sequelize = require('../repository/DB');
+const Chat = require("./Chat");
 const Order = require("./Order");
 const OrderItem = require("./OrderItem");
 const Transaction = require("./Transaction");
 const User = require("./User");
 
 class Message extends Model {
-
-  static APPLICATION_ROLE_RECEIVER = 'receiver';
-  static APPLICATION_ROLE_SENDER = 'sender';
-
 
   static DELIVERY_STATUS_SENT = 'sent';
   static DELIVERY_STATUS_DELIVERED = 'delivered';
@@ -28,14 +25,6 @@ class Message extends Model {
   static NOTIFICATION_ORDER_ITEM_PROCESSING = 'order_item_processing';
   static NOTIFICATION_ORDER_ITEM_TRANSPORTED = 'order_item_transported';
   static NOTIFICATION_ORDER_ITEM_DELIVERED = 'order_item_delivered';
-
-  
-  static getApplicationRoles() {
-    return [
-      Message.APPLICATION_ROLE_RECEIVER,
-      Message.APPLICATION_ROLE_SENDER
-    ];
-  }
 
   static getDeliveryStatuses() {
     return [
@@ -72,10 +61,6 @@ Message.init({
     primaryKey: true,
     autoIncrement: true
   },
-  
-  application: {
-    type: DataTypes.ENUM(...Message.getApplicationRoles()),
-  },
 
   notification: {
     type: DataTypes.ENUM(...Message.getDeliveryStatuses()),
@@ -102,9 +87,18 @@ Message.init({
 });
 
 
-User.hasMany(Message, { as: 'sender', foreignKey: { name: 'sender_id', type: DataTypes.BIGINT } });
-User.hasMany(Message, { as: 'receiver', foreignKey: { name: 'receiver_id', type: DataTypes.BIGINT } });
-Message.belongsTo(User);
+const uForeignKey = { name: 'user_id', type: DataTypes.BIGINT, allowNull: false };
+
+User.hasMany(Message, { foreignKey: uForeignKey });
+
+Message.belongsTo(User, { foreignKey: uForeignKey });
+
+
+const cForeignKey = { name: 'chat_id', type: DataTypes.BIGINT, allowNull: false };
+
+Chat.hasMany(Message, { foreignKey: cForeignKey });
+
+Message.belongsTo(Chat, { foreignKey: cForeignKey });
 
 
 const tForeignKey = {
@@ -129,7 +123,6 @@ const oiForeignKey = {
 };
 OrderItem.hasMany(Message, { foreignKey: oiForeignKey });
 Message.belongsTo(OrderItem, { foreignKey: oiForeignKey });
-
 
 
 module.exports = Message;

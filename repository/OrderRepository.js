@@ -16,6 +16,7 @@ const StoreHistory = require("../models/StoreHistory");
 const Transaction = require("../models/Transaction");
 const User = require("../models/User");
 const UserHistory = require("../models/UserHistory");
+const { messageSender } = require("../websocket");
 const sequelize = require("./DB");
 
 module.exports = {
@@ -400,15 +401,15 @@ module.exports = {
 
       const store = await Store.findByPk(store_id, { attributes: ['user_id'] });
 
-      const message = await Message.create(
+      const message = await messageSender(
         { 
-          order_id: order.id, 
-          sender_id: customer.user_id,
-          receiver_id: store.user_id,
-          notification: Message.NOTIFICATION_ORDER_CREATED,
-          delivery_status: Message.DELIVERY_STATUS_SENT
+            order_id: order.id, 
+            sender_id: customer.user_id,
+            receiver_id: store.user_id,
+            notification: Message.NOTIFICATION_ORDER_CREATED,
+            delivery_status: Message.DELIVERY_STATUS_SENT
         },
-        { transaction }
+        transaction
       );
       
       const messages = [message];
@@ -417,7 +418,7 @@ module.exports = {
 
         const deliveryFirm = DeliveryFirm.findByPk(delivery_firm_id, { attributes: ['user_id'] });
 
-        const message2 = await Message.create(
+        const message2 = await messageSender(
           { 
             order_id: order.id, 
             sender_id: customer.user_id,
@@ -425,7 +426,7 @@ module.exports = {
             notification: Message.NOTIFICATION_ORDER_CREATED,
             delivery_status: Message.DELIVERY_STATUS_SENT
           },
-          { transaction }
+          transaction
         );
 
         messages.push(message2);
@@ -443,7 +444,7 @@ module.exports = {
         { where: { id: order.id }, transaction }
       );
 
-      const message = await Message.create(
+      const message = await messageSender(
         { 
           order_id: order.id, 
           sender_id: order.customer.user.id,
@@ -451,14 +452,14 @@ module.exports = {
           notification: Message.NOTIFICATION_ORDER_CANCELLED,
           delivery_status: Message.DELIVERY_STATUS_SENT
         },
-        { transaction }
+        transaction
       );
       
       const messages = [message];
       
       if (order.delivery_method === Order.DELIVERY_METHOD_DOOR) {
 
-        const message2 = await Message.create(
+        const message2 = await messageSender(
           { 
             order_id: order.id, 
             sender_id: order.customer.user.id,
@@ -466,7 +467,7 @@ module.exports = {
             notification: Message.NOTIFICATION_ORDER_CANCELLED,
             delivery_status: Message.DELIVERY_STATUS_SENT
           },
-          { transaction }
+          transaction
         );
 
         messages.push(message2);
@@ -500,7 +501,7 @@ module.exports = {
         );
       }
 
-      const message = await Message.create(
+      const message = await messageSender(
         { 
           order_id: order.id, 
           sender_id: order.store.user.id,
@@ -508,7 +509,7 @@ module.exports = {
           notification: Message.NOTIFICATION_ORDER_ACCEPTED,
           delivery_status: Message.DELIVERY_STATUS_SENT
         },
-        { transaction }
+        transaction
       );
 
       return { orderUpdate, message };
@@ -523,7 +524,7 @@ module.exports = {
         { where: { id: order.id }, transaction }
       );
   
-      const message = await Message.create(
+      const message = await messageSender(
         { 
           order_id: order.id, 
           sender_id: order.store.user.id,
@@ -531,7 +532,7 @@ module.exports = {
           notification: Message.NOTIFICATION_ORDER_DECLINED,
           delivery_status: Message.DELIVERY_STATUS_SENT
         },
-        { transaction }
+        transaction
       );
 
       return { orderUpdate, message };
@@ -562,7 +563,7 @@ module.exports = {
         );
       }
 
-      const message = await Message.create(
+      const message = await messageSender(
         { 
           order_id: order.id, 
           sender_id: order.delivery_firm.user.id,
@@ -570,7 +571,7 @@ module.exports = {
           notification: Message.NOTIFICATION_ORDER_ACCEPTED,
           delivery_status: Message.DELIVERY_STATUS_SENT
         },
-        { transaction }
+        transaction
       );
 
       return { orderUpdate, message };
@@ -585,7 +586,7 @@ module.exports = {
         { where: { id: order.id }, transaction }
       );
 
-      const message = await Message.create(
+      const message = await messageSender(
         { 
           order_id: order.id, 
           sender_id: order.delivery_firm.user.id,
@@ -593,7 +594,7 @@ module.exports = {
           notification: Message.NOTIFICATION_ORDER_DECLINED,
           delivery_status: Message.DELIVERY_STATUS_SENT
         },
-        { transaction }
+        transaction
       );
 
       return { orderUpdate, message };

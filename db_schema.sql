@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `dailyneeds` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `dailyneeds`;
 -- MySQL dump 10.13  Distrib 8.0.17, for Win64 (x86_64)
 --
 -- Host: localhost    Database: dailyneeds
@@ -167,6 +165,36 @@ LOCK TABLES `categories` WRITE;
 /*!40000 ALTER TABLE `categories` DISABLE KEYS */;
 INSERT INTO `categories` VALUES (1,'store','Restuarant','category-1.jpg','Stores to get food','2021-12-25 05:06:21'),(2,'store','Pharmacy',NULL,'Stores to get medicine','2021-12-25 05:07:16'),(3,'store','Supermarket',NULL,'Stores to get other items','2021-12-25 07:43:22'),(4,'store','Snack',NULL,'Stores to get snacks','2021-12-25 07:44:14'),(5,'store','Botique',NULL,'Stores to get clothings','2021-12-25 07:44:35'),(6,'product','Snacks',NULL,'Sweet foods','2021-12-25 15:38:04'),(7,'product','Soup',NULL,'Nice soups','2021-12-27 17:27:39'),(8,'product','Rice',NULL,'All kinds of rice','2021-12-27 16:28:09'),(9,'product','Skin care',NULL,'Get the best for your skin','2021-12-27 16:28:46'),(10,'product','Drinks',NULL,'Tasty drinks','2021-12-27 16:29:12'),(11,'store','Fashion',NULL,'All you need to look amazing.','2022-01-22 02:49:12');
 /*!40000 ALTER TABLE `categories` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `chats`
+--
+
+DROP TABLE IF EXISTS `chats`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `chats` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `member_one_id` bigint(20) NOT NULL,
+  `member_two_id` bigint(20) NOT NULL,
+  `created_at` datetime DEFAULT (now()),
+  PRIMARY KEY (`id`),
+  KEY `member_one_id` (`member_one_id`),
+  KEY `member_two_id` (`member_two_id`),
+  CONSTRAINT `chats_ibfk_1` FOREIGN KEY (`member_one_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `chats_ibfk_2` FOREIGN KEY (`member_two_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `chats`
+--
+
+LOCK TABLES `chats` WRITE;
+/*!40000 ALTER TABLE `chats` DISABLE KEYS */;
+INSERT INTO `chats` VALUES (1,1,25,'2022-03-17 16:55:04'),(2,25,7,'2022-03-17 16:59:38');
+/*!40000 ALTER TABLE `chats` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -386,7 +414,7 @@ CREATE TABLE `delivery_route_weights` (
 
 LOCK TABLES `delivery_route_weights` WRITE;
 /*!40000 ALTER TABLE `delivery_route_weights` DISABLE KEYS */;
-INSERT INTO `delivery_route_weights` VALUES (1,1,5,50,120,'2022-01-23 13:11:11',NULL,'2022-01-11 20:26:35'),(2,1,51,100,250,NULL,NULL,'2022-01-11 20:27:52'),(3,7,10,30,100,NULL,NULL,'2022-01-12 10:17:51'),(4,7,35,80,200,NULL,NULL,'2022-01-12 10:18:22'),(5,7,90,250,450,NULL,NULL,'2022-01-12 10:21:10'),(6,4,1,20,50,NULL,NULL,'2022-01-12 10:21:54'),(7,4,21,45,150,NULL,NULL,'2022-01-12 10:22:06'),(8,7,2,9,50,NULL,NULL,'2022-01-12 10:28:33'),(9,8,1,10,50,NULL,NULL,'2022-01-12 10:32:38'),(10,9,4,10,80,NULL,NULL,'2022-01-12 10:34:05'),(11,9,5,20,150,NULL,NULL,'2022-01-12 10:35:11'),(12,9,25,60,300,NULL,NULL,'2022-01-12 10:35:25'),(13,10,5,20,100,NULL,NULL,'2022-01-12 10:39:45'),(14,11,5,20,200,'2022-01-19 17:03:07',NULL,'2022-01-19 17:03:07'),(15,13,5,20,200,'2022-01-23 13:09:18',NULL,'2022-01-23 13:09:18');
+INSERT INTO `delivery_route_weights` VALUES (1,1,5,50,120,'2022-01-23 13:11:11',NULL,'2022-01-11 20:26:35'),(2,1,51,100,250,NULL,NULL,'2022-01-11 20:27:52'),(3,7,10,30,100,NULL,NULL,'2022-01-12 10:17:51'),(4,7,35,80,200,NULL,NULL,'2022-01-12 10:18:22'),(5,7,90,250,450,NULL,NULL,'2022-01-12 10:21:10'),(6,4,1,20,50,NULL,NULL,'2022-01-12 10:21:54'),(7,4,21,45,150,NULL,NULL,'2022-01-12 10:22:06'),(8,7,2,9,50,NULL,NULL,'2022-01-12 10:28:33'),(9,8,1,10,50,NULL,NULL,'2022-01-12 10:32:38'),(10,9,4,10,80,NULL,NULL,'2022-01-12 10:34:05'),(11,9,5,20,150,NULL,NULL,'2022-01-12 10:35:11'),(12,9,25,60,300,NULL,NULL,'2022-01-12 10:35:25'),(13,10,5,20,100,NULL,NULL,'2022-01-12 10:39:45'),(14,11,5,20,200,'2022-01-19 17:03:07',NULL,'2022-01-19 17:03:07'),(15,13,5,20,200,'2022-01-23 13:09:18','2022-02-19 11:10:55','2022-01-23 13:09:18');
 /*!40000 ALTER TABLE `delivery_route_weights` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -426,7 +454,7 @@ CREATE TABLE `delivery_route_weights_history` (
   PRIMARY KEY (`id`),
   KEY `delivery_route_weight_id` (`delivery_route_weight_id`),
   CONSTRAINT `delivery_route_weights_history_ibfk_1` FOREIGN KEY (`delivery_route_weight_id`) REFERENCES `delivery_route_weights` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -435,7 +463,7 @@ CREATE TABLE `delivery_route_weights_history` (
 
 LOCK TABLES `delivery_route_weights_history` WRITE;
 /*!40000 ALTER TABLE `delivery_route_weights_history` DISABLE KEYS */;
-INSERT INTO `delivery_route_weights_history` VALUES (1,1,5,50,100,'2022-01-18 14:37:19'),(2,1,50,50,100,'2022-01-18 14:37:35'),(3,1,5,50,100,'2022-01-18 22:08:58'),(4,14,5,20,200,'2022-01-19 17:06:03'),(5,14,5,20,200,'2022-01-19 18:11:17'),(6,14,5,20,200,'2022-01-19 17:25:06'),(7,1,5,50,120,'2022-01-23 13:11:11'),(8,14,5,20,200,'2022-01-23 14:12:52'),(9,2,51,100,250,'2022-01-23 13:13:12'),(10,2,51,100,250,'2022-01-23 14:15:41');
+INSERT INTO `delivery_route_weights_history` VALUES (1,1,5,50,100,'2022-01-18 14:37:19'),(2,1,50,50,100,'2022-01-18 14:37:35'),(3,1,5,50,100,'2022-01-18 22:08:58'),(4,14,5,20,200,'2022-01-19 17:06:03'),(5,14,5,20,200,'2022-01-19 18:11:17'),(6,14,5,20,200,'2022-01-19 17:25:06'),(7,1,5,50,120,'2022-01-23 13:11:11'),(8,14,5,20,200,'2022-01-23 14:12:52'),(9,2,51,100,250,'2022-01-23 13:13:12'),(10,2,51,100,250,'2022-01-23 14:15:41'),(11,15,5,20,200,'2022-02-19 11:10:55');
 /*!40000 ALTER TABLE `delivery_route_weights_history` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -473,7 +501,7 @@ CREATE TABLE `delivery_routes` (
 
 LOCK TABLES `delivery_routes` WRITE;
 /*!40000 ALTER TABLE `delivery_routes` DISABLE KEYS */;
-INSERT INTO `delivery_routes` VALUES (1,3,NULL,NULL,'Abia','Aba North',1,NULL,NULL,'2022-01-11 13:41:33'),(2,3,NULL,NULL,'Imo','Owerri-North',1,NULL,NULL,'2022-01-11 23:12:43'),(3,3,NULL,NULL,'Imo','Owerri-West',1,NULL,NULL,'2022-01-11 23:12:54'),(4,3,NULL,NULL,'Imo','Orlu',0,'2022-01-23 12:53:11',NULL,'2022-01-11 23:13:01'),(7,3,3,4,NULL,NULL,NULL,NULL,NULL,'2022-01-12 08:57:07'),(8,1,NULL,NULL,'Imo','Owerri-West',1,NULL,NULL,'2022-01-12 10:32:10'),(9,1,NULL,NULL,'Imo','Orlu',0,NULL,NULL,'2022-01-12 10:33:22'),(10,1,8,9,NULL,NULL,NULL,NULL,NULL,'2022-01-12 10:34:29'),(11,3,NULL,NULL,'Imo','Mbano',0,'2022-01-19 17:02:49','2022-01-23 12:54:35','2022-01-19 17:02:49'),(13,3,NULL,NULL,'Imo','Mbano',1,'2022-01-23 12:50:31',NULL,'2022-01-23 12:50:31'),(14,3,1,2,NULL,NULL,NULL,'2022-01-23 13:02:50',NULL,'2022-01-23 12:59:28');
+INSERT INTO `delivery_routes` VALUES (1,3,NULL,NULL,'Abia','Aba North',1,NULL,NULL,'2022-01-11 13:41:33'),(2,3,NULL,NULL,'Imo','Owerri-North',1,NULL,NULL,'2022-01-11 23:12:43'),(3,3,NULL,NULL,'Imo','Owerri-West',1,NULL,NULL,'2022-01-11 23:12:54'),(4,3,NULL,NULL,'Imo','Orlu',0,'2022-01-23 12:53:11',NULL,'2022-01-11 23:13:01'),(7,3,3,4,NULL,NULL,NULL,NULL,NULL,'2022-01-12 08:57:07'),(8,1,NULL,NULL,'Imo','Owerri-West',1,NULL,NULL,'2022-01-12 10:32:10'),(9,1,NULL,NULL,'Imo','Orlu',0,NULL,NULL,'2022-01-12 10:33:22'),(10,1,8,9,NULL,NULL,NULL,NULL,NULL,'2022-01-12 10:34:29'),(11,3,NULL,NULL,'Imo','Mbano',0,'2022-01-19 17:02:49','2022-01-23 12:54:35','2022-01-19 17:02:49'),(13,3,NULL,NULL,'Imo','Mbano',1,'2022-01-23 12:50:31','2022-02-19 11:10:55','2022-01-23 12:50:31'),(14,3,1,2,NULL,NULL,NULL,'2022-01-23 13:02:50',NULL,'2022-01-23 12:59:28');
 /*!40000 ALTER TABLE `delivery_routes` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -517,7 +545,7 @@ CREATE TABLE `delivery_routes_history` (
   PRIMARY KEY (`id`),
   KEY `delivery_route_id` (`delivery_route_id`),
   CONSTRAINT `delivery_routes_history_ibfk_1` FOREIGN KEY (`delivery_route_id`) REFERENCES `delivery_routes` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -526,7 +554,7 @@ CREATE TABLE `delivery_routes_history` (
 
 LOCK TABLES `delivery_routes_history` WRITE;
 /*!40000 ALTER TABLE `delivery_routes_history` DISABLE KEYS */;
-INSERT INTO `delivery_routes_history` VALUES (1,1,NULL,NULL,'Abia','Aba North',1,'2022-01-18 14:27:46'),(2,1,NULL,NULL,'Abia','Aba Northj',1,'2022-01-18 14:32:32'),(3,4,NULL,NULL,'Imo','Orlu',1,'2022-01-18 22:06:15'),(5,11,NULL,NULL,'Imo','Mbano',0,'2022-01-19 17:06:03'),(6,11,NULL,NULL,'Imo','Mbano',0,'2022-01-19 18:25:00'),(7,11,NULL,NULL,'Imo','Mbano',0,'2022-01-19 17:26:05'),(8,4,NULL,NULL,'Imo','Orlu',0,'2022-01-23 12:53:11'),(9,11,NULL,NULL,'Imo','Mbano',0,'2022-01-23 13:54:27'),(10,11,NULL,NULL,'Imo','Mbano',0,'2022-01-23 12:54:35'),(11,14,1,2,NULL,NULL,NULL,'2022-01-23 13:02:50');
+INSERT INTO `delivery_routes_history` VALUES (1,1,NULL,NULL,'Abia','Aba North',1,'2022-01-18 14:27:46'),(2,1,NULL,NULL,'Abia','Aba Northj',1,'2022-01-18 14:32:32'),(3,4,NULL,NULL,'Imo','Orlu',1,'2022-01-18 22:06:15'),(5,11,NULL,NULL,'Imo','Mbano',0,'2022-01-19 17:06:03'),(6,11,NULL,NULL,'Imo','Mbano',0,'2022-01-19 18:25:00'),(7,11,NULL,NULL,'Imo','Mbano',0,'2022-01-19 17:26:05'),(8,4,NULL,NULL,'Imo','Orlu',0,'2022-01-23 12:53:11'),(9,11,NULL,NULL,'Imo','Mbano',0,'2022-01-23 13:54:27'),(10,11,NULL,NULL,'Imo','Mbano',0,'2022-01-23 12:54:35'),(11,14,1,2,NULL,NULL,NULL,'2022-01-23 13:02:50'),(12,13,NULL,NULL,'Imo','Mbano',1,'2022-02-19 11:10:55');
 /*!40000 ALTER TABLE `delivery_routes_history` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -738,12 +766,11 @@ DROP TABLE IF EXISTS `messages`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `messages` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) NOT NULL,
+  `chat_id` bigint(20) NOT NULL,
   `order_id` bigint(20) DEFAULT NULL,
   `order_item_id` bigint(20) DEFAULT NULL,
   `transaction_id` bigint(20) DEFAULT NULL,
-  `sender_id` bigint(20) DEFAULT NULL,
-  `receiver_id` bigint(20) DEFAULT NULL,
-  `application` enum('receiver','sender') DEFAULT NULL,
   `notification` enum('order_created','order_accepted','order_declined','order_cancelled','transaction_created','transaction_cancelled','transaction_declined','transaction_processing','transaction_failed','transaction_approved','order_item_processing','order_item_transported','order_item_delivered') DEFAULT NULL,
   `content` varchar(250) DEFAULT NULL,
   `delivery_status` enum('sent','delivered') NOT NULL,
@@ -751,13 +778,16 @@ CREATE TABLE `messages` (
   PRIMARY KEY (`id`),
   KEY `order_id` (`order_id`),
   KEY `transaction_id` (`transaction_id`),
-  KEY `sender_id` (`sender_id`),
-  KEY `receiver_id` (`receiver_id`),
+  KEY `sender_id` (`user_id`),
+  KEY `order_item_id` (`order_item_id`),
+  KEY `chat_id` (`chat_id`),
   CONSTRAINT `messages_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`),
   CONSTRAINT `messages_ibfk_2` FOREIGN KEY (`transaction_id`) REFERENCES `transactions` (`id`),
-  CONSTRAINT `messages_ibfk_3` FOREIGN KEY (`sender_id`) REFERENCES `users` (`id`),
-  CONSTRAINT `messages_ibfk_4` FOREIGN KEY (`receiver_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `messages_ibfk_3` FOREIGN KEY (`order_item_id`) REFERENCES `order_items` (`id`),
+  CONSTRAINT `messages_ibfk_4` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `messages_ibfk_5` FOREIGN KEY (`chat_id`) REFERENCES `chats` (`id`),
+  CONSTRAINT `messages_ibfk_6` FOREIGN KEY (`chat_id`) REFERENCES `chats` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -766,6 +796,7 @@ CREATE TABLE `messages` (
 
 LOCK TABLES `messages` WRITE;
 /*!40000 ALTER TABLE `messages` DISABLE KEYS */;
+INSERT INTO `messages` VALUES (1,1,1,NULL,NULL,NULL,NULL,'Admin my man','sent','2022-03-17 16:55:04'),(2,25,1,NULL,NULL,NULL,NULL,'Jasper this is where you die','sent','2022-03-17 16:58:07'),(3,25,2,NULL,NULL,NULL,NULL,'Shoppa hello to you','sent','2022-03-17 16:59:38'),(4,1,1,NULL,NULL,NULL,NULL,'Lol, anything for your boy :)','sent','2022-03-17 18:28:07'),(5,25,1,NULL,NULL,NULL,NULL,'No sir.','sent','2022-03-17 18:31:52'),(6,1,1,NULL,NULL,NULL,NULL,'Lol, anything for your boy :)','sent','2022-03-17 18:41:55');
 /*!40000 ALTER TABLE `messages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1077,6 +1108,37 @@ INSERT INTO `products_history` VALUES (1,7,6,'Vanilla cake pro','It is very swee
 UNLOCK TABLES;
 
 --
+-- Table structure for table `promotions`
+--
+
+DROP TABLE IF EXISTS `promotions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `promotions` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `link` varchar(255) NOT NULL,
+  `link_type` varchar(255) NOT NULL,
+  `amount` double NOT NULL,
+  `photo` varchar(255) DEFAULT NULL,
+  `duration` int(11) NOT NULL,
+  `deleted_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT (now()),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `promotions`
+--
+
+LOCK TABLES `promotions` WRITE;
+/*!40000 ALTER TABLE `promotions` DISABLE KEYS */;
+INSERT INTO `promotions` VALUES (1,'Fix farm ltd','https://facebook.com','facebook',20000,'promotion-1.jpg',30,NULL,'2022-03-14 00:00:08'),(2,'Fix farm ltd','https://facebook.com','facebook',20000,NULL,1,NULL,'2022-03-12 09:44:07'),(3,'Fix farm ltd','https://facebook.com','facebook',20000,NULL,30,'2022-03-14 10:16:37','2022-03-14 10:10:14'),(4,'MoVa logistics','https://web.whatsapp.com','whatsapp',2000,'promotion-4.jpg',5,NULL,'2022-03-14 10:52:57');
+/*!40000 ALTER TABLE `promotions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `reviews`
 --
 
@@ -1289,9 +1351,8 @@ DROP TABLE IF EXISTS `transactions`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `transactions` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `user_id` bigint(20) DEFAULT NULL,
+  `user_id` bigint(20) NOT NULL,
   `order_id` bigint(20) DEFAULT NULL,
-  `application` tinyint(1) NOT NULL,
   `reference` varchar(50) NOT NULL,
   `status` enum('approved','pending','failed','cancelled','processing','declined') NOT NULL,
   `type` enum('payment','withdrawal','deposit','refund','income','charge') NOT NULL,
@@ -1302,7 +1363,7 @@ CREATE TABLE `transactions` (
   KEY `order_id` (`order_id`),
   CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   CONSTRAINT `transactions_ibfk_4` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1311,7 +1372,7 @@ CREATE TABLE `transactions` (
 
 LOCK TABLES `transactions` WRITE;
 /*!40000 ALTER TABLE `transactions` DISABLE KEYS */;
-INSERT INTO `transactions` VALUES (1,1,1,0,'DNTX_1HQUU74ZX95NI1U','approved','payment',-12660,'2022-01-12 21:55:18'),(2,7,1,0,'DNTX_FTHLP4K57IN96RS','approved','income',12560,'2022-01-12 21:58:52'),(3,7,1,0,'DNTX_Y5EF2JIILL8RUSI','approved','charge',-1256,'2022-01-12 21:58:52'),(4,NULL,1,1,'DNTX_XJHN0XKG0FYGLME','approved','income',1256,'2022-01-12 21:58:52'),(5,11,1,0,'DNTX_FE4JZJQQXKHMB22','approved','income',100,'2022-01-12 21:58:52'),(6,11,1,0,'DNTX_NTQCDJ06VYU6ZRV','approved','charge',-5,'2022-01-12 21:58:52'),(7,NULL,1,1,'DNTX_J7HQ8AE2RP0X3H5','approved','income',5,'2022-01-12 21:58:52'),(8,1,2,0,'DNTX_2LMXPMAWL76GVUV','approved','payment',-24000,'2022-01-12 23:01:33'),(9,1,2,0,'DNTX_0PIU4BFB8Y613ZA','declined','refund',24000,'2022-01-12 23:14:34'),(11,7,NULL,0,'DNTX_HVXC7TK1AUL19RB','declined','withdrawal',-5000,'2022-01-12 23:42:16'),(12,1,2,0,'DNTX_L2VESWTD2OCMOI3','failed','refund',24000,'2022-01-13 09:20:13'),(13,1,3,0,'DNTX_73PYKOSF52E9L9F','pending','payment',-16950,'2022-01-23 16:21:45'),(14,1,3,0,'DNTX_W6G03OQEPGRPIQZ','pending','refund',16950,'2022-01-23 16:32:05'),(15,7,NULL,0,'DNTX_ANOZ9J5R6TUCQSL','declined','withdrawal',-5000,'2022-01-23 16:39:27');
+INSERT INTO `transactions` VALUES (1,1,1,'DNTX_1HQUU74ZX95NI1U','approved','payment',-12660,'2022-01-12 21:55:18'),(2,7,1,'DNTX_FTHLP4K57IN96RS','approved','income',12560,'2022-01-12 21:58:52'),(3,7,1,'DNTX_Y5EF2JIILL8RUSI','approved','charge',-1256,'2022-01-12 21:58:52'),(4,25,1,'DNTX_XJHN0XKG0FYGLME','approved','income',1256,'2022-01-12 21:58:52'),(5,11,1,'DNTX_FE4JZJQQXKHMB22','approved','income',100,'2022-01-12 21:58:52'),(6,11,1,'DNTX_NTQCDJ06VYU6ZRV','approved','charge',-5,'2022-01-12 21:58:52'),(7,25,1,'DNTX_J7HQ8AE2RP0X3H5','approved','income',5,'2022-01-12 21:58:52'),(8,1,2,'DNTX_2LMXPMAWL76GVUV','approved','payment',-24000,'2022-01-12 23:01:33'),(9,1,2,'DNTX_0PIU4BFB8Y613ZA','declined','refund',24000,'2022-01-12 23:14:34'),(11,7,NULL,'DNTX_HVXC7TK1AUL19RB','declined','withdrawal',-5000,'2022-01-12 23:42:16'),(12,1,2,'DNTX_L2VESWTD2OCMOI3','failed','refund',24000,'2022-01-13 09:20:13'),(13,1,3,'DNTX_73PYKOSF52E9L9F','pending','payment',-16950,'2022-01-23 16:21:45'),(14,1,3,'DNTX_W6G03OQEPGRPIQZ','pending','refund',16950,'2022-01-23 16:32:05'),(15,7,NULL,'DNTX_ANOZ9J5R6TUCQSL','declined','withdrawal',-5000,'2022-01-23 16:39:27'),(16,7,NULL,'DNTX_NGVYSLKXWZZ2R7X','pending','withdrawal',-1000,'2022-02-19 15:57:41'),(17,7,NULL,'DNTX_I5J1KW5AUFT19ZP','pending','withdrawal',-1000,'2022-02-19 15:59:20'),(18,7,NULL,'DNTX_GD09W3EH43SUGIN','pending','withdrawal',-1000,'2022-02-19 16:01:47');
 /*!40000 ALTER TABLE `transactions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1324,7 +1385,7 @@ DROP TABLE IF EXISTS `users`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `type` enum('customer','store','delivery_firm') NOT NULL,
+  `type` enum('application','customer','store','delivery_firm') NOT NULL,
   `name` varchar(50) NOT NULL,
   `email` varchar(50) NOT NULL,
   `phone_number` varchar(50) NOT NULL,
@@ -1333,7 +1394,7 @@ CREATE TABLE `users` (
   `updated_at` datetime DEFAULT NULL,
   `created_at` datetime DEFAULT (now()),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1342,7 +1403,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'customer','Jasper Anelechukwu','jasperanels@gmail.com','08048490901','customer-1.png','active','2022-02-10 16:10:42','2021-12-23 10:17:39'),(2,'customer','Richard Chukwu','richchuks@gmail.com','09039283744',NULL,'active',NULL,'2021-12-23 12:08:02'),(3,'customer','Fred Cake','cakefred@yahoo.com','08038476211',NULL,'active',NULL,'2021-12-25 15:31:20'),(4,'customer','White Black','wb@yahoo.com','07083745655',NULL,'active',NULL,'2021-12-25 15:34:59'),(5,'store','Yam zone','yamzone@gmail.com','09183571123',NULL,'activating',NULL,'2021-12-25 21:42:25'),(6,'store','Get-well','wellhealth@gmail.com','08187347666',NULL,'activating',NULL,'2021-12-25 21:51:35'),(7,'store','Shoppa','shoppax@gmail.com','08084837423','store-7.jpeg','active','2022-01-22 16:11:05','2021-12-25 22:13:26'),(8,'store','HappyBite','jasperanels@gmail.com','07094823744',NULL,'activating','2022-01-22 16:22:39','2021-12-26 12:17:21'),(9,'delivery_firm','Freeway logistics','freeway@gmail.com','09023839393',NULL,'active',NULL,'2021-12-27 23:54:52'),(10,'delivery_firm','Fast track delivery','fasttrack@gmail.com','09023839390',NULL,'activating','2022-01-23 11:52:07','2021-12-27 23:56:01'),(11,'delivery_firm','All round logistics','allroundlogistics@gmail.com','08039457321','delivery-firm-3.jpg','active','2022-01-23 11:52:17','2021-12-27 23:57:18'),(14,'customer','Husk Blue','huskb@ygmail.com','09093838722',NULL,'active',NULL,'2021-12-29 20:46:07'),(15,'store','Gray Foods','grayfoods@gmail.com','09048473888',NULL,'activating',NULL,'2021-12-29 20:55:47'),(16,'customer','Bullet Gun','bulletgun@ygmail.com','09093838790',NULL,'active','2022-01-20 17:49:57','2022-01-20 17:49:57'),(17,'customer','Round Ball','roundball@ygmail.com','09093838721',NULL,'active','2022-01-21 18:12:32','2022-01-21 18:12:33'),(20,'store','Black health','blackhealth@gmail.com','09048473881',NULL,'activating','2022-01-22 15:59:03','2022-01-22 15:59:03'),(21,'delivery_firm','Real roads','realroadsdelivery@gmail.com','09023839311',NULL,'activating','2022-01-22 18:00:27','2022-01-22 18:00:27');
+INSERT INTO `users` VALUES (1,'customer','Jasper Anelechukwu','jasperanels@gmail.com','08048490901','customer-1.png','active','2022-02-10 16:10:42','2021-12-23 10:17:39'),(2,'customer','Richard Chukwu','richchuks@gmail.com','09039283744',NULL,'active',NULL,'2021-12-23 12:08:02'),(3,'customer','Fred Cake','cakefred@yahoo.com','08038476211',NULL,'active',NULL,'2021-12-25 15:31:20'),(4,'customer','White Black','wb@yahoo.com','07083745655',NULL,'active',NULL,'2021-12-25 15:34:59'),(5,'store','Yam zone','yamzone@gmail.com','09183571123',NULL,'activating',NULL,'2021-12-25 21:42:25'),(6,'store','Get-well','wellhealth@gmail.com','08187347666',NULL,'activating',NULL,'2021-12-25 21:51:35'),(7,'store','Shoppa','shoppax@gmail.com','08084837423','store-7.jpeg','active','2022-01-22 16:11:05','2021-12-25 22:13:26'),(8,'store','HappyBite','jasperanels@gmail.com','07094823744',NULL,'activating','2022-01-22 16:22:39','2021-12-26 12:17:21'),(9,'delivery_firm','Freeway logistics','freeway@gmail.com','09023839393',NULL,'active',NULL,'2021-12-27 23:54:52'),(10,'delivery_firm','Fast track delivery','fasttrack@gmail.com','09023839390',NULL,'activating','2022-01-23 11:52:07','2021-12-27 23:56:01'),(11,'delivery_firm','All round logistics','allroundlogistics@gmail.com','08039457321','delivery-firm-3.jpg','active','2022-01-23 11:52:17','2021-12-27 23:57:18'),(14,'customer','Husk Blue','huskb@ygmail.com','09093838722',NULL,'active',NULL,'2021-12-29 20:46:07'),(15,'store','Gray Foods','grayfoods@gmail.com','09048473888',NULL,'activating',NULL,'2021-12-29 20:55:47'),(16,'customer','Bullet Gun','bulletgun@ygmail.com','09093838790',NULL,'active','2022-01-20 17:49:57','2022-01-20 17:49:57'),(17,'customer','Round Ball','roundball@ygmail.com','09093838721',NULL,'active','2022-01-21 18:12:32','2022-01-21 18:12:33'),(20,'store','Black health','blackhealth@gmail.com','09048473881',NULL,'activating','2022-01-22 15:59:03','2022-01-22 15:59:03'),(21,'delivery_firm','Real roads','realroadsdelivery@gmail.com','09023839311',NULL,'activating','2022-01-22 18:00:27','2022-01-22 18:00:27'),(25,'application','DailyNeeds','dailyneeds@gmail.com','09030578322',NULL,'active',NULL,'2022-03-17 13:11:56');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -1402,6 +1463,34 @@ INSERT INTO `users_history` VALUES (1,15,'store','Gray Foods','grayfoods@gmail.c
 UNLOCK TABLES;
 
 --
+-- Table structure for table `websocket_connections`
+--
+
+DROP TABLE IF EXISTS `websocket_connections`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `websocket_connections` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) NOT NULL,
+  `socket_id` varchar(255) NOT NULL,
+  `created_at` datetime DEFAULT (now()),
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `websocket_connections_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=127 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `websocket_connections`
+--
+
+LOCK TABLES `websocket_connections` WRITE;
+/*!40000 ALTER TABLE `websocket_connections` DISABLE KEYS */;
+INSERT INTO `websocket_connections` VALUES (1,7,'b8xbwZBbq_sI7Gd6AAAB','2022-03-17 11:43:30'),(2,1,'6h0IPtwDpXy7FtV_AAAD','2022-03-17 11:43:33'),(3,7,'qV8bUvLG00BSB0rSAAAB','2022-03-17 11:44:45'),(4,1,'hmSLnqNkzL_9io3-AAAD','2022-03-17 11:45:17'),(5,1,'-a0U7i5h1m7hDn9PAAAB','2022-03-17 11:51:28'),(6,7,'Wltm0EV9CGR2kZhKAAAD','2022-03-17 11:51:34'),(8,7,'xc7XopjVCJ2G3U4lAAAD','2022-03-17 12:08:13'),(9,1,'e7N1qOvLtji2_XbxAAAF','2022-03-17 12:08:31'),(10,25,'gscQUMDMRmV85wcFAAAB','2022-03-17 13:07:15'),(11,1,'WoNwwPFtgn1InK5cAAAD','2022-03-17 13:08:34'),(12,25,'apZiQlVz89_-nlw0AAAB','2022-03-17 13:18:35'),(13,1,'Uj6hP3nmcrREFLSpAAAD','2022-03-17 13:18:37'),(14,25,'w_C8gRxYwqLpbNlMAAAB','2022-03-17 13:19:31'),(15,1,'t5YwPB5vxRBSoW-SAAAD','2022-03-17 13:19:33'),(16,1,'QkIQg2aj0dQkRGVjAAAB','2022-03-17 13:22:36'),(17,25,'IjxbEMdHtu4qcU-NAAAD','2022-03-17 13:22:38'),(18,1,'diOhVGZ6EVV2GKd8AAAB','2022-03-17 13:26:15'),(19,1,'rq1SVb9viSiL4lGNAAAB','2022-03-17 13:28:39'),(20,25,'vep2sBxqOwKyE3dPAAAD','2022-03-17 13:28:42'),(21,25,'yFeWRjuVmaYNX1y1AAAB','2022-03-17 13:31:06'),(22,1,'NpVA2lWYjSdUClHGAAAD','2022-03-17 13:31:08'),(23,25,'qphEWtEyUjqzsuHKAAAB','2022-03-17 13:32:44'),(24,1,'gKZjB1MDvUJFiihEAAAD','2022-03-17 13:32:47'),(25,25,'n9vDw5vjI3CJCaC0AAAB','2022-03-17 13:40:43'),(27,25,'qKO28Fg6DBUhr6dYAAAB','2022-03-17 13:55:18'),(28,25,'hbMx56VRrFMLzkmkAAAB','2022-03-17 13:58:00'),(29,25,'uGglWne4mTln5I9tAAAB','2022-03-17 14:00:52'),(30,1,'5Lx_QimTFeVHD6lWAAAD','2022-03-17 14:02:12'),(31,25,'UiJ6a0N4z7jBj2B0AAAB','2022-03-17 14:14:05'),(32,25,'wIgj5JPg_mezo21gAAAB','2022-03-17 14:15:11'),(33,25,'6S-dDx-8R23qVVlAAAAB','2022-03-17 14:16:30'),(34,25,'Fn-i2vkX7gSUPTulAAAB','2022-03-17 14:22:12'),(35,25,'zfgCifaTu7IqI_GnAAAB','2022-03-17 14:22:35'),(36,25,'h3m6sGHK-z5p3yrhAAAB','2022-03-17 14:23:01'),(37,25,'ntTUYkzFz-AwfjLrAAAB','2022-03-17 14:24:00'),(38,25,'oOvAoqajdI7FRtSZAAAB','2022-03-17 14:26:11'),(39,25,'Ulalr_w4OXsP_ahIAAAB','2022-03-17 14:27:33'),(40,25,'26LimalHMjgj7I49AAAB','2022-03-17 14:30:11'),(41,25,'a-pFJ9TJqvhLaMtHAAAB','2022-03-17 14:31:11'),(42,25,'g3cXrfq9zD2ZbSUaAAAB','2022-03-17 14:32:34'),(43,25,'roG22bNn0cvwf3KrAAAB','2022-03-17 14:33:33'),(44,25,'eY4VwjCLmqPHe6ISAAAB','2022-03-17 14:35:55'),(45,25,'lCoIjb7VwU6gwYBVAAAB','2022-03-17 14:37:00'),(46,25,'6A1kLiJQorwVGRoqAAAB','2022-03-17 14:38:19'),(47,25,'F_Hc00ODHHK5S--wAAAB','2022-03-17 14:43:57'),(48,25,'aXMV6azmBpH4SeSfAAAB','2022-03-17 14:44:26'),(49,25,'0Y24MU50GLveOAy1AAAB','2022-03-17 14:48:02'),(50,25,'BYWiYdCe9Si6t8kcAAAB','2022-03-17 14:49:17'),(51,25,'nnLJ-wLjQl6uC7ztAAAB','2022-03-17 14:50:21'),(52,25,'s6MEdq4GTXaXhEbdAAAB','2022-03-17 15:06:36'),(53,25,'lUck6Eryu5tgjUn_AAAB','2022-03-17 15:07:50'),(54,25,'noeXDvIgBvI4JG67AAAB','2022-03-17 15:09:29'),(55,25,'9KLozBf7vU74Zf41AAAB','2022-03-17 15:09:58'),(56,25,'0SQpECrA9OF-5c6tAAAB','2022-03-17 15:12:11'),(57,25,'x_IyX8uKzfwgTOjRAAAB','2022-03-17 15:13:08'),(58,25,'HnIHwFh7edjIYPJXAAAB','2022-03-17 15:14:14'),(59,25,'mFJib4E3cEdXWXMrAAAB','2022-03-17 15:16:46'),(60,25,'tJBogzcs_FJu4j00AAAB','2022-03-17 15:18:03'),(61,25,'5xywB9C709tnngOeAAAB','2022-03-17 15:18:16'),(62,25,'kCml2ZBpXHNprzbFAAAB','2022-03-17 15:19:10'),(63,25,'4bCZ8ZfFUybfvuFJAAAB','2022-03-17 15:27:38'),(64,25,'2L42xkc10j_waQUzAAAB','2022-03-17 15:28:32'),(65,25,'TjbHnyqLNCrP7szaAAAB','2022-03-17 15:32:38'),(66,25,'zrwoU7xNzOIW7objAAAB','2022-03-17 15:38:47'),(67,25,'8JPLBHg4NaXB4jUvAAAB','2022-03-17 15:41:58'),(68,7,'eiEYpRdpq-fEokNUAAAD','2022-03-17 15:43:00'),(69,7,'QQE32BPRrDwLOv_-AAAB','2022-03-17 15:46:11'),(70,25,'fKJztJ3DNUR4C-woAAAD','2022-03-17 15:47:03'),(71,25,'10idcoanZ-HZ6PUAAAAB','2022-03-17 15:47:35'),(72,25,'YmaXUmZMl5QZ_EkOAAAB','2022-03-17 15:50:18'),(73,25,'e4uNr81PjIa4eZFyAAAB','2022-03-17 16:00:32'),(74,25,'CkqrQHP6tRiZFZtzAAAB','2022-03-17 16:01:38'),(75,25,'a6RvvNUlC8k2beAiAAAB','2022-03-17 16:03:36'),(76,25,'JB2ASIIYCorxp1RJAAAB','2022-03-17 16:05:22'),(77,25,'OhlHoWv9bkM4ZFbAAAAB','2022-03-17 16:06:38'),(78,25,'z6LT22-LZCcS4ScQAAAB','2022-03-17 16:07:12'),(79,25,'AbkM0tnsUSR-hsT9AAAB','2022-03-17 16:08:42'),(80,25,'555TacC3_s9AsgGCAAAB','2022-03-17 16:40:16'),(81,1,'1KsR_aAJ-2hiuu2_AAAB','2022-03-17 16:55:04'),(82,25,'JbhxHBVUrQAn4VgeAAAB','2022-03-17 16:57:46'),(83,25,'5uG4M45ZDjOMgDqoAAAB','2022-03-17 17:01:31'),(84,25,'VP5i3rRuNKWbtmvRAAAB','2022-03-17 17:03:15'),(85,25,'2onwnkin5x-yJ10MAAAB','2022-03-17 17:04:00'),(86,25,'A9q4AsIDnZzzczFuAAAB','2022-03-17 17:04:52'),(87,25,'Npz-L0id3vUustwyAAAB','2022-03-17 17:07:17'),(88,25,'54daVMqSJmoVC2xjAAAB','2022-03-17 17:09:22'),(89,25,'TEwMmvyNEAgwLk_vAAAB','2022-03-17 17:10:00'),(90,25,'19NJ1TJnW7NPLmOBAAAB','2022-03-17 17:12:01'),(91,25,'fflLB7TnCvsgZr3HAAAB','2022-03-17 17:12:33'),(92,25,'EILdSfKMM-9VxVqCAAAB','2022-03-17 17:14:46'),(93,25,'8oH082DI3OlC0v3HAAAB','2022-03-17 17:17:10'),(94,25,'jJMA5pP7rL1_SPITAAAB','2022-03-17 17:18:25'),(95,25,'nqKbGLHc0k2-QlciAAAB','2022-03-17 17:19:00'),(96,25,'J50Xy9b8_o88fJTIAAAB','2022-03-17 17:23:12'),(97,25,'aymOQTOcwOK2dAGiAAAB','2022-03-17 17:30:34'),(98,25,'kXOa8opIyaEPFb8zAAAB','2022-03-17 17:41:19'),(99,25,'yzImCv76W1rjNXxXAAAB','2022-03-17 17:45:23'),(100,25,'hhCpDcO7NrE_FzsBAAAB','2022-03-17 17:52:13'),(101,25,'hkl_V1ZNOdyg6DpMAAAB','2022-03-17 17:53:01'),(102,25,'_fVzNerBlJ_WbmnoAAAB','2022-03-17 17:54:18'),(103,25,'CTME2FYX6lp5S5doAAAB','2022-03-17 17:59:16'),(104,25,'Ceq8BylmmojodmQ2AAAB','2022-03-17 18:00:15'),(105,25,'HcK5V7ZkVh3rY4ssAAAB','2022-03-17 18:01:37'),(106,25,'tWBy1qZWfK9twDc-AAAB','2022-03-17 18:02:48'),(107,25,'InuUY7wj0wNWGXcrAAAB','2022-03-17 18:03:57'),(108,25,'LGDd0VqjKbVlMsfFAAAB','2022-03-17 18:07:02'),(109,25,'Es8zKSlk8lK1vUlsAAAB','2022-03-17 18:09:15'),(110,25,'taIkJ8aKvFZ5Yh-9AAAB','2022-03-17 18:10:14'),(111,25,'lYGZAelbchVozZYKAAAB','2022-03-17 18:16:34'),(112,25,'PF0KoQFigrsKDId_AAAB','2022-03-17 18:17:03'),(113,25,'cZsegR6dSMzBDNG6AAAB','2022-03-17 18:17:38'),(114,25,'9QXjsbKEF4p2ADUlAAAB','2022-03-17 18:18:03'),(115,25,'P443x4FosyDE8mDtAAAB','2022-03-17 18:18:44'),(116,25,'z8kXvC02Q3D4k2q0AAAB','2022-03-17 18:19:24'),(117,25,'Iy4_o7w7wp23fl7kAAAB','2022-03-17 18:19:40'),(118,25,'wOmPughVN5x2idUpAAAB','2022-03-17 18:20:13'),(119,25,'kVMvTEs2h2I-IPMyAAAB','2022-03-17 18:20:43'),(120,25,'i7qQYKZh7qdSYJNEAAAB','2022-03-17 18:21:00'),(121,25,'SLe-vGImI2wjaAzcAAAB','2022-03-17 18:22:43'),(122,25,'AJWeZNVu1G-sSpiQAAAB','2022-03-17 18:23:59'),(123,1,'fUW7qzohrn-KEs1rAAAB','2022-03-17 18:27:50'),(124,25,'yKxFq478Zf3RAFWwAAAD','2022-03-17 18:27:56'),(125,25,'zltybefEx8iGs1cCAAAB','2022-03-17 18:31:52'),(126,1,'VeUNyN4GI3A1K-n-AAAB','2022-03-17 18:41:55');
+/*!40000 ALTER TABLE `websocket_connections` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `withdrawal_accounts`
 --
 
@@ -1450,7 +1539,7 @@ CREATE TABLE `working_hours` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `working_hours_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1459,7 +1548,7 @@ CREATE TABLE `working_hours` (
 
 LOCK TABLES `working_hours` WRITE;
 /*!40000 ALTER TABLE `working_hours` DISABLE KEYS */;
-INSERT INTO `working_hours` VALUES (1,7,'monday','08:00:00','18:00:00','2021-12-26 22:57:23'),(8,7,'tuesday','08:00:00','18:00:00','2021-12-27 14:11:24'),(14,9,'monday','07:00:00','22:00:00','2022-01-06 14:11:52'),(15,9,'wednesday','07:00:00','22:00:00','2022-01-06 14:11:52'),(16,9,'saturday','07:00:00','22:00:00','2022-01-06 14:11:52'),(17,7,'wednesday','08:00:00','15:00:00','2022-01-22 16:18:20'),(18,11,'monday','07:00:00','22:00:00','2022-01-23 11:39:51'),(19,11,'wednesday','07:00:00','22:00:00','2022-01-23 11:39:51'),(20,11,'saturday','07:00:00','22:00:00','2022-01-23 11:39:51');
+INSERT INTO `working_hours` VALUES (1,7,'monday','08:00:00','20:00:00','2021-12-26 22:57:23'),(8,7,'tuesday','08:00:00','20:00:00','2021-12-27 14:11:24'),(14,9,'monday','07:00:00','22:00:00','2022-01-06 14:11:52'),(15,9,'wednesday','07:00:00','22:00:00','2022-01-06 14:11:52'),(16,9,'saturday','07:00:00','22:00:00','2022-01-06 14:11:52'),(18,11,'monday','07:00:00','22:00:00','2022-01-23 11:39:51'),(19,11,'wednesday','07:00:00','22:00:00','2022-01-23 11:39:51'),(20,11,'saturday','07:00:00','22:00:00','2022-01-23 11:39:51'),(21,7,'wednesday','08:00:00','20:00:00','2022-02-19 11:03:46'),(22,7,'saturday','08:00:00','12:00:00','2022-02-19 11:03:46');
 /*!40000 ALTER TABLE `working_hours` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -1472,4 +1561,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-02-10 19:30:27
+-- Dump completed on 2022-03-17 19:57:06

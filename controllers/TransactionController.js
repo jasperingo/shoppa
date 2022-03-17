@@ -257,7 +257,7 @@ module.exports = class TransactionController {
 
       const { pager } = req.data;
 
-      const { count, rows } = await TransactionRepository.getListByAdministrator(pager.page_offset, pager.page_limit);
+      const { count, rows } = await TransactionRepository.getListByUser(req.auth.userId, pager.page_offset, pager.page_limit);
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
@@ -274,7 +274,7 @@ module.exports = class TransactionController {
     
     try {
 
-      const balance = await TransactionRepository.getBalanceByAdministrator();
+      const balance = await TransactionRepository.getBalance(req.auth.userId);
 
       const response = new Response(Response.SUCCESS, req.__('_fetched._transaction'), { balance });
 

@@ -143,25 +143,6 @@ module.exports = class StoreController {
       next(new InternalServerException(error));
     }
   }
-
-  async updateStatus(req, res, next) {
-    
-    try {
-
-      await StoreRepository.updateStatus(req.data.store, req.body.status);
-      
-      const store = await StoreRepository.get(req.data.store.id);
-
-      store.review_summary = await ReviewRepository.getSummaryForStore(store);
-
-      const response = new Response(Response.SUCCESS, req.__('_updated._status'), store);
-
-      res.status(StatusCodes.OK).send(response);
-
-    } catch (error) {
-      next(new InternalServerException(error));
-    }
-  }
   
   async get(req, res, next) {
 

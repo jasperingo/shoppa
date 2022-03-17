@@ -69,6 +69,10 @@ Administrator.init({
     type: DataTypes.DATE
   },
 
+  application: {
+    type: DataTypes.VIRTUAL,
+  },
+
   href: {
     type: DataTypes.VIRTUAL,
     get() {

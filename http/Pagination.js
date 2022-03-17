@@ -1,6 +1,8 @@
 
 module.exports = class Pagination {
 
+  static LIMIT = 10;
+  
   req;
   
   previous;

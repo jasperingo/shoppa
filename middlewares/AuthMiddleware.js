@@ -5,7 +5,12 @@ module.exports = async (req, res, next)=> {
 
   try {
     
-    const header = req.get('Authorization');
+    let header;
+    
+    if (req.get) 
+      header = req.get('Authorization');
+    else if (req.headers.authorization) 
+      header = req.headers.authorization;
 
     if (!header) throw Error('No authorization header');
 
@@ -18,7 +23,10 @@ module.exports = async (req, res, next)=> {
     next();
 
   } catch (error) {
-    next(new UnauthorizedException(error));
+    if (req.get)
+      next(new UnauthorizedException(error));
+    else
+      next(error);
   }
 };
 

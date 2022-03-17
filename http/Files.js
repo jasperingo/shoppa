@@ -3,12 +3,14 @@
 module.exports = {
 
   USER_PHOTO_PATHS: {
+    application: 'customer/',
     customer: 'customer/',
     store: 'store/',
     delivery_firm: 'delivery-firm/'
   },
   
   USER_DEFAULT_PHOTOS: {
+    application: 'default.jpg',
     customer: 'default.jpg',
     store: 'default.jpg',
     delivery_firm: 'default.jpg'

@@ -1,10 +1,11 @@
+const Pagination = require("../http/Pagination");
 
 
 module.exports = (req, res, next) => {
 
   const page = req.query.page == undefined ? 1 : parseInt(''+req.query.page.replace(/[^0-9]/, ''));
 
-  const page_limit = req.query.page_limit == undefined ? 10 : parseInt(''+req.query.page_limit.replace(/[^0-9]/, ''));
+  const page_limit = req.query.page_limit == undefined ? Pagination.LIMIT : parseInt(''+req.query.page_limit.replace(/[^0-9]/, ''));
 
   let page_offset;
   

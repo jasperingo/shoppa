@@ -5,6 +5,8 @@ const sequelize = require('../repository/DB');
 
 class User extends Model {
 
+  static TYPE_APPLICATION = 'application';
+
   static TYPE_CUSTOMER = 'customer';
 
   static TYPE_STORE = 'store';
