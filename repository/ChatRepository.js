@@ -65,7 +65,8 @@ module.exports = {
           {
             model: Message,
             where: {
-              created_at: { [Op.lt]: date }
+              created_at: { [Op.lt]: date },
+              [Op.and]: [sequelize.where(sequelize.col('messages.id'), '=', sequelize.col('chat.last_message_id'))]
             },
           },
           {
@@ -83,16 +84,6 @@ module.exports = {
         limit,
         transaction
       });
-
-      for (const chat of chats) {
-        const message = await Message.findOne({
-          where: { chat_id: chat.id },
-          order: [['created_at', 'DESC']],
-          transaction
-        });
-
-        chat.setDataValue('messages', [message])
-      }
 
       return chats;
     });

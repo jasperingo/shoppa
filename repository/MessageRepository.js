@@ -89,10 +89,18 @@ module.exports = {
         delivery_status: Message.DELIVERY_STATUS_SENT
       }, { transaction });
 
+      await Chat.update(
+        { last_message_id: message.id }, 
+        { 
+          where: { id: chat.id },
+          transaction 
+        }
+      );
+
       return { chat, message };
     });
   },
-
+  
   updateDeliveryStatus(userId, senderId) {
     return sequelize.transaction(async (transaction)=> {
 

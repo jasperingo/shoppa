@@ -8,7 +8,8 @@ module.exports = class MessageController {
 
   getTimeOffset(lastDate) {
     const date = new Date(lastDate);
-    console.log(date);
+    // date.setHours(date.getHours()+1);
+    // console.log(date);
     return (date.getFullYear() < new Date().getFullYear()) || isNaN(date.getTime()) ? new Date() : date.toISOString();
   }
 

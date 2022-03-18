@@ -14,6 +14,10 @@ Chat.init({
     autoIncrement: true
   },
 
+  last_message_id: {
+    type: DataTypes.BIGINT
+  },
+
   created_at: {
     type: DataTypes.DATE
   }
