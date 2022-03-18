@@ -32,35 +32,47 @@ module.exports = {
     return count?.messages?.[0]?.getDataValue('count') ?? 0;
   },
 
-  getListByChat(chat_id, lastDate, limit) {
-    return Message.findAll({
-      where: { 
-        chat_id,
-        created_at: { [Op.lt]: lastDate }
+  getChat(one, two, transaction) {
+    return Chat.findOne({ 
+      where: {
+        [Op.or]: [
+          { 
+            member_one_id: one, 
+            member_two_id: two 
+          },
+          { 
+            member_one_id: two, 
+            member_two_id: one 
+          }
+        ]
       },
-      order: [['created_at', 'DESC']],
-      limit
+      transaction
+    });
+  },
+
+  getListByMembers(one, two, lastDate, limit) {
+    return sequelize.transaction(async (transaction)=> {
+      
+      const chat = await this.getChat(one, two, transaction);
+
+      if (chat === null) return [];
+
+      return Message.findAll({
+        where: { 
+          chat_id: chat.id,
+          created_at: { [Op.lt]: lastDate }
+        },
+        order: [['created_at', 'DESC']],
+        limit,
+        transaction
+      });
     });
   },
 
   create({ sender_id, receiver_id, content }) {
     return sequelize.transaction(async (transaction)=> {
 
-      let chat = await Chat.findOne({ 
-        where: {
-          [Op.or]: [
-            { 
-              member_one_id: sender_id, 
-              member_two_id: receiver_id 
-            },
-            { 
-              member_one_id: receiver_id, 
-              member_two_id: sender_id 
-            }
-          ]
-        },
-        transaction
-      });
+      let chat = await this.getChat(sender_id, receiver_id, transaction);
 
       if (chat === null) {
         chat = await Chat.create({
@@ -78,6 +90,24 @@ module.exports = {
       }, { transaction });
 
       return { chat, message };
+    });
+  },
+
+  updateDeliveryStatus(userId, senderId) {
+    return sequelize.transaction(async (transaction)=> {
+
+      const chat = await this.getChat(userId, senderId, transaction);
+
+      if (chat === null) return null;
+
+      return Message.update({delivery_status: Message.DELIVERY_STATUS_DELIVERED}, { 
+        where: {
+          chat_id: chat.id,
+          user_id: { [Op.not]: userId },
+          delivery_status: Message.DELIVERY_STATUS_SENT
+        },
+        transaction
+      });
     });
   }
   

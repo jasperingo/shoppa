@@ -42,7 +42,9 @@ module.exports = class MessageController {
 
       const chat = await ChatRepository.get(result.chat.id);
 
-      const reponse = new Response(Response.SUCCESS, Response.SUCCESS, { message, chat });
+      chat.setDataValue('messages', [message]);
+
+      const reponse = new Response(Response.SUCCESS, Response.SUCCESS, chat);
 
       socket.emit('message_created', reponse);
 
@@ -73,12 +75,24 @@ module.exports = class MessageController {
     }
   }
 
-  async getMessages(socket, chatId, lastDate, pageLimit) {
+  async updateDeliveryStatus(socket, memberId) {
 
     try {
       
-      const messages = await MessageRepository.getListByChat(
-        chatId,
+      await MessageRepository.updateDeliveryStatus(socket.request.auth.userId, memberId);
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async getMessages(socket, memberId, lastDate, pageLimit) {
+
+    try {
+      
+      const messages = await MessageRepository.getListByMembers(
+        memberId,
+        socket.request.auth.userId,
         this.getTimeOffset(lastDate),
         this.getPageLimit(pageLimit)
       );

@@ -41,8 +41,12 @@ socketIO.on('connection', async (socket)=> {
     messageController.getMessageRecipients(socket, lastDate, pageLimit);
   });
 
-  socket.on('messages', (chatId, lastDate, pageLimit)=> {
-    messageController.getMessages(socket, chatId, lastDate, pageLimit);
+  socket.on('messages', (memberId, lastDate, pageLimit)=> {
+    messageController.getMessages(socket, memberId, lastDate, pageLimit);
+  });
+
+  socket.on('messages_update_delivery_status', (memberId)=> {
+    messageController.updateDeliveryStatus(socket, memberId);
   });
 
   socket.on('disconnect', async ()=> {
