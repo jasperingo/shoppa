@@ -4,7 +4,11 @@ const MessageController = require('./controllers/MessageController');
 const AuthMiddleware = require('./middlewares/AuthMiddleware');
 const WebsocketConnectionRepository = require('./repository/WebsocketConnectionRepository');
 
-const socketIO = new Server();
+const socketIO = new Server({
+  cors: {
+    origin: '*'
+  }
+});
 
 const messageController = new MessageController();
 
