@@ -34,23 +34,23 @@ socketIO.on('connection', async (socket)=> {
   });
 
   socket.on('message', (receiverId, content)=> {
-    messageController.sendMessage(socket, receiverId, content);
+    messageController.sendMessage(socket, Number(receiverId), content);
   });
 
   socket.on('message_recipient', (memberId)=> {
-    messageController.getMessageRecipient(socket, memberId);
+    messageController.getMessageRecipient(socket, Number(memberId));
   });
 
   socket.on('message_recipients', (lastDate, pageLimit)=> {
-    messageController.getMessageRecipients(socket, lastDate, pageLimit);
+    messageController.getMessageRecipients(socket, lastDate, Number(pageLimit));
   });
 
   socket.on('messages', (memberId, lastDate, pageLimit)=> {
-    messageController.getMessages(socket, memberId, lastDate, pageLimit);
+    messageController.getMessages(socket, Number(memberId), lastDate, Number(pageLimit));
   });
 
   socket.on('messages_update_delivery_status', (memberId)=> {
-    messageController.updateDeliveryStatus(socket, memberId);
+    messageController.updateDeliveryStatus(socket, Number(memberId));
   });
 
   socket.on('disconnect', async ()=> {

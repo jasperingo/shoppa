@@ -24,31 +24,53 @@ module.exports = {
   },
 
   getByMembers(one, two) {
-    return Chat.findOne({
-      where: {
-        [Op.or]: [
-          { 
-            member_one_id: one, 
-            member_two_id: two 
-          },
-          { 
-            member_one_id: two, 
-            member_two_id: one 
-          }
-        ]
-      },
-      include: [
-        {
-          model: User,
-          attributes: ['id', 'name', 'photo', 'type'],
-          as: 'member_one'
+    return sequelize.transaction(async (transaction)=> {
+      const chat = await Chat.findOne({
+        where: {
+          [Op.or]: [
+            { 
+              member_one_id: one, 
+              member_two_id: two 
+            },
+            { 
+              member_one_id: two, 
+              member_two_id: one 
+            }
+          ]
         },
-        {
-          model: User,
-          attributes: ['id', 'name', 'photo', 'type'],
-          as: 'member_two'
-        }
-      ],
+        include: [
+          {
+            model: User,
+            attributes: ['id', 'name', 'photo', 'type'],
+            as: 'member_one'
+          },
+          {
+            model: User,
+            attributes: ['id', 'name', 'photo', 'type'],
+            as: 'member_two'
+          }
+        ],
+        transaction
+      });
+
+      if (chat === null) {
+
+        const users = await Promise.all([
+          User.findByPk(one, { attributes: ['id', 'name', 'photo', 'type'] }),
+          User.findByPk(two, { attributes: ['id', 'name', 'photo', 'type'] })
+        ]);
+
+        return {
+          id: 0,
+          member_one_id: one,
+          member_two_id: two,
+          member_one: users[0],
+          member_two: users[1]
+        };
+
+      } else {
+        return chat;
+      }
     });
   },
 
