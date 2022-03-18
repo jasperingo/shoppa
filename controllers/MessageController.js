@@ -55,6 +55,24 @@ module.exports = class MessageController {
     }
   }
 
+  async getMessageRecipient(socket, memberId) {
+    
+    try {
+      
+      const recipient = await ChatRepository.getByMembers(
+        socket.request.auth.userId, memberId
+      );
+      
+      const reponse = new Response(Response.SUCCESS, Response.SUCCESS, recipient);
+
+      socket.emit('message_recipient', reponse);
+      
+    } catch(error) {
+      console.log(error);
+      socket.emit('message_recipient', new Response(Response.ERROR, Response.ERROR));
+    }
+  }
+
   async getMessageRecipients(socket, lastDate, pageLimit) {
     
     try {

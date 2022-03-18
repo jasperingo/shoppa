@@ -37,6 +37,10 @@ socketIO.on('connection', async (socket)=> {
     messageController.sendMessage(socket, receiverId, content);
   });
 
+  socket.on('message_recipient', (memberId)=> {
+    messageController.getMessageRecipient(socket, memberId);
+  });
+
   socket.on('message_recipients', (lastDate, pageLimit)=> {
     messageController.getMessageRecipients(socket, lastDate, pageLimit);
   });

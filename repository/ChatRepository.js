@@ -23,6 +23,35 @@ module.exports = {
     });
   },
 
+  getByMembers(one, two) {
+    return Chat.findOne({
+      where: {
+        [Op.or]: [
+          { 
+            member_one_id: one, 
+            member_two_id: two 
+          },
+          { 
+            member_one_id: two, 
+            member_two_id: one 
+          }
+        ]
+      },
+      include: [
+        {
+          model: User,
+          attributes: ['id', 'name', 'photo', 'type'],
+          as: 'member_one'
+        },
+        {
+          model: User,
+          attributes: ['id', 'name', 'photo', 'type'],
+          as: 'member_two'
+        }
+      ],
+    });
+  },
+
   getListByMember(id, date, limit) {
     return sequelize.transaction(async (transaction)=> {
       const chats = await Chat.findAll({
