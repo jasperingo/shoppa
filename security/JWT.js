@@ -15,7 +15,6 @@ function signCustomerJWT(customer) {
 }
 
 function signAdminJWT(admin) {
-  console.log(admin);
   return signJWT({
     adminId : admin.id,
     adminRole: admin.role,
