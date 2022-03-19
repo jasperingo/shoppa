@@ -1,3 +1,4 @@
+const sequelize = require("./DB");
 const Administrator = require("../models/Administrator");
 const Customer = require("../models/Customer");
 const DeliveryFirm = require("../models/DeliveryFirm");
@@ -6,46 +7,64 @@ const User = require("../models/User");
 
 module.exports = {
 
+  async getApplicationUser(admin, transaction) {
+    if (admin !== null && admin.type === Administrator.TYPE_APPLICATION)
+      admin.application = await User.findOne({ 
+        where: { type: User.TYPE_APPLICATION },
+        transaction
+      });
+  },
+
   get(id) {
-    return Administrator.findOne({   
-      where: { id },
-      include: [
-        {
-          model: Customer,
-          include: {
-            model: User
-          } 
-        },
-        {
-          model: Store,
-          include: {
-            model: User
-          } 
-        },
-        {
-          model: DeliveryFirm,
-          include: {
-            model: User
-          } 
-        }  
-      ]
+    return sequelize.transaction(async (transaction)=> {
+      const admin = await Administrator.findOne({   
+        where: { id },
+        include: [
+          {
+            model: Customer,
+            include: {
+              model: User
+            } 
+          },
+          {
+            model: Store,
+            include: {
+              model: User
+            } 
+          },
+          {
+            model: DeliveryFirm,
+            include: {
+              model: User
+            } 
+          }  
+        ],
+        transaction
+      });
+
+      await this.getApplicationUser(admin, transaction);
+  
+      return admin;
     });
   },
 
   async getByEmail(email) {
-    const admin =  await Administrator.findOne({   
-      where: { '$customer.user.email$': email },
-      include: {
-        model: Customer,
+    return sequelize.transaction(async (transaction)=> {
+      const admin =  await Administrator.findOne({   
+        where: { '$customer.user.email$': email },
         include: {
-          model: User,
-        } 
-      } 
+          model: Customer,
+          include: {
+            model: User,
+          } 
+        },
+        transaction
+      });
+      
+      await this.getApplicationUser(admin, transaction);
+  
+      return admin;
     });
-
-    admin.application = await User.findOne({ where: { type: User.TYPE_APPLICATION }});
-
-    return admin;
   },
 
   getByEmailAndStore(email, store_id) {
