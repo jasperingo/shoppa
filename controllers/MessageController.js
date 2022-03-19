@@ -50,7 +50,8 @@ module.exports = class MessageController {
 
       socket.emit('message_created', reponse);
 
-      socket.to(users.map(i=> i.socket_id)).emit('message', reponse);
+      if (users.lenght > 0)
+        socket.to(users.map(i=> i.socket_id)).emit('message', reponse);
 
     } catch {
       socket.emit('message_created', new Response(Response.ERROR, Response.ERROR));
