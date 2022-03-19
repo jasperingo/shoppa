@@ -122,7 +122,7 @@ module.exports = class AdministratorController {
 
       statistics.number_of_orders = await OrderRepository.getCount();
 
-      statistics.total_earnings = await TransactionRepository.getBalanceByAdministrator();
+      statistics.total_earnings = await TransactionRepository.getBalance(req.auth.userId);
 
       const response = new Response(Response.SUCCESS, req.__('_fetched._statistics'), statistics);
 
