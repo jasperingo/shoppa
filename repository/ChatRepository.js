@@ -23,6 +23,24 @@ module.exports = {
     });
   },
 
+  getWithTransaction(id, transaction) {
+    return Chat.findByPk(id, {
+      include: [
+        {
+          model: User,
+          attributes: ['id', 'name', 'photo', 'type'],
+          as: 'member_one'
+        },
+        {
+          model: User,
+          attributes: ['id', 'name', 'photo', 'type'],
+          as: 'member_two'
+        }
+      ],
+      transaction
+    });
+  },
+
   getByMembers(one, two) {
     return sequelize.transaction(async (transaction)=> {
       const chat = await Chat.findOne({

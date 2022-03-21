@@ -1,13 +1,14 @@
 
 const { Server } = require('socket.io');
 const MessageController = require('./controllers/MessageController');
+const Response = require('./http/Response');
 const AuthMiddleware = require('./middlewares/AuthMiddleware');
+const ChatRepository = require('./repository/ChatRepository');
+const MessageRepository = require('./repository/MessageRepository');
 const WebsocketConnectionRepository = require('./repository/WebsocketConnectionRepository');
 
 const socketIO = new Server({
-  cors: {
-    origin: '*'
-  }
+  cors: { origin: '*' }
 });
 
 const messageController = new MessageController();
@@ -16,9 +17,29 @@ const wrapMiddleware = middleware => (socket, next) => middleware(socket.request
 
 socketIO.use(wrapMiddleware(AuthMiddleware));
 
-async function messageSender() {
-  console.log(998);
-  return null;
+async function messageSender(senderId, chat) {
+
+  const receiverId = chat.member_one_id === senderId ? chat.member_two_id : chat.member_one_id;
+
+  const senderSockets = await WebsocketConnectionRepository.getListByUser(senderId);
+  
+  const receiverSockets = await WebsocketConnectionRepository.getListByUser(receiverId);
+
+  const response = new Response(Response.SUCCESS, Response.SUCCESS, chat);
+
+  if (senderSockets.length > 0)
+    socketIO.to(senderSockets.map(i=> i.socket_id)).emit('message_created', response);
+
+  if (receiverSockets.length > 0)
+    socketIO.to(receiverSockets.map(i=> i.socket_id)).emit('message', response);
+}
+
+async function notificationSender(receiverId, notification, transaction) {
+  const result = await MessageRepository.createNotification(receiverId, notification, transaction);
+  const message = await MessageRepository.getWithTransaction(result.message.id, transaction);
+  const chat = await ChatRepository.getWithTransaction(result.chat.id, transaction);
+  chat.setDataValue('messages', [message]);
+  return chat;
 }
 
 socketIO.on('connection', async (socket)=> {
@@ -58,4 +79,4 @@ socketIO.on('connection', async (socket)=> {
   });
 });
 
-module.exports = { socketIO, messageSender };
+module.exports = { socketIO, messageSender, notificationSender };

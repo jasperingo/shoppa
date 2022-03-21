@@ -9,6 +9,10 @@ module.exports = {
     return Message.findByPk(id);
   },
 
+  getWithTransaction(id, transaction) {
+    return Message.findByPk(id, { transaction });
+  },
+
   async getNumberOfUnreceivedMessages(user_id) {
 
     const count = await Chat.findOne({
@@ -99,6 +103,33 @@ module.exports = {
 
       return { chat, message };
     });
+  },
+
+  async createNotification(receiver_id, notification, transaction) {
+    
+    let chat = await this.getChat(notification.user_id, receiver_id, transaction);
+
+    if (chat === null) {
+      chat = await Chat.create({
+        member_two_id: receiver_id,
+        member_one_id: notification.user_id, 
+      },
+      { transaction });
+    }
+
+    notification.chat_id = chat.id;
+
+    const message = await Message.create(notification, { transaction });
+
+    await Chat.update(
+      { last_message_id: message.id }, 
+      { 
+        where: { id: chat.id },
+        transaction 
+      }
+    );
+
+    return { chat, message };
   },
   
   updateDeliveryStatus(userId, senderId) {

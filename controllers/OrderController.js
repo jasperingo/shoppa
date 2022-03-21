@@ -11,6 +11,7 @@ const ProductVariantRepository = require("../repository/ProductVariantRepository
 const RouteDurationRepository = require("../repository/RouteDurationRepository");
 const RouteRepository = require("../repository/RouteRepository");
 const RouteWeightRepository = require("../repository/RouteWeightRepository");
+const { messageSender } = require("../websocket");
 
 
 module.exports = class OrderController {
@@ -103,7 +104,7 @@ module.exports = class OrderController {
       
       const result = await OrderRepository.create(data);
 
-      //emit message in result;
+      result.messages.forEach(async (chat)=> await messageSender(req.auth.userId, chat));
       
       const order = await OrderRepository.get(result.order.id);
 
@@ -232,10 +233,9 @@ module.exports = class OrderController {
       
       if (req.body.status === Order.STATUS_CANCELLED) {
 
-        // const result =
-        await OrderRepository.updateStatusToCancel(req.data.order);
+        const result = await OrderRepository.updateStatusToCancel(req.data.order);
 
-        //emit message in result;
+        result.messages.forEach(async (chat)=> await messageSender(req.auth.userId, chat));
       }
 
       const order = await OrderRepository.get(req.data.order.id);
@@ -252,17 +252,20 @@ module.exports = class OrderController {
   async storeStatusUpdate(req, res, next) {
     
     try {
+
+      let result;
       
       switch (req.body.store_status) {
         case Order.STORE_STATUS_ACCEPTED:
-          await OrderRepository.updateStoreStatusToAccepted(req.data.order, StringGenerator.transactionReference);
+          result = await OrderRepository.updateStoreStatusToAccepted(req.data.order);
           break;
         case Order.STORE_STATUS_DECLINED:
-          await OrderRepository.updateStoreStatusToDeclined(req.data.order);
+          result = await OrderRepository.updateStoreStatusToDeclined(req.data.order);
           break;
       }
 
-      //send message
+      if (result !== undefined) 
+        await messageSender(req.auth.userId, result.message);
       
       const order = await OrderRepository.get(req.data.order.id);
 
@@ -279,16 +282,19 @@ module.exports = class OrderController {
     
     try {
       
+      let result;
+
       switch (req.body.delivery_firm_status) {
         case Order.DELIVERY_FIRM_STATUS_ACCEPTED:
-          await OrderRepository.updateDeliveryFirmStatusToAccepted(req.data.order, StringGenerator.transactionReference);
+          result = await OrderRepository.updateDeliveryFirmStatusToAccepted(req.data.order);
           break;
         case Order.DELIVERY_FIRM_STATUS_DECLINED:
-          await OrderRepository.updateDeliveryFirmStatusToDeclined(req.data.order);
+          result = await OrderRepository.updateDeliveryFirmStatusToDeclined(req.data.order);
           break;
       }
 
-      //send message
+      if (result !== undefined)
+        await messageSender(req.auth.userId, result.message);
 
       const order = await OrderRepository.get(req.data.order.id);
 

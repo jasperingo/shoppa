@@ -13,10 +13,9 @@ const ProductVariant = require("../models/ProductVariant");
 const ProductVariantHistory = require("../models/ProductVariantHistory");
 const Store = require("../models/Store");
 const StoreHistory = require("../models/StoreHistory");
-const Transaction = require("../models/Transaction");
 const User = require("../models/User");
 const UserHistory = require("../models/UserHistory");
-const { messageSender } = require("../websocket");
+const { notificationSender } = require("../websocket");
 const sequelize = require("./DB");
 
 module.exports = {
@@ -397,15 +396,21 @@ module.exports = {
         );
       }
 
-      const customer = await Customer.findByPk(customer_id, { attributes: ['user_id'] });
+      const customer = await Customer.findByPk(customer_id, { 
+        attributes: ['user_id'], 
+        transaction 
+      });
 
-      const store = await Store.findByPk(store_id, { attributes: ['user_id'] });
+      const store = await Store.findByPk(store_id, { 
+        attributes: ['user_id'], 
+        transaction 
+      });
 
-      const message = await messageSender(
+      const message = await notificationSender(
+        store.user_id,
         { 
             order_id: order.id, 
-            sender_id: customer.user_id,
-            receiver_id: store.user_id,
+            user_id: customer.user_id,
             notification: Message.NOTIFICATION_ORDER_CREATED,
             delivery_status: Message.DELIVERY_STATUS_SENT
         },
@@ -416,13 +421,15 @@ module.exports = {
 
       if (delivery_method === Order.DELIVERY_METHOD_DOOR) {
 
-        const deliveryFirm = DeliveryFirm.findByPk(delivery_firm_id, { attributes: ['user_id'] });
+        const deliveryFirm = await DeliveryFirm.findByPk(delivery_firm_id, { 
+          attributes: ['user_id'], transaction 
+        });
 
-        const message2 = await messageSender(
+        const message2 = await notificationSender(
+          deliveryFirm.user_id,
           { 
             order_id: order.id, 
-            sender_id: customer.user_id,
-            receiver_id: deliveryFirm.user_id,
+            user_id: customer.user_id,
             notification: Message.NOTIFICATION_ORDER_CREATED,
             delivery_status: Message.DELIVERY_STATUS_SENT
           },
@@ -444,11 +451,11 @@ module.exports = {
         { where: { id: order.id }, transaction }
       );
 
-      const message = await messageSender(
+      const message = await notificationSender(
+        order.store.user.id,
         { 
           order_id: order.id, 
-          sender_id: order.customer.user.id,
-          receiver_id: order.store.user.id,
+          user_id: order.customer.user.id,
           notification: Message.NOTIFICATION_ORDER_CANCELLED,
           delivery_status: Message.DELIVERY_STATUS_SENT
         },
@@ -459,11 +466,11 @@ module.exports = {
       
       if (order.delivery_method === Order.DELIVERY_METHOD_DOOR) {
 
-        const message2 = await messageSender(
+        const message2 = await notificationSender(
+          order.delivery_firm.user.id,
           { 
             order_id: order.id, 
-            sender_id: order.customer.user.id,
-            receiver_id: order.delivery_firm.user.id,
+            user_id: order.customer.user.id,
             notification: Message.NOTIFICATION_ORDER_CANCELLED,
             delivery_status: Message.DELIVERY_STATUS_SENT
           },
@@ -477,35 +484,29 @@ module.exports = {
     });
   },
 
-  updateStoreStatusToAccepted(order, referenceGenerator) {
+  updateStoreStatusToAccepted(order) {
     return sequelize.transaction(async (transaction)=> {
 
-      let orderUpdate;
+      const deliveryDone = order.delivery_firm_id === null || order.delivery_firm_status === Order.DELIVERY_FIRM_STATUS_ACCEPTED;
 
-      if (order.delivery_firm_id === null || order.delivery_firm_status === Order.DELIVERY_FIRM_STATUS_ACCEPTED) {
-        orderUpdate = await Order.update(
-          { store_status: Order.STORE_STATUS_ACCEPTED, status: Order.STATUS_PROCESSING }, 
-          { where: { id: order.id }, transaction }
-        );
+      const values = { store_status: Order.STORE_STATUS_ACCEPTED };
 
+      if (deliveryDone) 
+        values.status = Order.STATUS_PROCESSING;
+      
+      const orderUpdate = await Order.update(values, { 
+        where: { id: order.id }, 
+        transaction 
+      });
+
+      if (deliveryDone)
         await this.reduceOrderItemProductQuantity(order, transaction);
         
-        if (order.payment_status === Order.PAYMENT_STATUS_APPROVED) {
-          await Transaction.bulkCreate(await Transaction.distributeOrderPayment(order, referenceGenerator), { transaction });
-        }
-      } else {
-
-        orderUpdate = await Order.update(
-          { store_status: Order.STORE_STATUS_ACCEPTED }, 
-          { where: { id: order.id }, transaction }
-        );
-      }
-
-      const message = await messageSender(
+      const message = await notificationSender(
+        order.customer.user.id,
         { 
           order_id: order.id, 
-          sender_id: order.store.user.id,
-          receiver_id: order.customer.user.id,
+          user_id: order.store.user.id,
           notification: Message.NOTIFICATION_ORDER_ACCEPTED,
           delivery_status: Message.DELIVERY_STATUS_SENT
         },
@@ -521,14 +522,17 @@ module.exports = {
 
       const orderUpdate = await Order.update(
         { store_status: Order.STORE_STATUS_DECLINED, status: Order.STATUS_DECLINED }, 
-        { where: { id: order.id }, transaction }
+        { 
+          where: { id: order.id }, 
+          transaction 
+        }
       );
   
-      const message = await messageSender(
+      const message = await notificationSender(
+        order.customer.user.id,
         { 
           order_id: order.id, 
-          sender_id: order.store.user.id,
-          receiver_id: order.customer.user.id,
+          user_id: order.store.user.id,
           notification: Message.NOTIFICATION_ORDER_DECLINED,
           delivery_status: Message.DELIVERY_STATUS_SENT
         },
@@ -539,35 +543,27 @@ module.exports = {
     });
   },
 
-  updateDeliveryFirmStatusToAccepted(order, referenceGenerator) {
+  updateDeliveryFirmStatusToAccepted(order) {
     return sequelize.transaction(async (transaction)=> {
 
-      let orderUpdate;
+      const value = { delivery_firm_status: Order.DELIVERY_FIRM_STATUS_ACCEPTED };
 
-      if (order.store_status === Order.STORE_STATUS_ACCEPTED) {
-        orderUpdate = await Order.update(
-          { delivery_firm_status: Order.DELIVERY_FIRM_STATUS_ACCEPTED, status: Order.STATUS_PROCESSING }, 
-          { where: { id: order.id }, transaction }
-        );
-
-        await this.reduceOrderItemProductQuantity(order, transaction);
+      if (order.store_status === Order.STORE_STATUS_ACCEPTED)
+        value.status = Order.STATUS_PROCESSING;
         
-        if (order.payment_status === Order.PAYMENT_STATUS_APPROVED) {
-          await Transaction.bulkCreate(await Transaction.distributeOrderPayment(order, referenceGenerator), { transaction });
-        }
-      } else {
+      const orderUpdate = await Order.update(value, { 
+        where: { id: order.id }, 
+        transaction 
+      });
+      
+      if (order.store_status === Order.STORE_STATUS_ACCEPTED)
+        await this.reduceOrderItemProductQuantity(order, transaction);
 
-        orderUpdate = await Order.update(
-          { delivery_firm_status: Order.DELIVERY_FIRM_STATUS_ACCEPTED }, 
-          { where: { id: order.id }, transaction }
-        );
-      }
-
-      const message = await messageSender(
+      const message = await notificationSender(
+        order.customer.user.id,
         { 
           order_id: order.id, 
-          sender_id: order.delivery_firm.user.id,
-          receiver_id: order.customer.user.id,
+          user_id: order.delivery_firm.user.id,
           notification: Message.NOTIFICATION_ORDER_ACCEPTED,
           delivery_status: Message.DELIVERY_STATUS_SENT
         },
@@ -586,11 +582,11 @@ module.exports = {
         { where: { id: order.id }, transaction }
       );
 
-      const message = await messageSender(
+      const message = await notificationSender(
+        order.customer.user.id,
         { 
           order_id: order.id, 
-          sender_id: order.delivery_firm.user.id,
-          receiver_id: order.customer.user.id,
+          user_id: order.delivery_firm.user.id,
           notification: Message.NOTIFICATION_ORDER_DECLINED,
           delivery_status: Message.DELIVERY_STATUS_SENT
         },
