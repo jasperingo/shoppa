@@ -158,11 +158,26 @@ module.exports = class TransactionController {
     }
   }
 
-  async getByOrder(req, res, next) {
+  async getPendingOrderPayment(req, res, next) {
     
     try {
 
-      const transaction = await TransactionRepository.getByOrder(req.data.order.id);
+      const transaction = await TransactionRepository.getPendingOrderTransaction(req.data.order.id, Transaction.TYPE_PAYMENT);
+
+      const response = new Response(Response.SUCCESS, req.__('_fetched._transaction'), transaction);
+
+      res.status(StatusCodes.OK).send(response);
+
+    } catch(error) {
+      next(new InternalServerException(error));
+    }
+  }
+
+  async getPendingOrderRefund(req, res, next) {
+    
+    try {
+
+      const transaction = await TransactionRepository.getPendingOrderTransaction(req.data.order.id, Transaction.TYPE_REFUND);
 
       const response = new Response(Response.SUCCESS, req.__('_fetched._transaction'), transaction);
 

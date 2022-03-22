@@ -104,7 +104,15 @@ router.get(
   OrderFetchMiddleware,
   AuthMiddleware,
   OrderFetchPermissionMiddleware,
-  transactionController.getByOrder
+  transactionController.getPendingOrderPayment
+);
+
+router.get(
+  '/:id(\\d+)/transaction/refund/pending',
+  OrderFetchMiddleware,
+  AuthMiddleware,
+  OrderFetchPermissionMiddleware,
+  transactionController.getPendingOrderRefund
 );
 
 router.get(

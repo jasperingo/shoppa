@@ -94,11 +94,11 @@ module.exports = {
     });
   },
 
-  getByOrder(order_id) {
+  getPendingOrderTransaction(order_id, type) {
     return Transaction.findOne({ 
       where: { 
+        type,
         order_id,
-        type: Transaction.TYPE_PAYMENT,
         status: Transaction.STATUS_PENDING
       },
       include: [
