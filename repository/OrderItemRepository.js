@@ -7,7 +7,9 @@ const OrderItem = require("../models/OrderItem");
 const Product = require("../models/Product");
 const ProductVariant = require("../models/ProductVariant");
 const Store = require("../models/Store");
+const Transaction = require("../models/Transaction");
 const User = require("../models/User");
+const { notificationSender } = require("../websocket");
 const sequelize = require("./DB");
 
 module.exports = {
@@ -62,33 +64,31 @@ module.exports = {
         { where: { id: orderItem.id }, transaction }
       );
 
-      const message = await Message.create(
+      const messages = [await notificationSender(
+        orderItem.order.customer.user.id,
         { 
           order_item_id: orderItem.id, 
-          sender_id: orderItem.order.store.user.id,
-          receiver_id: orderItem.order.customer.user.id,
+          order_id: orderItem.order_id,
+          user_id: orderItem.order.store.user.id,
           notification: Message.NOTIFICATION_ORDER_ITEM_PROCESSING,
           delivery_status: Message.DELIVERY_STATUS_SENT
         },
-        { transaction }
-      );
-
-      const messages = [message];
+        transaction
+      )];
       
       if (orderItem.order.delivery_method === Order.DELIVERY_METHOD_DOOR) {
 
-        const message2 = await Message.create(
+        messages.push(await notificationSender(
+          orderItem.order.delivery_firm.user.id,
           { 
             order_item_id: orderItem.id, 
-            sender_id: orderItem.order.store.user.id,
-            receiver_id: orderItem.order.delivery_firm.user.id,
+            order_id: orderItem.order_id,
+            user_id: orderItem.order.store.user.id,
             notification: Message.NOTIFICATION_ORDER_ITEM_PROCESSING,
             delivery_status: Message.DELIVERY_STATUS_SENT
           },
-          { transaction }
-        );
-
-        messages.push(message2);
+          transaction
+        ));
       }
 
       return { update, messages };
@@ -104,26 +104,28 @@ module.exports = {
       );
 
       const messages = [
-        await Message.create(
+        await notificationSender(
+          orderItem.order.store.user.id,
           { 
             order_item_id: orderItem.id, 
-            sender_id: orderItem.order.delivery_firm.user.id,
-            receiver_id: orderItem.order.store.user.id,
+            order_id: orderItem.order_id,
+            user_id: orderItem.order.delivery_firm.user.id,
             notification: Message.NOTIFICATION_ORDER_ITEM_TRANSPORTED,
             delivery_status: Message.DELIVERY_STATUS_SENT
           },
-          { transaction }
+          transaction
         ),
 
-        await Message.create(
+        await notificationSender(
+          orderItem.order.customer.user.id,
           { 
             order_item_id: orderItem.id, 
-            sender_id: orderItem.order.delivery_firm.user.id,
-            receiver_id: orderItem.order.customer.user.id,
+            order_id: orderItem.order_id,
+            user_id: orderItem.order.delivery_firm.user.id,
             notification: Message.NOTIFICATION_ORDER_ITEM_TRANSPORTED,
             delivery_status: Message.DELIVERY_STATUS_SENT
           },
-          { transaction }
+          transaction
         )
       ];
 
@@ -131,8 +133,9 @@ module.exports = {
     });
   },
 
-  updateDeliveredAt(orderItem) {
+  updateDeliveredAt(orderItem, referenceGenerator) {
     return sequelize.transaction(async (transaction)=> {
+
       const update = await OrderItem.update(
         { delivered_at: Date.now() }, 
         { where: { id: orderItem.id }, transaction }
@@ -152,35 +155,46 @@ module.exports = {
           { status: Order.STATUS_FULFILLED }, 
           { where: { id: orderItem.order_id }, transaction }
         );
+
+        if (orderItem.order.payment_status === Order.PAYMENT_STATUS_APPROVED) {
+
+          const appUser = await User.findOne({ 
+            where: { type: User.TYPE_APPLICATION },
+            transaction
+          });
+
+          await Transaction.bulkCreate(
+            await Transaction.distributeOrderPayment(orderItem.order, appUser.id, referenceGenerator), 
+            { transaction }
+          );
+        }
       }
 
-      const message = await Message.create(
+      const messages = [await notificationSender(
+        orderItem.order.store.user.id,
         { 
           order_item_id: orderItem.id, 
-          sender_id: orderItem.order.customer.user.id,
-          receiver_id: orderItem.order.store.user.id,
+          order_id: orderItem.order_id,
+          user_id: orderItem.order.customer.user.id,
           notification: Message.NOTIFICATION_ORDER_ITEM_DELIVERED,
           delivery_status: Message.DELIVERY_STATUS_SENT
         },
-        { transaction }
-      );
-
-      const messages = [message];
+        transaction
+      )];
       
       if (orderItem.order.delivery_method === Order.DELIVERY_METHOD_DOOR) {
 
-        messages.push(
-          await Message.create(
-            { 
-              order_item_id: orderItem.id, 
-              sender_id: orderItem.order.customer.user.id,
-              receiver_id: orderItem.order.delivery_firm.user.id,
-              notification: Message.NOTIFICATION_ORDER_ITEM_DELIVERED,
-              delivery_status: Message.DELIVERY_STATUS_SENT
-            },
-            { transaction }
-          )
-        );
+        messages.push(await notificationSender(
+          orderItem.order.delivery_firm.user.id,
+          { 
+            order_item_id: orderItem.id, 
+            order_id: orderItem.order_id,
+            user_id: orderItem.order.customer.user.id,
+            notification: Message.NOTIFICATION_ORDER_ITEM_DELIVERED,
+            delivery_status: Message.DELIVERY_STATUS_SENT
+          },
+          transaction
+        ));
       }
       
       return { update, messages };

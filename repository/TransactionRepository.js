@@ -1,4 +1,5 @@
 const { Op } = require("sequelize");
+const fetch = require("node-fetch");
 const Customer = require("../models/Customer");
 const CustomerHistory = require("../models/CustomerHistory");
 const DeliveryFirm = require("../models/DeliveryFirm");
@@ -8,8 +9,9 @@ const Store = require("../models/Store");
 const Transaction = require("../models/Transaction");
 const User = require("../models/User");
 const UserHistory = require("../models/UserHistory");
-const { messageSender } = require("../websocket");
+const { notificationSender } = require("../websocket");
 const sequelize = require("./DB");
+const WithdrawalAccount = require("../models/WithdrawalAccount");
 
 module.exports = {
 
@@ -157,8 +159,9 @@ module.exports = {
   
   createWithdrawal({ amount }, reference, user_id) {
     return sequelize.transaction(async (transaction)=> {
+
       const tx = await Transaction.create(
-          { 
+        { 
           user_id,
           reference,
           amount: -amount,
@@ -167,12 +170,17 @@ module.exports = {
         },
         { transaction }
       );
+
+      const appUser = await User.findOne({ 
+        where: { type: User.TYPE_APPLICATION },
+        transaction
+      });
       
-      const message = await messageSender(
+      const message = await notificationSender(
+        appUser.id,
         { 
+          user_id: tx.user_id,
           transaction_id: tx.id, 
-          sender_id: tx.user_id,
-          application: Message.APPLICATION_ROLE_RECEIVER,
           notification: Message.NOTIFICATION_TRANSACTION_CREATED,
           delivery_status: Message.DELIVERY_STATUS_SENT
         },
@@ -226,15 +234,21 @@ module.exports = {
         { refund_status: Order.REFUND_STATUS_PENDING }, 
         { where: { id: order.id }, transaction }
       );
+
+      const appUser = await User.findOne({ 
+        where: { type: User.TYPE_APPLICATION },
+        transaction
+      });
       
-      const message = await messageSender(
+      const message = await notificationSender(
+        appUser.id,
         { 
+          user_id: tx.user_id,
           transaction_id: tx.id, 
-          sender_id: tx.user_id,
           notification: Message.NOTIFICATION_TRANSACTION_CREATED,
           delivery_status: Message.DELIVERY_STATUS_SENT
         },
-        { transaction }
+        transaction
       );
 
       return { transaction: tx, message };
@@ -275,25 +289,31 @@ module.exports = {
         { payment_status: Order.PAYMENT_STATUS_APPROVED }, 
         { where: { id: tx.order.id }, transaction }
       );
+
+      const appUser = await User.findOne({ 
+        where: { type: User.TYPE_APPLICATION },
+        transaction
+      });
       
-      if (tx.order.status === Order.STATUS_PROCESSING || tx.order.status === Order.STATUS_FULFILLED) {
+      if (tx.order.status === Order.STATUS_FULFILLED) {
         await Transaction.bulkCreate(
-          await Transaction.distributeOrderPayment(tx.order, referenceGenerator), 
+          await Transaction.distributeOrderPayment(tx.order, appUser.id, referenceGenerator), 
           { transaction }
         );
       }
 
-      const message = await messageSender(
+      const message = await notificationSender(
+        tx.user_id,
         { 
+          user_id: appUser.id,
           transaction_id: tx.id, 
-          receiver_id: tx.user_id,
           notification: Message.NOTIFICATION_TRANSACTION_APPROVED,
           delivery_status: Message.DELIVERY_STATUS_SENT
         },
-        { transaction }
+        transaction
       );
       
-      return message;
+      return { senderId: appUser.id, message };
     });
   },
 
@@ -303,7 +323,6 @@ module.exports = {
       
       const tx = await Transaction.findOne({
         where: { reference, status: Transaction.STATUS_PROCESSING },
-        include: { model: Order },
         transaction
       });
 
@@ -317,21 +336,27 @@ module.exports = {
       if (tx.type === Transaction.TYPE_REFUND) {
         await Order.update(
           { refund_status: Order.REFUND_STATUS_APPROVED }, 
-          { where: { id: tx.order.id }, transaction }
+          { where: { id: tx.order_id }, transaction }
         );
       }
 
-      const message = await messageSender(
+      const appUser = await User.findOne({ 
+        where: { type: User.TYPE_APPLICATION },
+        transaction
+      });
+
+      const message = await notificationSender(
+        tx.user_id,
         { 
+          user_id: appUser.id,
           transaction_id: tx.id, 
-          receiver_id: tx.user_id,
           notification: Message.NOTIFICATION_TRANSACTION_APPROVED,
           delivery_status: Message.DELIVERY_STATUS_SENT
         },
         transaction
       );
       
-      return message;
+      return { senderId: appUser.id, message };
     });
   },
 
@@ -341,7 +366,6 @@ module.exports = {
       
       const tx = await Transaction.findOne({
         where: { reference, status: Transaction.STATUS_PROCESSING },
-        include: { model: Order },
         transaction
       });
 
@@ -355,21 +379,27 @@ module.exports = {
       if (tx.type === Transaction.TYPE_REFUND) {
         await Order.update(
           { refund_status: Order.REFUND_STATUS_FAILED }, 
-          { where: { id: tx.order.id }, transaction }
+          { where: { id: tx.order_id }, transaction }
         );
       }
 
-      const message = await messageSender(
+      const appUser = await User.findOne({ 
+        where: { type: User.TYPE_APPLICATION },
+        transaction
+      });
+
+      const message = await notificationSender(
+        tx.user_id,
         { 
+          user_id: appUser.id,
           transaction_id: tx.id, 
-          receiver_id: tx.user_id,
           notification: Message.NOTIFICATION_TRANSACTION_FAILED,
           delivery_status: Message.DELIVERY_STATUS_SENT
         },
-        { transaction }
+        transaction
       );
       
-      return message;
+      return { senderId: appUser.id, message };
     });
   },
   
@@ -386,21 +416,27 @@ module.exports = {
         );
       }
 
-      const message = await messageSender(
+      const appUser = await User.findOne({ 
+        where: { type: User.TYPE_APPLICATION },
+        transaction
+      });
+
+      const message = await notificationSender(
+        appUser.id,
         { 
+          user_id: tx.user_id,
           transaction_id: tx.id, 
-          sender_id: tx.user_id,
           notification: Message.NOTIFICATION_TRANSACTION_CANCELLED,
           delivery_status: Message.DELIVERY_STATUS_SENT
         },
-        { transaction }
+        transaction
       );
 
       return { update, message };
     });
   },
 
-  updateStatusToDeclined(tx, status) {
+  updateStatusToDeclined(tx, appUserId, status) {
 
     return sequelize.transaction(async (transaction)=> {
 
@@ -413,23 +449,42 @@ module.exports = {
         );
       }
 
-      const message = await messageSender(
+      const message = await notificationSender(
+        tx.user_id,
         { 
+          user_id: appUserId,
           transaction_id: tx.id, 
-          receiver_id: tx.user_id,
           notification: Message.NOTIFICATION_TRANSACTION_DECLINED,
           delivery_status: Message.DELIVERY_STATUS_SENT
         },
-        { transaction }
+        transaction
       );
 
       return { update, message };
     });
   },
 
-  updateStatusToProcessing(tx) {
+  async updateStatusToProcessing(tx, appUserId) {
+
+    const account = await WithdrawalAccount.findOne({ where: { user_id: tx.user_id } });
     
-    // send request to paystack;
+    const response = await fetch('https://api.paystack.co/transfer', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.PAYSTACK_SECRET}`
+      },
+      body: JSON.stringify({
+        source: "balance", 
+        amount: tx.amount * 100, 
+        reference: tx.reference,
+        recipient: account.paystack_recipient_code, 
+        reason: "Payment from DailyNeeds" 
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error();
+    }
 
     return sequelize.transaction(async (transaction)=> {
 
@@ -438,14 +493,15 @@ module.exports = {
         { where: { id: tx.id }, transaction }
       );
       
-      const message = await messageSender(
+      const message = await notificationSender(
+        tx.user_id,
         { 
+          user_id: appUserId,
           transaction_id: tx.id, 
-          receiver_id: tx.user_id,
           notification: Message.NOTIFICATION_TRANSACTION_PROCESSING,
           delivery_status: Message.DELIVERY_STATUS_SENT
         },
-        { transaction }
+        transaction
       );
       
       return { update, message };

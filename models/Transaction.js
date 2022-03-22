@@ -55,19 +55,7 @@ class Transaction extends Model {
     return ((Transaction.DELIVERY_FIRM_CHARGE / 100) * amount).toFixed(2);
   }
 
-  static async issueOrderRefund(order, referenceGenerator) {
-    return { 
-      application: false, 
-      order_id: order.id,
-      user_id: order.customer.user_id, 
-      reference: await referenceGenerator(),
-      amount: order.total,
-      status: Transaction.STATUS_PENDING,
-      type: Transaction.TYPE_REFUND
-    };
-  }
-
-  static async distributeOrderPayment(order, referenceGenerator) {
+  static async distributeOrderPayment(order, appUserId, referenceGenerator) {
 
     const storeCharge = Transaction.getStoreCharge(order.sub_total_discounted);
 
@@ -75,7 +63,6 @@ class Transaction extends Model {
 
     const rows = [
       { 
-        application: false, 
         order_id: order.id, 
         user_id: order.store.user_id, 
         reference: await referenceGenerator(),
@@ -84,7 +71,6 @@ class Transaction extends Model {
         type: Transaction.TYPE_INCOME
       },
       { 
-        application: false, 
         order_id: order.id, 
         user_id: order.store.user_id, 
         reference: await referenceGenerator(),
@@ -93,9 +79,8 @@ class Transaction extends Model {
         type: Transaction.TYPE_CHARGE
       },
       {
-        application: true, 
         order_id: order.id, 
-        user_id: null, 
+        user_id: appUserId, 
         reference: await referenceGenerator(),
         amount: storeCharge,
         status: Transaction.STATUS_APPROVED,
@@ -106,7 +91,6 @@ class Transaction extends Model {
     if (order.delivery_firm_id !== null) {
 
       rows.push({
-        application: false, 
         order_id: order.id, 
         user_id: order.delivery_firm.user_id, 
         reference: await referenceGenerator(),
@@ -115,7 +99,6 @@ class Transaction extends Model {
         type: Transaction.TYPE_INCOME
       },
       {
-        application: false, 
         order_id: order.id, 
         user_id: order.delivery_firm.user_id, 
         reference: await referenceGenerator(),
@@ -123,10 +106,9 @@ class Transaction extends Model {
         status: Transaction.STATUS_APPROVED,
         type: Transaction.TYPE_CHARGE
       },
-      {
-        application: true, 
+      { 
         order_id: order.id, 
-        user_id: null, 
+        user_id: appUserId, 
         reference: await referenceGenerator(),
         amount: deliveryCharge,
         status: Transaction.STATUS_APPROVED,

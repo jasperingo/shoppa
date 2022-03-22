@@ -1,7 +1,9 @@
 const { StatusCodes } = require("http-status-codes");
 const InternalServerException = require("../http/exceptions/InternalServerException");
 const Response = require("../http/Response");
+const StringGenerator = require("../http/StringGenerator");
 const OrderItemRepository = require("../repository/OrderItemRepository");
+const { messageSender } = require("../websocket");
 
 
 module.exports = class OrderItemController {
@@ -10,7 +12,9 @@ module.exports = class OrderItemController {
     
     try {
       
-      await OrderItemRepository.updateProcessedAt(req.data.orderItem);
+      const result = await OrderItemRepository.updateProcessedAt(req.data.orderItem);
+
+      result.messages.forEach(async (chat)=> await messageSender(req.auth.userId, chat));
 
       const orderItem = await OrderItemRepository.get(req.data.orderItem.id);
 
@@ -27,7 +31,9 @@ module.exports = class OrderItemController {
     
     try {
       
-      await OrderItemRepository.updateTransportedAt(req.data.orderItem);
+      const result = await OrderItemRepository.updateTransportedAt(req.data.orderItem);
+
+      result.messages.forEach(async (chat)=> await messageSender(req.auth.userId, chat));
 
       const orderItem = await OrderItemRepository.get(req.data.orderItem.id);
 
@@ -44,7 +50,9 @@ module.exports = class OrderItemController {
     
     try {
       
-      await OrderItemRepository.updateDeliveredAt(req.data.orderItem);
+      const result = await OrderItemRepository.updateDeliveredAt(req.data.orderItem, StringGenerator.transactionReference);
+
+      result.messages.forEach(async (chat)=> await messageSender(req.auth.userId, chat));
 
       const orderItem = await OrderItemRepository.get(req.data.orderItem.id);
 

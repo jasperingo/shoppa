@@ -5,6 +5,7 @@ const Response = require("../http/Response");
 const StringGenerator = require("../http/StringGenerator");
 const Transaction = require("../models/Transaction");
 const TransactionRepository = require("../repository/TransactionRepository");
+const { messageSender } = require("../websocket");
 
 module.exports = class TransactionController {
 
@@ -12,21 +13,24 @@ module.exports = class TransactionController {
     
     try {
 
+      let result;
+
       if (req.body.event === 'charge.success') {
         
-        await TransactionRepository.updatePaymentVerifed(req.body.data.reference, StringGenerator.transactionReference);
+        result = await TransactionRepository.updatePaymentVerifed(req.body.data.reference, StringGenerator.transactionReference);
 
       } else if (req.body.event === 'transfer.success') {
 
-        await TransactionRepository.updateTransferVerifed(req.body.data.reference);
+        result = await TransactionRepository.updateTransferVerifed(req.body.data.reference);
 
       } else if (req.body.event === 'transfer.failed') {
 
-        await TransactionRepository.updateTransferFailed(req.body.data.reference);
+        result = await TransactionRepository.updateTransferFailed(req.body.data.reference);
 
       }
 
-      //send message...
+      if (result !== undefined)
+        messageSender(result.senderId, result.message);
       
       res.status(StatusCodes.OK).send({ reference: req.body.data.reference });
 
@@ -41,9 +45,9 @@ module.exports = class TransactionController {
 
       const reference = await StringGenerator.transactionReference();
 
-      const _transaction = await TransactionRepository.createPayment(req.data.order, reference);
+      const result = await TransactionRepository.createPayment(req.data.order, reference);
 
-      const transaction = await TransactionRepository.get(_transaction.id);
+      const transaction = await TransactionRepository.get(result.id);
 
       const response = new Response(Response.SUCCESS, req.__('_created._transaction'), transaction);
 
@@ -60,9 +64,11 @@ module.exports = class TransactionController {
 
       const reference = await StringGenerator.transactionReference();
 
-      const _transaction = await TransactionRepository.createWithdrawal(req.body, reference, req.auth.userId);
+      const result = await TransactionRepository.createWithdrawal(req.body, reference, req.auth.userId);
 
-      const transaction = await TransactionRepository.get(_transaction.transaction.id);
+      await messageSender(req.auth.userId, result.message);
+
+      const transaction = await TransactionRepository.get(result.transaction.id);
 
       const response = new Response(Response.SUCCESS, req.__('_created._transaction'), transaction);
 
@@ -79,9 +85,11 @@ module.exports = class TransactionController {
 
       const reference = await StringGenerator.transactionReference();
 
-      const _transaction = await TransactionRepository.createRefund(req.data.order, reference);
+      const result = await TransactionRepository.createRefund(req.data.order, reference);
 
-      const transaction = await TransactionRepository.get(_transaction.id);
+      await messageSender(req.auth.userId, result.message);
+
+      const transaction = await TransactionRepository.get(result.id);
 
       const response = new Response(Response.SUCCESS, req.__('_created._transaction'), transaction);
 
@@ -95,18 +103,23 @@ module.exports = class TransactionController {
   async updateStatus(req, res, next) {
     
     try {
+
+      let result;
       
       switch (req.body.status) {
         case Transaction.STATUS_CANCELLED:
-          await TransactionRepository.updateStatusToCancelled(req.data.transaction, req.body.status);
+          result = await TransactionRepository.updateStatusToCancelled(req.data.transaction, req.body.status);
           break;
         case Transaction.STATUS_DECLINED:
-          await TransactionRepository.updateStatusToDeclined(req.data.transaction, req.body.status);
+          result = await TransactionRepository.updateStatusToDeclined(req.data.transaction, req.auth.userId, req.body.status);
           break;
         case Transaction.STATUS_PROCESSING:
-          await TransactionRepository.updateStatusToProcessing(req.data.transaction); //send to paystack
+          result = await TransactionRepository.updateStatusToProcessing(req.data.transaction, req.auth.userId);
           break;
       }
+      
+      if (result !== undefined) 
+        await messageSender(req.auth.userId, result.message);
       
       const transaction = await TransactionRepository.get(req.data.transaction.id);
 
