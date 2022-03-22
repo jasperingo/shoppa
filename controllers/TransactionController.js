@@ -89,7 +89,7 @@ module.exports = class TransactionController {
 
       await messageSender(req.auth.userId, result.message);
 
-      const transaction = await TransactionRepository.get(result.id);
+      const transaction = await TransactionRepository.get(result.transaction.id);
 
       const response = new Response(Response.SUCCESS, req.__('_created._transaction'), transaction);
 
