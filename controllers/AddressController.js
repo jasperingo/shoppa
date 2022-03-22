@@ -107,7 +107,7 @@ module.exports = class AddressController {
 
     try {
 
-      const addresses = await AddressRepository.getListByCustomer(req.params.id);
+      const addresses = await AddressRepository.getListByCustomer(req.data.customer.user.id);
 
       const response = new Response(Response.SUCCESS, req.__('_list_fetched._address'), addresses);
 
