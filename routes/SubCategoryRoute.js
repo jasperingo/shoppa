@@ -21,7 +21,7 @@ router.post(
   AuthMiddleware,
   CategoryPermissionMiddleware,
   checkSchema(SubCategoryAddValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.add
 );
 
@@ -31,7 +31,7 @@ router.put(
   AuthMiddleware,
   CategoryPermissionMiddleware,
   checkSchema(SubCategoryUpdateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.update
 );
 
@@ -52,4 +52,3 @@ router.get(
 );
 
 module.exports = router;
-

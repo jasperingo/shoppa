@@ -4,7 +4,6 @@ const { checkSchema } = require('express-validator');
 const CustomerController = require('../controllers/CustomerController');
 const FavoriteController = require('../controllers/FavoriteController');
 const AddressController = require('../controllers/AddressController');
-const UnauthorizedException = require('../http/exceptions/UnauthorizedException');
 const Files = require('../http/Files');
 const AuthMiddleware = require('../middlewares/AuthMiddleware');
 const CustomerPermissionMiddleware = require('../middlewares/permissions/customer/CustomerPermissionMiddleware');
@@ -27,6 +26,8 @@ const CustomerLoginPermissionMiddleware = require('../middlewares/permissions/cu
 const OrderController = require('../controllers/OrderController');
 const TransactionController = require('../controllers/TransactionController');
 const OrderListFilterMiddleware = require('../middlewares/OrderListFilterMiddleware');
+const CustomerFetchPermissionMiddleware = require('../middlewares/permissions/customer/CustomerFetchPermissionMiddleware');
+const AuthValidationMiddleware = require('../middlewares/AuthValidationMiddleware');
 
 const router = express.Router();
 
@@ -47,14 +48,14 @@ const transactionController = new TransactionController();
 router.post(
   '/register', 
   checkSchema(CustomerRegistrationValidation), 
-  ValidationMiddleware(), 
+  ValidationMiddleware, 
   controller.register
 );
 
 router.post(
   '/login', 
   checkSchema(CustomerLoginValidation), 
-  ValidationMiddleware(UnauthorizedException), 
+  AuthValidationMiddleware, 
   CustomerLoginPermissionMiddleware,
   controller.login
 );
@@ -65,7 +66,7 @@ router.put(
   AuthMiddleware, 
   CustomerPermissionMiddleware, 
   checkSchema(CustomerUpdateValidation), 
-  ValidationMiddleware(), 
+  ValidationMiddleware, 
   controller.update
 );
 
@@ -85,7 +86,7 @@ router.put(
   AuthMiddleware, 
   CustomerPermissionMiddleware, 
   checkSchema(CustomerUpdatePasswordValidation), 
-  ValidationMiddleware(), 
+  ValidationMiddleware, 
   controller.updatePassword
 );
 
@@ -95,7 +96,7 @@ router.put(
   AuthMiddleware, 
   AdministratorPermissionMiddleware, 
   checkSchema(CustomerUpdateStatusValidation),
-  ValidationMiddleware(), 
+  ValidationMiddleware, 
   controller.updateStatus
 );
 
@@ -105,7 +106,7 @@ router.put(
   AuthMiddleware, 
   CustomerPermissionMiddleware, 
   checkSchema(WithdrawalAccountUpdateValidation),
-  ValidationMiddleware(), 
+  ValidationMiddleware, 
   withdrawalAccountController.updateCustomerWithdrawalAccount
 );
 
@@ -166,7 +167,7 @@ router.get(
   '/:id(\\d+)', 
   CustomerFetchMiddleware,
   AuthMiddleware, 
-  CustomerAndAdminPermissionMiddleware,
+  CustomerFetchPermissionMiddleware,
   controller.get
 );
 

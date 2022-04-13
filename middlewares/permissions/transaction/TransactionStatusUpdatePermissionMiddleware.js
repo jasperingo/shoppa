@@ -14,9 +14,16 @@ module.exports = async function permit(req, res, next) {
   try {
     
     if (
+      [Transaction.TYPE_WITHDRAWAL, Transaction.TYPE_REFUND].includes(req.data.transaction.type) && 
+      ![Transaction.STATUS_APPROVED, Transaction.STATUS_CANCELLED, Transaction.STATUS_DECLINED, Transaction.STATUS_FAILED].includes(req.data.transaction.status) && 
       (
         req.auth.authType === JWT.AUTH_APP_ADMIN && 
-        (status === Transaction.STATUS_DECLINED || status === Transaction.STATUS_PROCESSING)
+        (
+          status === Transaction.STATUS_DECLINED || 
+          status === Transaction.STATUS_PROCESSING ||
+          status === Transaction.STATUS_APPROVED ||
+          status === Transaction.STATUS_FAILED
+        )
       ) 
       ||
       (
@@ -49,4 +56,3 @@ module.exports = async function permit(req, res, next) {
     next(new InternalServerException(error))
   }
 };
-

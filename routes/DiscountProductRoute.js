@@ -18,7 +18,7 @@ router.post(
   AuthMiddleware,
   DiscountProductCreatePermissionMiddleware,
   checkSchema(DiscountProductCreateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.create
 );
 

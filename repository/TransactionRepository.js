@@ -1,5 +1,4 @@
 const { Op } = require("sequelize");
-const fetch = require("node-fetch");
 const Customer = require("../models/Customer");
 const CustomerHistory = require("../models/CustomerHistory");
 const DeliveryFirm = require("../models/DeliveryFirm");
@@ -9,9 +8,9 @@ const Store = require("../models/Store");
 const Transaction = require("../models/Transaction");
 const User = require("../models/User");
 const UserHistory = require("../models/UserHistory");
+const WithdrawalAccount = require("../models/WithdrawalAccount");
 const { notificationSender } = require("../websocket");
 const sequelize = require("./DB");
-const WithdrawalAccount = require("../models/WithdrawalAccount");
 
 module.exports = {
 
@@ -38,6 +37,9 @@ module.exports = {
               },
               {
                 model: DeliveryFirm,
+              },
+              {
+                model: WithdrawalAccount
               }
             ]
           },
@@ -317,92 +319,6 @@ module.exports = {
     });
   },
 
-  updateTransferVerifed(reference) {
-
-    return sequelize.transaction(async (transaction)=> {
-      
-      const tx = await Transaction.findOne({
-        where: { reference, status: Transaction.STATUS_PROCESSING },
-        transaction
-      });
-
-      if (tx === null) return false;
-
-      await Transaction.update(
-        { status: Transaction.STATUS_APPROVED }, 
-        { where: { reference }, transaction }
-      );
-
-      if (tx.type === Transaction.TYPE_REFUND) {
-        await Order.update(
-          { refund_status: Order.REFUND_STATUS_APPROVED }, 
-          { where: { id: tx.order_id }, transaction }
-        );
-      }
-
-      const appUser = await User.findOne({ 
-        where: { type: User.TYPE_APPLICATION },
-        transaction
-      });
-
-      const message = await notificationSender(
-        tx.user_id,
-        { 
-          user_id: appUser.id,
-          transaction_id: tx.id, 
-          notification: Message.NOTIFICATION_TRANSACTION_APPROVED,
-          delivery_status: Message.DELIVERY_STATUS_SENT
-        },
-        transaction
-      );
-      
-      return { senderId: appUser.id, message };
-    });
-  },
-
-  updateTransferFailed(reference) {
-
-    return sequelize.transaction(async (transaction)=> {
-      
-      const tx = await Transaction.findOne({
-        where: { reference, status: Transaction.STATUS_PROCESSING },
-        transaction
-      });
-
-      if (tx === null) return false;
-
-      await Transaction.update(
-        { status: Transaction.STATUS_FAILED }, 
-        { where: { reference }, transaction }
-      );
-
-      if (tx.type === Transaction.TYPE_REFUND) {
-        await Order.update(
-          { refund_status: Order.REFUND_STATUS_FAILED }, 
-          { where: { id: tx.order_id }, transaction }
-        );
-      }
-
-      const appUser = await User.findOne({ 
-        where: { type: User.TYPE_APPLICATION },
-        transaction
-      });
-
-      const message = await notificationSender(
-        tx.user_id,
-        { 
-          user_id: appUser.id,
-          transaction_id: tx.id, 
-          notification: Message.NOTIFICATION_TRANSACTION_FAILED,
-          delivery_status: Message.DELIVERY_STATUS_SENT
-        },
-        transaction
-      );
-      
-      return { senderId: appUser.id, message };
-    });
-  },
-  
   updateStatusToCancelled(tx, status) {
 
     return sequelize.transaction(async (transaction)=> {
@@ -464,27 +380,7 @@ module.exports = {
     });
   },
 
-  async updateStatusToProcessing(tx, appUserId) {
-
-    const account = await WithdrawalAccount.findOne({ where: { user_id: tx.user_id } });
-    
-    const response = await fetch('https://api.paystack.co/transfer', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.PAYSTACK_SECRET}`
-      },
-      body: JSON.stringify({
-        source: "balance", 
-        amount: tx.amount * 100, 
-        reference: tx.reference,
-        recipient: account.paystack_recipient_code, 
-        reason: "Payment from DailyNeeds" 
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error();
-    }
+  updateStatusToProcessing(tx, appUserId) {
 
     return sequelize.transaction(async (transaction)=> {
 
@@ -508,6 +404,66 @@ module.exports = {
     });
   },
 
+  updateStatusToApproved(tx, appUserId) {
+
+    return sequelize.transaction(async (transaction)=> {
+
+      const update = await Transaction.update(
+        { status: Transaction.STATUS_APPROVED }, 
+        { where: { id: tx.id }, transaction }
+      );
+
+      if (tx.type === Transaction.TYPE_REFUND) {
+        await Order.update(
+          { refund_status: Order.REFUND_STATUS_APPROVED }, 
+          { where: { id: tx.order_id }, transaction }
+        );
+      }
+
+      const message = await notificationSender(
+        tx.user_id,
+        { 
+          user_id: appUserId,
+          transaction_id: tx.id, 
+          notification: Message.NOTIFICATION_TRANSACTION_APPROVED,
+          delivery_status: Message.DELIVERY_STATUS_SENT
+        },
+        transaction
+      );
+      
+      return { update, message };
+    });
+  },
+
+  updateStatusToFailed(tx, appUserId) {
+
+    return sequelize.transaction(async (transaction)=> {
+
+      const update = await Transaction.update(
+        { status: Transaction.STATUS_FAILED }, 
+        { where: { id: tx.id }, transaction }
+      );
+
+      if (tx.type === Transaction.TYPE_REFUND) {
+        await Order.update(
+          { refund_status: Order.REFUND_STATUS_FAILED }, 
+          { where: { id: tx.order_id }, transaction }
+        );
+      }
+
+      const message = await notificationSender(
+        tx.user_id,
+        { 
+          user_id: appUserId,
+          transaction_id: tx.id, 
+          notification: Message.NOTIFICATION_TRANSACTION_FAILED,
+          delivery_status: Message.DELIVERY_STATUS_SENT
+        },
+        transaction
+      );
+      
+      return { update, message };
+    });
+  }
 
 };
-

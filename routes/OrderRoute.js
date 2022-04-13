@@ -38,7 +38,7 @@ router.post(
   OrderCreateStoreProductsValidation,
   OrderCreateDeliveryFirmRoutesValidation,
   OrderCreateDiscountsValidation,
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.create
 );
 
@@ -47,7 +47,7 @@ router.post(
   AuthMiddleware,
   OrderPermissionMiddleware,
   checkSchema(OrderRouteSuggestValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.getRouteSuggestions
 );
 
@@ -56,7 +56,7 @@ router.post(
   AuthMiddleware,
   OrderPermissionMiddleware,
   checkSchema(OrderDiscountSuggestValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.getDiscountSuggestions
 );
 
@@ -66,7 +66,7 @@ router.put(
   AuthMiddleware,
   OrderCustomerPermissionMiddleware,
   checkSchema(OrderStatusUpdateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.updateStatus
 );
 
@@ -76,7 +76,7 @@ router.put(
   AuthMiddleware,
   OrderStorePermissionMiddleware,
   checkSchema(OrderStoreStatusUpdateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.storeStatusUpdate
 );
 
@@ -86,7 +86,7 @@ router.put(
   AuthMiddleware,
   OrderDeliveryFirmPermissionMiddleware,
   checkSchema(OrderDeliveryFirmStatusUpdateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.deliveryFirmStatusUpdate
 );
 
@@ -123,6 +123,4 @@ router.get(
   controller.get
 );
 
-
 module.exports = router;
-

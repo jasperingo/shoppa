@@ -2,22 +2,24 @@ const { StatusCodes } = require("http-status-codes");
 const InternalServerException = require("../http/exceptions/InternalServerException");
 const Pagination = require("../http/Pagination");
 const Response = require("../http/Response");
+const StringGenerator = require("../http/StringGenerator");
 const AdministratorRepository = require("../repository/AdministratorRepository");
 const DeliveryFirmRepository = require("../repository/DeliveryFirmRepository");
 const ReviewRepository = require("../repository/ReviewRepository");
 const Hash = require("../security/Hash");
 const JWT = require("../security/JWT");
 
-
 module.exports = class DeliveryFirmController {
 
   async register(req, res, next) {
     
     try {
+
+      const emailToken = await StringGenerator.emailVerificationToken();
       
       const hashedPassword = await Hash.hashPassword(req.body.administrator_password);
       
-      const result = await DeliveryFirmRepository.add(req.body, hashedPassword, req.data.customer);
+      const result = await DeliveryFirmRepository.add(req.body, hashedPassword, req.data.customer, emailToken);
 
       const deliveryFirm = await DeliveryFirmRepository.get(result.deliveryFirm.id);
 
@@ -29,12 +31,7 @@ module.exports = class DeliveryFirmController {
 
       deliveryFirm.setDataValue('administrators', [administrator]);
 
-      const token = await JWT.signDeliveryFirmJWT(deliveryFirm.toJSON());
-
-      const response = new Response(Response.SUCCESS, req.__('_created._delivery_firm'), {
-        delivery_firm: deliveryFirm,
-        api_token: token
-      });
+      const response = new Response(Response.SUCCESS, req.__('_created._delivery_firm'), deliveryFirm);
 
       res.status(StatusCodes.CREATED).send(response);
 

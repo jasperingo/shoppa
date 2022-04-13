@@ -3,6 +3,7 @@ const { StatusCodes } = require("http-status-codes");
 const InternalServerException = require("../http/exceptions/InternalServerException");
 const Pagination = require("../http/Pagination");
 const Response = require("../http/Response");
+const StringGenerator = require("../http/StringGenerator");
 const CustomerRepository = require("../repository/CustomerRepository");
 const Hash = require("../security/Hash");
 const JWT = require("../security/JWT");
@@ -12,21 +13,18 @@ module.exports = class CustomerController {
   async register(req, res, next) {
     
     try {
+
+      const emailToken = await StringGenerator.emailVerificationToken();
       
       const hashedPassword = await Hash.hashPassword(req.body.password);
 
-      const _customer = await CustomerRepository.add(req.body, hashedPassword);
+      const _customer = await CustomerRepository.add(req.body, hashedPassword, emailToken);
 
       const customer = await CustomerRepository.get(_customer.id);
 
       customer.hidePassword();
 
-      const token = await JWT.signCustomerJWT(customer);
-
-      const response = new Response(Response.SUCCESS, req.__('_created._customer'), {
-        customer,
-        api_token: token
-      });
+      const response = new Response(Response.SUCCESS, req.__('_created._customer'), customer);
 
       res.status(StatusCodes.CREATED).send(response);
 

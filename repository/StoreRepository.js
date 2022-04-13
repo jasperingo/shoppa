@@ -327,7 +327,7 @@ module.exports = {
     });
   },
 
-  async add({ sub_category_id, name, email, phone_number }, password, customer_id) {
+  async add({ sub_category_id, name, email, phone_number }, password, customer_id, email_verification_token) {
 
     return sequelize.transaction(async (t)=> {
 
@@ -338,8 +338,9 @@ module.exports = {
             name,
             email,
             phone_number,
+            email_verification_token,
             type: User.TYPE_STORE,
-            status: User.STATUS_ACTIVATING
+            status: User.STATUS_PENDING,
           }
         }, 
         { include: User, transaction: t }
@@ -387,9 +388,10 @@ module.exports = {
   
   updateStatus(store, status) {
 
-    if (status === User.STATUS_ACTIVE && (store.user.addresses.length === 0 || store.user.working_hours.length === 0)) {
+    if (status === User.STATUS_ACTIVE && !store.user.email_verified)
+      status = User.STATUS_EMAIL_PENDING;
+    else if (status === User.STATUS_ACTIVE && (store.user.addresses.length === 0 || store.user.working_hours.length === 0))
       status = User.STATUS_ACTIVATING;
-    }
 
     return User.update({ status }, { where : { id: store.user_id } });
   },

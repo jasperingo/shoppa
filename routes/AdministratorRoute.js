@@ -3,7 +3,6 @@ const express = require('express');
 const { checkSchema } = require('express-validator');
 const AdministratorController = require('../controllers/AdministratorController');
 const TransactionController = require('../controllers/TransactionController');
-const UnauthorizedException = require('../http/exceptions/UnauthorizedException');
 const AuthMiddleware = require('../middlewares/AuthMiddleware');
 const AdministratorFetchMiddleware = require('../middlewares/fetch/AdministratorFetchMiddleware');
 const PaginationMiddleware = require('../middlewares/PaginationMiddleware');
@@ -17,6 +16,7 @@ const AdministratorPasswordUpdateValidation = require('../validation/administrat
 const FileUploadMiddleware = require('../middlewares/FileUploadMiddleware');
 const FileUploadValidationMiddleware = require('../middlewares/FileUploadValidationMiddleware');
 const Files = require('../http/Files');
+const AuthValidationMiddleware = require('../middlewares/AuthValidationMiddleware');
 
 const router = express.Router();
 
@@ -27,7 +27,7 @@ const transactionController = new TransactionController();
 router.post(
   '/login', 
   checkSchema(AdministratorLoginValidation),
-  ValidationMiddleware(UnauthorizedException),
+  AuthValidationMiddleware,
   controller.login
 );
 
@@ -37,7 +37,7 @@ router.put(
   AuthMiddleware, 
   AdministratorPermissionMiddleware, 
   checkSchema(AdministratorUpdateValidation), 
-  ValidationMiddleware(), 
+  ValidationMiddleware, 
   controller.update
 );
 
@@ -57,7 +57,7 @@ router.put(
   AuthMiddleware,
   AdministratorPermissionMiddleware,
   checkSchema(AdministratorPasswordUpdateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.updatePassword
 );
 
@@ -67,7 +67,7 @@ router.put(
   AuthMiddleware,
   StoreAdministratorPermissionMiddleware,
   checkSchema(AdministratorPasswordUpdateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.updatePassword
 );
 
@@ -77,7 +77,7 @@ router.put(
   AuthMiddleware,
   DeliveryFirmAdministratorPermissionMiddleware,
   checkSchema(AdministratorPasswordUpdateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.updatePassword
 );
 
@@ -112,4 +112,3 @@ router.get(
 );
 
 module.exports = router;
-

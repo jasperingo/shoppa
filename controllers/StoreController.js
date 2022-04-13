@@ -2,6 +2,7 @@ const { StatusCodes } = require("http-status-codes");
 const InternalServerException = require("../http/exceptions/InternalServerException");
 const Pagination = require("../http/Pagination");
 const Response = require("../http/Response");
+const StringGenerator = require("../http/StringGenerator");
 const AdministratorRepository = require("../repository/AdministratorRepository");
 const ReviewRepository = require("../repository/ReviewRepository");
 const StoreRepository = require("../repository/StoreRepository");
@@ -13,10 +14,12 @@ module.exports = class StoreController {
   async register(req, res, next) {
     
     try {
+
+      const emailToken = await StringGenerator.emailVerificationToken();
       
       const hashedPassword = await Hash.hashPassword(req.body.administrator_password);
       
-      const result = await StoreRepository.add(req.body, hashedPassword, req.data.customer.id);
+      const result = await StoreRepository.add(req.body, hashedPassword, req.data.customer.id, emailToken);
 
       const store = await StoreRepository.get(result.store.id);
 
@@ -28,12 +31,7 @@ module.exports = class StoreController {
 
       store.setDataValue('administrators', [administrator]);
 
-      const token = await JWT.signStoreJWT(store.toJSON());
-
-      const response = new Response(Response.SUCCESS, req.__('_created._store'), {
-        store,
-        api_token: token
-      });
+      const response = new Response(Response.SUCCESS, req.__('_created._store'), store);
 
       res.status(StatusCodes.CREATED).send(response);
 

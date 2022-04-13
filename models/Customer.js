@@ -9,6 +9,7 @@ class Customer extends Model {
 
   hidePassword() {
     this.password = undefined;
+    this.email_verification_token = undefined;
   }
 
 }

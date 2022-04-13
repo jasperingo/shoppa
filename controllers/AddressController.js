@@ -118,7 +118,4 @@ module.exports = class AddressController {
     }
   }
 
-
-
 }
-

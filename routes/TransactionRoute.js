@@ -25,7 +25,7 @@ const controller = new TransactionController();
 
 router.post(
   '/verify/webhook',
-  //PaystackWebhookAuthMiddleware,
+  PaystackWebhookAuthMiddleware,
   controller.verifyByWebhook
 );
 
@@ -34,7 +34,7 @@ router.post(
   AuthMiddleware,
   WithdrawalTransactionCreatePermissionMiddleware,
   checkSchema(WithdrawalTransactionCreateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.createWithdrawal
 );
 
@@ -43,7 +43,7 @@ router.post(
   AuthMiddleware,
   RefundTransactionCreatePermissionMiddleware,
   checkSchema(RefundTransactionCreateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.createRefund
 );
 
@@ -52,7 +52,7 @@ router.post(
   AuthMiddleware,
   PaymentTransactionCreatePermissionMiddleware,
   checkSchema(PaymentTransactionCreateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.createPayment
 );
 
@@ -62,7 +62,7 @@ router.put(
   AuthMiddleware,
   TransactionStatusUpdatePermissionMiddleware,
   checkSchema(TransactionStatusUpdateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.updateStatus
 );
 
@@ -83,6 +83,4 @@ router.get(
   controller.get
 );
 
-
 module.exports = router;
-

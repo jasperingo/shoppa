@@ -24,6 +24,7 @@ const PasswordResetRoute = require('./PasswordResetRoute');
 const ReviewRoute = require('./ReviewRoute');
 const BankRoute = require('./BankRoute');
 const PromotionRoute = require('./PromotionRoute');
+const EmailVerificationRoute = require('./EmailVerificationRoute');
 
 const router = express.Router();
 
@@ -75,5 +76,6 @@ router.use('/bank', BankRoute);
 
 router.use('/promotion', PromotionRoute);
 
-module.exports = router;
+router.use('/email-verification', EmailVerificationRoute);
 
+module.exports = router;

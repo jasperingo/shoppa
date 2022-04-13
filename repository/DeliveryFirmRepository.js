@@ -1,13 +1,11 @@
 const { Op } = require("sequelize");
 const Address = require("../models/Address");
 const Administrator = require("../models/Administrator");
-const Customer = require("../models/Customer");
 const DeliveryFirm = require("../models/DeliveryFirm");
 const User = require("../models/User");
 const WithdrawalAccount = require("../models/WithdrawalAccount");
 const WorkingHour = require("../models/WorkingHour");
 const sequelize = require("./DB");
-
 
 module.exports = {
 
@@ -167,18 +165,19 @@ module.exports = {
     return DeliveryFirm.count();
   },
   
-  async add(data, password, customer) {
+  async add({ name, email, phone_number }, password, customer, email_verification_token) {
 
     return sequelize.transaction(async (transaction)=> {
 
       const deliveryFirm = await DeliveryFirm.create(
         {
           user: {
-            name: data.name,
-            email: data.email,
-            phone_number: data.phone_number,
+            name,
+            email,
+            phone_number,
+            email_verification_token,
             type: User.TYPE_DELIVERY_FIRM,
-            status: User.STATUS_ACTIVATING
+            status: User.STATUS_PENDING
           }
         }, 
         { include: User, transaction }
@@ -207,15 +206,14 @@ module.exports = {
     return User.update({ photo }, { where : { id: deliveryFirm.user_id } });
   },
 
-  updateStatus(store, status) {
+  updateStatus(deliveryFirm, status) {
 
-    if (status === User.STATUS_ACTIVE && (store.user.addresses.length === 0 || store.user.working_hours.length === 0)) {
+    if (status === User.STATUS_ACTIVE && !deliveryFirm.user.email_verified)
+      status = User.STATUS_EMAIL_PENDING;
+    else if (status === User.STATUS_ACTIVE && (deliveryFirm.user.addresses.length === 0 || deliveryFirm.user.working_hours.length === 0))
       status = User.STATUS_ACTIVATING;
-    }
 
-    return User.update({ status }, { where : { id: store.user_id } });
+    return User.update({ status }, { where : { id: deliveryFirm.user_id } });
   },
 
 };
-
-

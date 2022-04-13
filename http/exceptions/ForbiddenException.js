@@ -3,5 +3,8 @@ const HTTPException = require("./HTTPException");
 
 module.exports = class ForbiddenException extends HTTPException {
   status = StatusCodes.FORBIDDEN;
-  message = '_error._forbidden';
+  constructor(message = '_error._forbidden', data) {
+    super(data);
+    this.message = message;
+  }
 }

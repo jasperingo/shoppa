@@ -25,7 +25,7 @@ router.post(
   AuthMiddleware,
   DiscountCreatePermissionMiddleware,
   checkSchema(DiscountCreateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.create
 );
 
@@ -35,7 +35,7 @@ router.put(
   AuthMiddleware,
   DiscountUpdatePermissionMiddleware,
   checkSchema(DiscountUpdateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.update
 );
 

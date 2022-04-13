@@ -6,7 +6,6 @@ const StoreController = require('../controllers/StoreController');
 const ProductController = require('../controllers/ProductController');
 const WithdrawalAccountController = require('../controllers/WithdrawalAccountController');
 const WorkingHourController = require('../controllers/WorkingHourController');
-const UnauthorizedException = require('../http/exceptions/UnauthorizedException');
 const Files = require('../http/Files');
 const AuthMiddleware = require('../middlewares/AuthMiddleware');
 const StoreFetchMiddleware = require('../middlewares/fetch/StoreFetchMiddleware');
@@ -38,6 +37,7 @@ const SearchValidation = require('../validation/search/SearchValidation');
 const ProductRecommendedUpdateValidation = require('../validation/product/ProductRecommendedUpdateValidation');
 const CategoryController = require('../controllers/CategoryController');
 const ProductListFilterMiddleware = require('../middlewares/ProductListFilterMiddleware');
+const AuthValidationMiddleware = require('../middlewares/AuthValidationMiddleware');
 
 const router = express.Router();
 
@@ -66,14 +66,14 @@ const reviewController = new ReviewController();
 router.post(
   '/register', 
   checkSchema(StoreRegisterValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.register
 );
 
 router.post(
   '/login',
   checkSchema(StoreLoginValidation),
-  ValidationMiddleware(UnauthorizedException),
+  AuthValidationMiddleware,
   StoreLoginPermissionMiddleware,
   controller.login
 );
@@ -84,7 +84,7 @@ router.put(
   AuthMiddleware,
   StorePermissionMiddleware,
   checkSchema(StoreUpdateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.update
 );
 
@@ -104,7 +104,7 @@ router.put(
   AuthMiddleware,
   AdministratorPermissionMiddleware, 
   checkSchema(ProductRecommendedUpdateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.updateRecommended
 );
 
@@ -114,7 +114,7 @@ router.put(
   AuthMiddleware,
   AdministratorPermissionMiddleware, 
   checkSchema(CustomerUpdateStatusValidation),
-  ValidationMiddleware(), 
+  ValidationMiddleware, 
   controller.updateStatus
 );
 
@@ -124,7 +124,7 @@ router.put(
   AuthMiddleware,
   StorePermissionMiddleware,
   checkSchema(AddressUpdateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   addressController.updateStoreAddress
 );
 
@@ -134,7 +134,7 @@ router.put(
   AuthMiddleware,
   StorePermissionMiddleware,
   checkSchema(WorkingHourUpdateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   workingHourController.updateStoreWorkingHours
 );
 
@@ -144,7 +144,7 @@ router.put(
   AuthMiddleware,
   StorePermissionMiddleware,
   checkSchema(WithdrawalAccountUpdateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   withdrawalAccountController.updateStoreWithdrawalAccount
 );
 
@@ -171,7 +171,7 @@ router.get(
 router.get(
   '/search',
   SearchValidation,
-  ValidationMiddleware(),
+  ValidationMiddleware,
   SearchParamsMiddleware,
   PaginationMiddleware,
   controller.getListBySearch

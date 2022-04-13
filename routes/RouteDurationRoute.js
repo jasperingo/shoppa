@@ -23,7 +23,7 @@ router.post(
   RouteDurationCreatePermissionMiddleware,
   checkSchema(RouteDurationValidation),
   RouteDurationCreateUniqueValidation,
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.create
 );
 
@@ -34,7 +34,7 @@ router.put(
   RouteDurationUpdatePermissionMiddleware,
   checkSchema(RouteDurationValidation),
   RouteDurationUpdateUniqueValidation,
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.update
 );
 
@@ -55,4 +55,3 @@ router.get(
 );
 
 module.exports = router;
-

@@ -5,6 +5,7 @@ const Response = require("../http/Response");
 const StringGenerator = require("../http/StringGenerator");
 const Transaction = require("../models/Transaction");
 const TransactionRepository = require("../repository/TransactionRepository");
+const { AUTH_APP_ADMIN } = require("../security/JWT");
 const { messageSender } = require("../websocket");
 
 module.exports = class TransactionController {
@@ -13,25 +14,14 @@ module.exports = class TransactionController {
     
     try {
 
-      let result;
-
       if (req.body.event === 'charge.success') {
         
-        result = await TransactionRepository.updatePaymentVerifed(req.body.data.reference, StringGenerator.transactionReference);
+        const result = await TransactionRepository.updatePaymentVerifed(req.body.data.reference, StringGenerator.transactionReference);
 
-      } else if (req.body.event === 'transfer.success') {
-
-        result = await TransactionRepository.updateTransferVerifed(req.body.data.reference);
-
-      } else if (req.body.event === 'transfer.failed') {
-
-        result = await TransactionRepository.updateTransferFailed(req.body.data.reference);
+        messageSender(result.senderId, result.message);
 
       }
 
-      if (result !== undefined)
-        messageSender(result.senderId, result.message);
-      
       res.status(StatusCodes.OK).send({ reference: req.body.data.reference });
 
     } catch(error) {
@@ -116,6 +106,12 @@ module.exports = class TransactionController {
         case Transaction.STATUS_PROCESSING:
           result = await TransactionRepository.updateStatusToProcessing(req.data.transaction, req.auth.userId);
           break;
+        case Transaction.STATUS_APPROVED:
+          result = await TransactionRepository.updateStatusToApproved(req.data.transaction, req.auth.userId);
+          break;
+        case Transaction.STATUS_FAILED:
+          result = await TransactionRepository.updateStatusToFailed(req.data.transaction, req.auth.userId);
+          break;
       }
       
       if (result !== undefined) 
@@ -133,8 +129,13 @@ module.exports = class TransactionController {
   }
 
   get(req, res) {
+    
+    const { transaction } = req.data;
 
-    const response = new Response(Response.SUCCESS, req.__('_fetched._transaction'), req.data.transaction);
+    if (req.auth.authType !== AUTH_APP_ADMIN)
+      transaction.user.setDataValue('withdrawal_account', undefined);
+
+    const response = new Response(Response.SUCCESS, req.__('_fetched._transaction'), transaction);
 
     res.status(StatusCodes.OK).send(response);
   }

@@ -11,6 +11,11 @@ module.exports = {
     return res !== null;
   },
 
+  async emailVerificationTokenExists(email_verification_token) {
+    const res = await User.findOne({ attributes: ['id'], where: { email_verification_token } });
+    return res !== null;
+  },
+
   async emailExists(email) {
     const res = await User.findOne({ attributes: ['id'], where: { type: User.TYPE_CUSTOMER, email } });
     return res !== null;
@@ -99,7 +104,7 @@ module.exports = {
     return Customer.count();
   },
   
-  add({ first_name, last_name, email, phone_number }, password) {
+  add({ first_name, last_name, email, phone_number }, password, email_verification_token) {
 
     return Customer.create({
       first_name,
@@ -108,9 +113,10 @@ module.exports = {
       user: {
         email,
         phone_number,
+        email_verification_token,
         name: `${first_name} ${last_name}`,
         type: User.TYPE_CUSTOMER,
-        status: User.STATUS_ACTIVE
+        status: User.STATUS_EMAIL_PENDING
       }
     }, { include: User });
   },

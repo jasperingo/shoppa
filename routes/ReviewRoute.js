@@ -23,7 +23,7 @@ router.post(
   AuthMiddleware,
   ProductReviewCreatePermissionMiddleware,
   checkSchema(ProductReviewCreateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.createForProduct
 );
 
@@ -32,7 +32,7 @@ router.post(
   AuthMiddleware,
   StoreReviewCreatePermissionMiddleware,
   checkSchema(StoreReviewCreateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.createForStore
 );
 
@@ -41,7 +41,7 @@ router.post(
   AuthMiddleware,
   DeliveryFirmReviewCreatePermissionMiddleware,
   checkSchema(DeliveryFirmReviewCreateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.createForDeliveryFirm
 );
 
@@ -51,7 +51,7 @@ router.put(
   AuthMiddleware,
   ReviewUpdatePermissionMiddleware,
   checkSchema(ReviewUpdateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.update
 );
 
@@ -63,6 +63,4 @@ router.delete(
   controller.delete
 );
 
-
 module.exports = router;
-

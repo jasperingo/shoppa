@@ -22,7 +22,7 @@ router.put(
   AuthMiddleware,
   OrderItemStorePermissionMiddleware,
   checkSchema(OrderItemProcessedAtUpdateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.updateProcessedAt
 );
 
@@ -32,7 +32,7 @@ router.put(
   AuthMiddleware,
   OrderItemDeliveryFirmPermissionMiddleware,
   checkSchema(OrderItemTransportedAtUpdateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.updateTransportedAt
 );
 
@@ -42,9 +42,8 @@ router.put(
   AuthMiddleware,
   OrderItemCustomerPermissionMiddleware,
   checkSchema(OrderItemDeliveredAtUpdateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.updateDeliveredAt
 );
 
 module.exports = router;
-

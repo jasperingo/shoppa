@@ -18,7 +18,7 @@ router.post(
   AuthMiddleware,
   FavoriteAddPermissionMiddleware,
   checkSchema(FavoriteAddValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.create
 );
 
@@ -30,6 +30,4 @@ router.delete(
   controller.delete
 );
 
-
 module.exports = router;
-

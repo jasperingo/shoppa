@@ -5,11 +5,36 @@ const OrderRepository = require("../repository/OrderRepository");
 const SavedCartRepository = require("../repository/SavedCartRepository");
 const TransactionRepository = require("../repository/TransactionRepository");
 const PasswordResetRepository = require("../repository/PasswordResetRepository");
+const UserRepository = require("../repository/UserRepository");
 
 const ALLOWED_ATTEMPTS = 3;
 
 module.exports = {
 
+  async emailVerificationToken() {
+
+    let code, count = 0;
+
+    do {
+
+      code = randomstring.generate({
+        length: 6,
+        capitalization: 'uppercase'
+      });
+
+      count++;
+
+      if (await UserRepository.emailVerificationTokenExists(code)) {
+        code = undefined;
+      }
+
+    } while(count < ALLOWED_ATTEMPTS && code === undefined);
+
+    if (code === undefined) throw new Error('_error._generate_code');
+
+    return code;
+  },
+  
   async savedCartCode() {
 
     let code, count = 0;

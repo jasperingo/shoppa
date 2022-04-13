@@ -21,7 +21,7 @@ router.post(
   AuthMiddleware,
   ProductVariantCreatePermissionMiddleware,
   checkSchema(ProductVariantCreateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.create
 );
 
@@ -31,7 +31,7 @@ router.put(
   AuthMiddleware,
   ProductVariantUpdatePermissionMiddleware,
   checkSchema(ProductVariantUpdateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.update
 );
 
@@ -52,4 +52,3 @@ router.get(
 );
 
 module.exports = router;
-

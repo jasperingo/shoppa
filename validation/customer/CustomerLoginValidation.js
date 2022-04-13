@@ -8,4 +8,3 @@ module.exports = {
   password: ValidationRules.getAuthPasswordValid('customer')
   
 };
-

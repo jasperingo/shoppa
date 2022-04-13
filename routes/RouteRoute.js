@@ -26,7 +26,7 @@ router.post(
   RouteAddPermissionMiddleware,
   checkSchema(RouteValidation),
   RouteAddUniqueValidation,
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.create
 );
 
@@ -36,7 +36,7 @@ router.post(
   RouteAddPermissionMiddleware,
   checkSchema(LinkRouteValidation),
   LinkRouteCreateUniqueValidation,
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.createLink
 );
 
@@ -47,7 +47,7 @@ router.put(
   RouteUpdatePermissionMiddleware,
   checkSchema(RouteValidation),
   RouteUpdateUniqueValidation,
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.update
 );
 
@@ -58,7 +58,7 @@ router.put(
   RouteUpdatePermissionMiddleware,
   checkSchema(LinkRouteValidation),
   LinkRouteUpdateUniqueValidation,
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.updateLink
 );
 
@@ -78,6 +78,4 @@ router.get(
   controller.get
 );
 
-
 module.exports = router;
-

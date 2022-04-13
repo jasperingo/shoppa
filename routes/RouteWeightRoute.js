@@ -23,7 +23,7 @@ router.post(
   RouteWeightCreatePermissionMiddleware,
   checkSchema(RouteWeightValidation),
   RouteWeightCreateUniqueValidation,
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.create
 );
 
@@ -34,7 +34,7 @@ router.put(
   RouteWeightUpdatePermissionMiddleware,
   checkSchema(RouteWeightValidation),
   RouteWeightUpdateUniqueValidation,
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.update
 );
 
@@ -54,6 +54,4 @@ router.get(
   controller.get
 );
 
-
 module.exports = router;
-

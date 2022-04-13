@@ -19,7 +19,7 @@ router.post(
   AuthMiddleware,
   SavedCartCreatePermissionMiddleware,
   checkSchema(SavedCartCreateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.create
 );
 
@@ -44,4 +44,3 @@ router.get(
 );
 
 module.exports = router;
-

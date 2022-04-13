@@ -5,7 +5,6 @@ const DeliveryFirmController = require('../controllers/DeliveryFirmController');
 const AddressController = require('../controllers/AddressController');
 const WorkingHourController = require('../controllers/WorkingHourController');
 const WithdrawalAccountController = require('../controllers/WithdrawalAccountController');
-const UnauthorizedException = require('../http/exceptions/UnauthorizedException');
 const Files = require('../http/Files');
 const AuthMiddleware = require('../middlewares/AuthMiddleware');
 const ValidationMiddleware = require('../middlewares/ValidationMiddleware');
@@ -31,6 +30,7 @@ const DeliveryFirmAndAdminPermissionMiddleware = require('../middlewares/permiss
 const TransactionController = require('../controllers/TransactionController');
 const ReviewController = require('../controllers/ReviewController');
 const OrderListFilterMiddleware = require('../middlewares/OrderListFilterMiddleware');
+const AuthValidationMiddleware = require('../middlewares/AuthValidationMiddleware');
 
 const router = express.Router();
 
@@ -53,14 +53,14 @@ const reviewController = new ReviewController();
 router.post(
   '/register', 
   checkSchema(DeliveryFirmRegisterValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.register
 );
 
 router.post(
   '/login', 
   checkSchema(DeliveryFirmLoginValidation),
-  ValidationMiddleware(UnauthorizedException),
+  AuthValidationMiddleware,
   DeliveryFirmLoginPermissionMiddleware,
   controller.login
 );
@@ -79,7 +79,7 @@ router.put(
   AuthMiddleware,
   DeliveryFirmPermissionMiddleware,
   checkSchema(DeliveryFirmUpdateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.update
 );
 
@@ -99,7 +99,7 @@ router.put(
   AuthMiddleware,
   AdministratorPermissionMiddleware, 
   checkSchema(CustomerUpdateStatusValidation),
-  ValidationMiddleware(), 
+  ValidationMiddleware, 
   controller.updateStatus
 );
 
@@ -109,7 +109,7 @@ router.put(
   AuthMiddleware,
   DeliveryFirmPermissionMiddleware,
   checkSchema(AddressUpdateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   addressController.updateDeliveryFirmAddress
 );
 
@@ -119,7 +119,7 @@ router.put(
   AuthMiddleware,
   DeliveryFirmPermissionMiddleware,
   checkSchema(WorkingHourUpdateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   workingHourController.updateDeliveryFirmWorkingHours
 );
 
@@ -129,7 +129,7 @@ router.put(
   AuthMiddleware,
   DeliveryFirmPermissionMiddleware,
   checkSchema(WithdrawalAccountUpdateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   withdrawalAccountController.updateDeliveryFirmWithdrawalAccount
 );
 
@@ -196,4 +196,3 @@ router.get(
 );
 
 module.exports = router;
-

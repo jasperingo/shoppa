@@ -58,6 +58,10 @@ socketIO.on('connection', async (socket)=> {
     messageController.sendMessage(socket, Number(receiverId), content);
   });
 
+  socket.on('application_support', ()=> {
+    messageController.getApplicationSupport(socket);
+  });
+
   socket.on('message_recipient', (memberId)=> {
     messageController.getMessageRecipient(socket, Number(memberId));
   });

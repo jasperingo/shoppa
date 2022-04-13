@@ -20,7 +20,7 @@ router.post(
   AuthMiddleware, 
   AddressAddPermissionMiddleware,
   checkSchema(CustomerAddressAddValidation), 
-  ValidationMiddleware(), 
+  ValidationMiddleware, 
   controller.add
 );
 
@@ -30,7 +30,7 @@ router.put(
   AuthMiddleware, 
   AddressUpdatePermissionMiddleware, 
   checkSchema(CustomerAddressUpdateValidation), 
-  ValidationMiddleware(), 
+  ValidationMiddleware, 
   controller.update
 );
 
@@ -40,7 +40,7 @@ router.delete(
   AuthMiddleware, 
   AddressUpdatePermissionMiddleware,
   checkSchema(CustomerAddressDeleteValidation), 
-  ValidationMiddleware(), 
+  ValidationMiddleware, 
   controller.delete
 );
 

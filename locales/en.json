@@ -1,12 +1,12 @@
 {
 
   "_created": {
-    "_customer": "Customer created",
+    "_customer": "Your account has created and an email has been sent to you, please verify your email to activate your account.",
     "_address": "Address created",
     "_category": "Category created",
     "_sub_category": "Sub-category created",
-    "_store": "Store created",
-    "_delivery_firm": "Delivery firm created",
+    "_store": "Your account has been created, please wait for verification before your account can be activated. Contact support for more information.",
+    "_delivery_firm": "Your account has been created, please wait for verification before your account can be activated. Contact support for more information.",
     "_product": "Product created",
     "_product_variant": "Product variant created",
     "_route": "Route created",
@@ -24,6 +24,8 @@
   },
   
   "_updated": {
+    "_email_verified": "Email verified.",
+    "_email_verification_token": "Email verification token has been sent.",
     "_customer": "Customer updated",
     "_administrator": "Administrator updated",
     "_password": "Password updated",
@@ -114,6 +116,14 @@
     "_not_found": "Resource could not be found",
     "_forbidden": "Permission not granted",
     "_unauthorized": "Authorization failed",
+    
+    "_unauthorized_credential": "Credentials are incorrect",
+
+    "_forbidden_pending": "Your account has not yet been verified, please contact support.",
+
+    "_forbidden_email_pending": "Please verify your email to activate your account.",
+
+    "_forbidden_inactive": "Your account was deactivated, please contact support.",
     
     "_generate_code": "Code generation failed",
     "_generate_number": "Number generation failed",

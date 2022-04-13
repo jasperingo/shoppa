@@ -21,7 +21,7 @@ PromotionRoute.post(
   AuthMiddleware,
   AdministratorPermissionMiddleware,
   checkSchema(PromotionCreateValidation), 
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.create
 );
 

@@ -16,37 +16,36 @@ const controller = new PasswordResetController();
 router.post(
   '/customer/create',
   checkSchema(CustomerPasswordResetCreateValidation), 
-  ValidationMiddleware(), 
+  ValidationMiddleware, 
   controller.createCustomer
 );
 
 router.post(
   '/store/create',
   checkSchema(StorePasswordResetCreateValidation), 
-  ValidationMiddleware(), 
+  ValidationMiddleware, 
   controller.createAdministrator
 );
 
 router.post(
   '/delivery-firm/create',
   checkSchema(DeliveryFirmPasswordResetCreateValidation), 
-  ValidationMiddleware(), 
+  ValidationMiddleware, 
   controller.createAdministrator
 );
 
 router.post(
   '/administrator/create',
   checkSchema(AdministratorPasswordResetCreateValidation), 
-  ValidationMiddleware(), 
+  ValidationMiddleware, 
   controller.createAdministrator
 );
 
 router.put(
   '/reset',
   checkSchema(PasswordResetResetValidation), 
-  ValidationMiddleware(), 
+  ValidationMiddleware, 
   controller.reset
 );
 
 module.exports = router;
-

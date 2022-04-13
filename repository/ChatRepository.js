@@ -92,6 +92,60 @@ module.exports = {
     });
   },
 
+  getByMemberWithApplicationSupport(one) {
+    return sequelize.transaction(async (transaction)=> {
+
+      const appUser = await User.findOne({ 
+        where: { type: User.TYPE_APPLICATION },
+        transaction
+      });
+
+      const chat = await Chat.findOne({
+        where: {
+          [Op.or]: [
+            { 
+              member_one_id: one, 
+              member_two_id: appUser.id 
+            },
+            { 
+              member_one_id: appUser.id, 
+              member_two_id: one 
+            }
+          ]
+        },
+        include: [
+          {
+            model: User,
+            attributes: ['id', 'name', 'photo', 'type'],
+            as: 'member_one'
+          },
+          {
+            model: User,
+            attributes: ['id', 'name', 'photo', 'type'],
+            as: 'member_two'
+          }
+        ],
+        transaction
+      });
+
+      if (chat === null) {
+
+        const user = await User.findByPk(one, { attributes: ['id', 'name', 'photo', 'type'] });
+
+        return {
+          id: 0,
+          member_one_id: one,
+          member_two_id: appUser.id,
+          member_one: user,
+          member_two: appUser
+        };
+
+      } else {
+        return chat;
+      }
+    });
+  },
+
   getListByMember(id, date, limit) {
     return sequelize.transaction(async (transaction)=> {
       const chats = await Chat.findAll({

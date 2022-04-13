@@ -32,7 +32,7 @@ router.post(
   AuthMiddleware,
   ProductAddPermissionMiddleware,
   checkSchema(ProductAddValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.create
 );
 
@@ -42,7 +42,7 @@ router.put(
   AuthMiddleware,
   ProductUpdatePermissionMiddleware,
   checkSchema(ProductUpdateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.update
 );
 
@@ -62,7 +62,7 @@ router.put(
   AuthMiddleware,
   AdministratorPermissionMiddleware, 
   checkSchema(ProductRecommendedUpdateValidation),
-  ValidationMiddleware(),
+  ValidationMiddleware,
   controller.updateRecommended
 );
 
@@ -89,7 +89,7 @@ router.get(
 router.get(
   '/search',
   SearchValidation,
-  ValidationMiddleware(),
+  ValidationMiddleware,
   SearchParamsMiddleware,
   PaginationMiddleware,
   controller.getListBySearch

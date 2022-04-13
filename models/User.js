@@ -14,6 +14,10 @@ class User extends Model {
   static TYPE_DELIVERY_FIRM = 'delivery_firm';
   
   
+  static STATUS_PENDING = 'pending';
+
+  static STATUS_EMAIL_PENDING = 'email_pending';
+
   static STATUS_ACTIVE = 'active';
 
   static STATUS_ACTIVATING = 'activating';
@@ -22,6 +26,26 @@ class User extends Model {
 
 
   static GET_ATTR = ['id', 'name', 'email', 'phone_number', 'photo', 'status', 'type', 'updated_at'];
+
+
+  static getTypes() {
+    return [
+      User.TYPE_APPLICATION,
+      User.TYPE_CUSTOMER,
+      User.TYPE_STORE,
+      User.TYPE_DELIVERY_FIRM
+    ]
+  }
+
+  static getStatuses() {
+    return [
+      User.STATUS_PENDING,
+      User.STATUS_EMAIL_PENDING,
+      User.STATUS_ACTIVE,
+      User.STATUS_ACTIVATING,
+      User.STATUS_DEACTIVATED
+    ];
+  }
 
 }
 
@@ -35,7 +59,7 @@ User.init({
   },
 
   type: {
-    type: DataTypes.ENUM(User.TYPE_CUSTOMER, User.TYPE_STORE, User.TYPE_DELIVERY_FIRM),
+    type: DataTypes.ENUM(...User.getTypes()),
     allowNull: false
   },
 
@@ -67,8 +91,16 @@ User.init({
   },
 
   status: {
-    type: DataTypes.ENUM(User.STATUS_ACTIVE, User.STATUS_ACTIVATING, User.STATUS_DEACTIVATED),
+    type: DataTypes.ENUM(...User.getStatuses()),
     allowNull: false
+  },
+
+  email_verified: {
+    type: DataTypes.BOOLEAN
+  },
+
+  email_verification_token: {
+    type: DataTypes.STRING
   },
 
   updated_at: {

@@ -128,5 +128,20 @@ module.exports = class MessageController {
     }
   }
 
+  async getApplicationSupport(socket) {
+
+    try {
+      
+      const recipient = await ChatRepository.getByMemberWithApplicationSupport(socket.request.auth.userId);
+      
+      const reponse = new Response(Response.SUCCESS, Response.SUCCESS, recipient);
+
+      socket.emit('application_support', reponse);
+      
+    } catch(error) {
+      console.log(error);
+      socket.emit('application_support', new Response(Response.ERROR, Response.ERROR));
+    }
+  }
 
 }
