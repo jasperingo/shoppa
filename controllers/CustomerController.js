@@ -1,5 +1,6 @@
 
 const { StatusCodes } = require("http-status-codes");
+const EmailService = require("../emailService");
 const InternalServerException = require("../http/exceptions/InternalServerException");
 const Pagination = require("../http/Pagination");
 const Response = require("../http/Response");
@@ -18,9 +19,18 @@ module.exports = class CustomerController {
       
       const hashedPassword = await Hash.hashPassword(req.body.password);
 
-      const _customer = await CustomerRepository.add(req.body, hashedPassword, emailToken);
+      const result = await CustomerRepository.add(req.body, hashedPassword, emailToken);
 
-      const customer = await CustomerRepository.get(_customer.id);
+      const customer = await CustomerRepository.get(result.id);
+
+      await EmailService.send(
+        customer.user.email,
+        EmailService.EMAIL_VERIFICATION, 
+        { 
+          name: customer.user.name,
+          verificationLink: `${process.env.CLIENT_DOMAIN_NAME}email-verification?token=${emailToken}`
+        }
+      );
 
       customer.hidePassword();
 

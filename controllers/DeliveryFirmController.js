@@ -1,8 +1,10 @@
 const { StatusCodes } = require("http-status-codes");
+const EmailService = require("../emailService");
 const InternalServerException = require("../http/exceptions/InternalServerException");
 const Pagination = require("../http/Pagination");
 const Response = require("../http/Response");
 const StringGenerator = require("../http/StringGenerator");
+const User = require("../models/User");
 const AdministratorRepository = require("../repository/AdministratorRepository");
 const DeliveryFirmRepository = require("../repository/DeliveryFirmRepository");
 const ReviewRepository = require("../repository/ReviewRepository");
@@ -113,6 +115,16 @@ module.exports = class DeliveryFirmController {
       const deliveryFirm = await DeliveryFirmRepository.get(req.data.deliveryFirm.id);
 
       deliveryFirm.review_summary = await ReviewRepository.getSummaryForDeliveryFirm(deliveryFirm);
+
+      if (req.body.status === User.STATUS_ACTIVE && !deliveryFirm.email_verified) 
+        await EmailService.send(
+          deliveryFirm.user.email,
+          EmailService.EMAIL_VERIFICATION, 
+          { 
+            name: deliveryFirm.user.name,
+            verificationLink: `${process.env.CLIENT_DOMAIN_NAME}email-verification?token=${deliveryFirm.user.email_verification_token}`
+          }
+        );
 
       const response = new Response(Response.SUCCESS, req.__('_updated._status'), deliveryFirm);
 

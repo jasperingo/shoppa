@@ -7,9 +7,9 @@ module.exports = {
     return res !== null;
   },
 
-  getByEmail(email) {
+  getByEmailAndType(email, type) {
     return User.findOne({ 
-      where: { email } 
+      where: { email, type } 
     });
   },
 
@@ -21,10 +21,6 @@ module.exports = {
 
   updateEmailVerified(user, email_verified) {
     return User.update({ email_verified }, { where: { id: user.id } });
-  },
-
-  updateEmailVerificationToken(user, email_verification_token) {
-    return User.update({ email_verification_token }, { where: { id: user.id } });
-  },
-
+  }
+  
 }

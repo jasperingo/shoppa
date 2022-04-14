@@ -2,12 +2,14 @@ const { StatusCodes } = require("http-status-codes");
 const InternalServerException = require("../http/exceptions/InternalServerException");
 const Pagination = require("../http/Pagination");
 const Response = require("../http/Response");
+const EmailService = require("../emailService");
 const StringGenerator = require("../http/StringGenerator");
 const AdministratorRepository = require("../repository/AdministratorRepository");
 const ReviewRepository = require("../repository/ReviewRepository");
 const StoreRepository = require("../repository/StoreRepository");
 const Hash = require("../security/Hash");
 const JWT = require("../security/JWT");
+const User = require("../models/User");
 
 module.exports = class StoreController {
 
@@ -113,6 +115,16 @@ module.exports = class StoreController {
       const store = await StoreRepository.get(req.data.store.id);
 
       store.review_summary = await ReviewRepository.getSummaryForStore(store);
+      
+      if (req.body.status === User.STATUS_ACTIVE && !store.email_verified) 
+        await EmailService.send(
+          store.user.email,
+          EmailService.EMAIL_VERIFICATION, 
+          { 
+            name: store.user.name,
+            verificationLink: `${process.env.CLIENT_DOMAIN_NAME}email-verification?token=${store.user.email_verification_token}`
+          }
+        );
 
       const response = new Response(Response.SUCCESS, req.__('_updated._status'), store);
 
