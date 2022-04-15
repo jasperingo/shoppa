@@ -2,6 +2,7 @@
 const express = require('express');
 const { checkSchema } = require('express-validator');
 const EmailVerificationController = require('../controllers/EmailVerificationController');
+const AuthMiddleware = require('../middlewares/AuthMiddleware');
 const AdministratorPermissionMiddleware = require('../middlewares/permissions/AdministratorPermissionMiddleware');
 const ValidationMiddleware = require('../middlewares/ValidationMiddleware');
 const EmailVerificationCreateValidation = require('../validation/email_verification/EmailVerificationCreateValidation');
@@ -13,6 +14,7 @@ const controller = new EmailVerificationController();
 
 EmailVerificationRoute.post(
   '/send',
+  AuthMiddleware,
   AdministratorPermissionMiddleware,
   checkSchema(EmailVerificationCreateValidation),
   ValidationMiddleware,
