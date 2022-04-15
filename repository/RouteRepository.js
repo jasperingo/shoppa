@@ -86,57 +86,24 @@ module.exports = {
     
     const { count, rows } = await Route.findAndCountAll({
       where: { delivery_firm_id: deliveryFirm.id },
-      include: [
-        {
-          model: Route,
-          as: 'origin_route',
-        },
-        {
-          model: Route,
-          as: 'destination_route',
-        },
-      ],
       order: [['created_at', 'DESC']],
       offset,
       limit
     });
 
-    for (let [i, route] of rows.entries()) {
-      let weight = await RouteWeight.findOne({
+    for (const route of rows) {
+      const weight = await RouteWeight.findOne({
         attributes: ['id', 'fee'],
         where: { delivery_route_id: route.id },
         order: [['fee', 'ASC']],
       });
 
-      rows[i].setDataValue('route_weights', (weight === null ? [] : [weight]));
+      route.setDataValue('route_weights', (weight === null ? [] : [weight]));
     }
 
     return { count, rows };
   },
-
-  async getListOfBaseByDeliveryFirm(deliveryFirm, offset, limit) {
-    
-    return await Route.findAndCountAll({
-      where: { 
-        origin_route_id: { [Op.is]: null },
-        destination_route_id: { [Op.is]: null },
-        delivery_firm_id: deliveryFirm.id,
-      },
-      include: [
-        {
-          model: Route,
-          as: 'origin_route',
-        },
-        {
-          model: Route,
-          as: 'destination_route',
-        },
-      ],
-      order: [['created_at', 'DESC']],
-      offset,
-      limit
-    });
-  },
+  
 
   add({ name, door_delivery }, delivery_firm_id) {
     return Route.create({ delivery_firm_id, name, door_delivery });
@@ -149,16 +116,7 @@ module.exports = {
   delete(route) {
     return sequelize.transaction(async (transaction)=> {
       return await Promise.all([
-        Route.destroy({ 
-          where: { 
-            [Op.or]: [
-              { id: route.id },
-              { origin_route_id: route.id },
-              { destination_route_id: route.id }
-            ]
-          }, 
-          transaction 
-        }),
+        Route.destroy({ where: { id: route.id }, transaction }),
         RouteWeight.destroy({ where: { delivery_route_id: route.id }, transaction }),
         RouteLocation.destroy({ where: { delivery_route_id: route.id }, transaction })
       ]);

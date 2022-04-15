@@ -143,15 +143,6 @@ router.get(
 );
 
 router.get(
-  '/:id(\\d+)/delivery-route/base/list', 
-  DeliveryFirmFetchMiddleware,
-  AuthMiddleware,
-  DeliveryFirmPermissionMiddleware,
-  PaginationMiddleware,
-  routeController.getListOfBaseByDeliveryFirm
-);
-
-router.get(
   '/:id(\\d+)/order/list', 
   DeliveryFirmFetchMiddleware,
   AuthMiddleware,

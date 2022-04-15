@@ -99,24 +99,4 @@ module.exports = class RouteController {
     }
   }
 
-  async getListOfBaseByDeliveryFirm(req, res, next) {
-
-    try {
-
-      const { pager, deliveryFirm } = req.data;
-
-      const { count, rows } = await RouteRepository.getListOfBaseByDeliveryFirm(deliveryFirm, pager.page_offset, pager.page_limit);
-
-      const pagination = new Pagination(req, pager.page, pager.page_limit, count);
-
-      const response = ResponseDTO.success(req.__('_list_fetched._route'), rows, pagination);
-
-      res.status(StatusCodes.OK).send(response);
-
-    } catch(error) {
-      next(createHttpError.InternalServerError(error));
-    }
-  }
-
 }
-
