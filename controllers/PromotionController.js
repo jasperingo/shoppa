@@ -1,8 +1,8 @@
 const { StatusCodes } = require("http-status-codes");
-const InternalServerException = require("../http/exceptions/InternalServerException");
-const Pagination = require("../http/Pagination");
-const Response = require("../http/Response");
+const Pagination = require("../utils/Pagination");
+const ResponseDTO = require("../utils/ResponseDTO");
 const PromotionRepository = require("../repository/PromotionRepository");
+const createHttpError = require("http-errors");
 
 module.exports = class PromotionController {
 
@@ -14,12 +14,12 @@ module.exports = class PromotionController {
 
       const promotion = await PromotionRepository.get(result.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_created._promotion'), promotion);
+      const response = ResponseDTO.success(req.__('_created._promotion'), promotion);
 
       res.status(StatusCodes.CREATED).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -31,12 +31,12 @@ module.exports = class PromotionController {
       
       const promotion = await PromotionRepository.get(req.data.promotion.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._photo'), promotion);
+      const response = ResponseDTO.success(req.__('_updated._photo'), promotion);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -46,18 +46,18 @@ module.exports = class PromotionController {
 
       await PromotionRepository.delete(req.data.promotion);
 
-      const response = new Response(Response.SUCCESS, req.__('_deleted._promotion'));
+      const response = ResponseDTO.success(req.__('_deleted._promotion'));
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
   get(req, res) {
 
-    const response = new Response(Response.SUCCESS, req.__('_fetched._promotion'), req.data.promotion);
+    const response = ResponseDTO.success(req.__('_fetched._promotion'), req.data.promotion);
 
     res.status(StatusCodes.OK).send(response);
   }
@@ -72,12 +72,12 @@ module.exports = class PromotionController {
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._promotion'), rows, pagination);
+      const response = ResponseDTO.success(req.__('_list_fetched._promotion'), rows, pagination);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -89,12 +89,12 @@ module.exports = class PromotionController {
 
       const promotions = await PromotionRepository.getRandomList(pager.page_limit);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._promotion'), promotions);
+      const response = ResponseDTO.success(req.__('_list_fetched._promotion'), promotions);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 

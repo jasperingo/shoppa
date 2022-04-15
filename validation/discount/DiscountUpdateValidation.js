@@ -1,8 +1,6 @@
-const InternalServerException = require("../../http/exceptions/InternalServerException");
 const Discount = require("../../models/Discount");
 const DiscountRepository = require("../../repository/DiscountRepository");
 const ValidationRules = require("../ValidationRules");
-
 
 module.exports = {
 
@@ -14,7 +12,7 @@ module.exports = {
           if (await DiscountRepository.updateTitleExists(value, req.data.discount))
             return Promise.reject(req.__('_error._form._title_exists'));
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     }

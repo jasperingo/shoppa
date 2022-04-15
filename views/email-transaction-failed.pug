@@ -1,0 +1,6 @@
+
+extends email-layout.pug
+
+block content
+  div.mb-lg Sorry, your #{type} transaction failed, you can try sending the transaction again.
+  a.link(href=`${clientUrl}/transaction/${id}`) View transaction.

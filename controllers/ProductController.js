@@ -1,11 +1,10 @@
 const { StatusCodes } = require("http-status-codes");
-const InternalServerException = require("../http/exceptions/InternalServerException");
-const Response = require("../http/Response");
-const Pagination = require("../http/Pagination");
+const createHttpError = require("http-errors");
+const ResponseDTO = require("../utils/ResponseDTO");
+const Pagination = require("../utils/Pagination");
 const ProductRepository = require("../repository/ProductRepository");
 const ReviewRepository = require("../repository/ReviewRepository");
 const FavoriteRepository = require("../repository/FavoriteRepository");
-
 
 module.exports = class ProductController {
 
@@ -17,12 +16,12 @@ module.exports = class ProductController {
 
       const product = await ProductRepository.get(_product.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_created._product'), product);
+      const response = ResponseDTO.success(req.__('_created._product'), product);
 
       res.status(StatusCodes.CREATED).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -36,12 +35,12 @@ module.exports = class ProductController {
 
       product.review_summary = await ReviewRepository.getSummaryForProduct(product);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._product'), product);
+      const response =ResponseDTO.success(req.__('_updated._product'), product);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -55,12 +54,12 @@ module.exports = class ProductController {
 
       product.review_summary = await ReviewRepository.getSummaryForProduct(product);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._photo'), product);
+      const response = ResponseDTO.success(req.__('_updated._photo'), product);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -74,12 +73,12 @@ module.exports = class ProductController {
 
       product.review_summary = await ReviewRepository.getSummaryForProduct(product);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._product'), product);
+      const response = ResponseDTO.success(req.__('_updated._product'), product);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -89,12 +88,12 @@ module.exports = class ProductController {
 
       await ProductRepository.delete(req.data.product);
 
-      const response = new Response(Response.SUCCESS, req.__('_deleted._product'));
+      const response = ResponseDTO.success(req.__('_deleted._product'));
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -119,12 +118,12 @@ module.exports = class ProductController {
         product.setDataValue('reviews', review === null ? [] : [review]);
       }
       
-      const response = new Response(Response.SUCCESS, req.__('_fetched._product'), product);
+      const response = ResponseDTO.success(req.__('_fetched._product'), product);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -138,12 +137,12 @@ module.exports = class ProductController {
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._product'), rows, pagination);
+      const response = ResponseDTO.success(req.__('_list_fetched._product'), rows, pagination);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -157,12 +156,12 @@ module.exports = class ProductController {
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._product'), rows, pagination);
+      const response = ResponseDTO.success(req.__('_list_fetched._product'), rows, pagination);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -174,12 +173,12 @@ module.exports = class ProductController {
 
       const products = await ProductRepository.getRandomList(pager.page_limit);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._product'), products);
+      const response = ResponseDTO.success(req.__('_list_fetched._product'), products);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -191,12 +190,12 @@ module.exports = class ProductController {
 
       const products = await ProductRepository.getListByRecommended(pager.page_limit);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._product'), products);
+      const response = ResponseDTO.success(req.__('_list_fetched._product'), products);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -210,12 +209,12 @@ module.exports = class ProductController {
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._product'), rows, pagination);
+      const response = ResponseDTO.success(req.__('_list_fetched._product'), rows, pagination);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -229,15 +228,13 @@ module.exports = class ProductController {
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._product'), rows, pagination);
+      const response = ResponseDTO.success(req.__('_list_fetched._product'), rows, pagination);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
 }
-
-

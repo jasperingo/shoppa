@@ -14,57 +14,6 @@ module.exports = {
     return res !== null;
   },
 
-  async nameExists(name) {
-    const res = await User.findOne({ attributes: ['id'], where: { type: User.TYPE_DELIVERY_FIRM, name } });
-    return res !== null;
-  },
-
-  async updateNameExists(name, id) {
-    const res = await User.findOne({ 
-      attributes: ['id'], 
-      where: { 
-        type: User.TYPE_DELIVERY_FIRM, 
-        name, 
-        [Op.not]: { id }
-      } 
-    });
-    return res !== null;
-  },
-
-  async emailExists(email) {
-    const res = await User.findOne({ attributes: ['id'], where: { type: User.TYPE_DELIVERY_FIRM, email } });
-    return res !== null;
-  },
-
-  async updateEmailExists(email, id) {
-    const res = await User.findOne({ 
-      attributes: ['id'], 
-      where: { 
-        type: User.TYPE_DELIVERY_FIRM, 
-        email,
-        [Op.not]: { id }
-      } 
-    });
-    return res !== null;
-  },
-
-  async phoneNumberExists(phone_number) {
-    const res = await User.findOne({ attributes: ['id'], where: { type: User.TYPE_DELIVERY_FIRM, phone_number } });
-    return res !== null;
-  },
-
-  async updatePhoneNumberExists(phone_number, id) {
-    const res = await User.findOne({ 
-      attributes: ['id'], 
-      where: { 
-        type: User.TYPE_DELIVERY_FIRM, 
-        phone_number,
-        [Op.not]: { id }
-      } 
-    });
-    return res !== null;
-  },
-  
   async statusIsActive(id) {
     const res = await DeliveryFirm.findOne({ 
       attributes: ['id'], 

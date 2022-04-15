@@ -1,4 +1,3 @@
-const InternalServerException = require("../../http/exceptions/InternalServerException");
 const ValidationRules = require('../ValidationRules');
 const CustomerRepository = require('../../repository/CustomerRepository');
 
@@ -20,7 +19,7 @@ module.exports = {
           if (await CustomerRepository.updateEmailExists(value, req.data.administrator.customer.user.id))
             return Promise.reject(req.__('_error._form._email_exists'));
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     },
@@ -37,11 +36,9 @@ module.exports = {
           if (await CustomerRepository.updatePhoneNumberExists(value, req.data.administrator.customer.user.id))
             return Promise.reject(req.__('_error._form._phone_number_exists'));
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     }
   }
 };
-
-

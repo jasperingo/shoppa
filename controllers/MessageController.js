@@ -1,5 +1,5 @@
-const Pagination = require("../http/Pagination");
-const Response = require("../http/Response");
+const Pagination = require("../utils/Pagination");
+const ResponseDTO = require("../utils/ResponseDTO");
 const ChatRepository = require("../repository/ChatRepository");
 const MessageRepository = require("../repository/MessageRepository");
 const WebsocketConnectionRepository = require("../repository/WebsocketConnectionRepository");
@@ -20,10 +20,9 @@ module.exports = class MessageController {
   async getNumberOfUnreceivedMessages(socket) {
     try {
       const count = await MessageRepository.getNumberOfUnreceivedMessages(socket.request.auth.userId);
-      socket.emit('unreceived_messages_count', new Response(Response.SUCCESS, Response.SUCCESS, { count }));
+      socket.emit('unreceived_messages_count', ResponseDTO.success(ResponseDTO.SUCCESS, { count }));
     } catch(error) {
-      console.log(error);
-      socket.emit('unreceived_messages_count', new Response(Response.ERROR, Response.ERROR));
+      socket.emit('unreceived_messages_count', ResponseDTO.error(ResponseDTO.ERROR));
     }
   }
 
@@ -46,7 +45,7 @@ module.exports = class MessageController {
 
       chat.setDataValue('messages', [message]);
 
-      const reponse = new Response(Response.SUCCESS, Response.SUCCESS, chat);
+      const reponse = ResponseDTO.success(ResponseDTO.SUCCESS, chat);
 
       socket.emit('message_created', reponse);
 
@@ -54,7 +53,7 @@ module.exports = class MessageController {
         socket.to(users.map(i=> i.socket_id)).emit('message', reponse);
 
     } catch {
-      socket.emit('message_created', new Response(Response.ERROR, Response.ERROR));
+      socket.emit('message_created', ResponseDTO.error(ResponseDTO.ERROR));
     }
   }
 
@@ -66,13 +65,12 @@ module.exports = class MessageController {
         socket.request.auth.userId, memberId
       );
       
-      const reponse = new Response(Response.SUCCESS, Response.SUCCESS, recipient);
+      const reponse = ResponseDTO.success(ResponseDTO.SUCCESS, recipient);
 
       socket.emit('message_recipient', reponse);
       
     } catch(error) {
-      console.log(error);
-      socket.emit('message_recipient', new Response(Response.ERROR, Response.ERROR));
+      socket.emit('message_recipient', ResponseDTO.error(ResponseDTO.ERROR));
     }
   }
 
@@ -86,13 +84,12 @@ module.exports = class MessageController {
         this.getPageLimit(pageLimit)
       );
       
-      const reponse = new Response(Response.SUCCESS, Response.SUCCESS, recipients);
+      const reponse = ResponseDTO.success(ResponseDTO.SUCCESS, recipients);
 
       socket.emit('message_recipients', reponse);
       
     } catch(error) {
-      console.log(error);
-      socket.emit('message_recipients', new Response(Response.ERROR, Response.ERROR));
+      socket.emit('message_recipients', ResponseDTO.error(ResponseDTO.ERROR));
     }
   }
 
@@ -118,13 +115,12 @@ module.exports = class MessageController {
         this.getPageLimit(pageLimit)
       );
       
-      const reponse = new Response(Response.SUCCESS, Response.SUCCESS, messages);
+      const reponse = ResponseDTO.success(ResponseDTO.SUCCESS, messages);
 
       socket.emit('messages', reponse);
       
     } catch(error) {
-      console.log(error);
-      socket.emit('messages', new Response(Response.ERROR, Response.ERROR));
+      socket.emit('messages', ResponseDTO.error(ResponseDTO.ERROR));
     }
   }
 
@@ -134,13 +130,12 @@ module.exports = class MessageController {
       
       const recipient = await ChatRepository.getByMemberWithApplicationSupport(socket.request.auth.userId);
       
-      const reponse = new Response(Response.SUCCESS, Response.SUCCESS, recipient);
+      const reponse = ResponseDTO.success(ResponseDTO.SUCCESS, recipient);
 
       socket.emit('application_support', reponse);
       
     } catch(error) {
-      console.log(error);
-      socket.emit('application_support', new Response(Response.ERROR, Response.ERROR));
+      socket.emit('application_support', ResponseDTO.error(ResponseDTO.ERROR));
     }
   }
 

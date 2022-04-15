@@ -15,7 +15,7 @@ const AdministratorUpdateValidation = require('../validation/administrator/Admin
 const AdministratorPasswordUpdateValidation = require('../validation/administrator/AdministratorPasswordUpdateValidation');
 const FileUploadMiddleware = require('../middlewares/FileUploadMiddleware');
 const FileUploadValidationMiddleware = require('../middlewares/FileUploadValidationMiddleware');
-const Files = require('../http/Files');
+const Files = require('../utils/Files');
 const AuthValidationMiddleware = require('../middlewares/AuthValidationMiddleware');
 
 const router = express.Router();

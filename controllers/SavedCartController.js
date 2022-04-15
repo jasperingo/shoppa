@@ -1,10 +1,9 @@
 const { StatusCodes } = require("http-status-codes");
-const InternalServerException = require("../http/exceptions/InternalServerException");
-const Pagination = require("../http/Pagination");
-const Response = require("../http/Response");
-const StringGenerator = require("../http/StringGenerator");
+const createHttpError = require("http-errors");
+const Pagination = require("../utils/Pagination");
+const ResponseDTO = require("../utils/ResponseDTO");
+const StringGenerator = require("../utils/StringGenerator");
 const SavedCartRepository = require("../repository/SavedCartRepository");
-
 
 module.exports = class SavedCartController {
 
@@ -18,12 +17,12 @@ module.exports = class SavedCartController {
 
       const savedCart = await SavedCartRepository.get(_savedCart.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_created._saved_cart'), savedCart);
+      const response = ResponseDTO.success(req.__('_created._saved_cart'), savedCart);
 
       res.status(StatusCodes.CREATED).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -33,18 +32,18 @@ module.exports = class SavedCartController {
 
       await SavedCartRepository.delete(req.data.savedCart);
 
-      const response = new Response(Response.SUCCESS, req.__('_deleted._saved_cart'));
+      const response = ResponseDTO.success(req.__('_deleted._saved_cart'));
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
   get(req, res) {
 
-    const response = new Response(Response.SUCCESS, req.__('_fetched._saved_cart'), req.data.savedCart);
+    const response = ResponseDTO.success(req.__('_fetched._saved_cart'), req.data.savedCart);
 
     res.status(StatusCodes.OK).send(response);
   }
@@ -55,7 +54,7 @@ module.exports = class SavedCartController {
 
     const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
-    return new Response(Response.SUCCESS, req.__('_list_fetched._saved_cart'), rows, pagination);
+    return ResponseDTO.success(req.__('_list_fetched._saved_cart'), rows, pagination);
   }
 
   getListByCustomer = async (req, res, next)=> {
@@ -69,7 +68,7 @@ module.exports = class SavedCartController {
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -84,9 +83,8 @@ module.exports = class SavedCartController {
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
 }
-

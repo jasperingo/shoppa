@@ -1,9 +1,8 @@
 const { StatusCodes } = require("http-status-codes");
-const InternalServerException = require("../http/exceptions/InternalServerException");
-const Pagination = require("../http/Pagination");
-const Response = require("../http/Response");
+const Pagination = require("../utils/Pagination");
 const FavoriteRepository = require("../repository/FavoriteRepository");
-
+const ResponseDTO = require("../utils/ResponseDTO");
+const createHttpError = require("http-errors");
 
 module.exports = class FavoriteController {
 
@@ -11,16 +10,16 @@ module.exports = class FavoriteController {
 
     try {
 
-      const _favorite = await FavoriteRepository.create(req.body, req.auth.customerId);
+      const result = await FavoriteRepository.create(req.body, req.auth.customerId);
 
-      const favorite = await FavoriteRepository.get(_favorite.id);
+      const favorite = await FavoriteRepository.get(result.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_created._favorite'), favorite);
+      const response = ResponseDTO.success(req.__('_created._favorite'), favorite);
 
       res.status(StatusCodes.CREATED).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -30,12 +29,12 @@ module.exports = class FavoriteController {
 
       await FavoriteRepository.delete(req.data.favorite);
 
-      const response = new Response(Response.SUCCESS, req.__('_deleted._favorite'));
+      const response = ResponseDTO.success(req.__('_deleted._favorite'));
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -49,14 +48,13 @@ module.exports = class FavoriteController {
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._favorite'), rows, pagination);
+      const response = ResponseDTO.success(req.__('_list_fetched._favorite'), rows, pagination);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
 }
-

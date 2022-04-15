@@ -1,10 +1,8 @@
-const InternalServerException = require("../../http/exceptions/InternalServerException");
 const User = require("../../models/User");
 const AddressRepository = require("../../repository/AddressRepository");
 const ProductVariantRepository = require("../../repository/ProductVariantRepository");
 const StoreRepository = require("../../repository/StoreRepository");
 const ValidationRules = require("../ValidationRules");
-
 
 module.exports = {
 
@@ -20,7 +18,7 @@ module.exports = {
           else
             req.data = { storeAddress: store.user.addresses[0] };
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     }
@@ -38,7 +36,7 @@ module.exports = {
           else 
             req.data.customerAddress = customerAddress;
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     }

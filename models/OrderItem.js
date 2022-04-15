@@ -4,7 +4,6 @@ const sequelize = require('../repository/DB');
 const DiscountProduct = require("./DiscountProduct");
 const Order = require("./Order");
 const ProductVariant = require("./ProductVariant");
-const RouteDuration = require("./RouteDuration");
 const RouteWeight = require("./RouteWeight");
 
 class OrderItem extends Model {}
@@ -96,17 +95,6 @@ const rwForeignKey = {
 RouteWeight.hasMany(OrderItem, { foreignKey: rwForeignKey });
 
 OrderItem.belongsTo(RouteWeight, { foreignKey: rwForeignKey });
-
-
-const rdForeignKey = {
-  name: 'delivery_duration_id',
-  type: DataTypes.BIGINT
-};
-
-RouteDuration.hasMany(OrderItem, { foreignKey: rdForeignKey });
-
-OrderItem.belongsTo(RouteDuration, { foreignKey: rdForeignKey });
-
 
 const dpForeignKey = {
   name: 'discount_product_id',

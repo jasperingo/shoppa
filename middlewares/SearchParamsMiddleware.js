@@ -1,5 +1,5 @@
 
-module.exports = (req, res, next)=> {
+module.exports = function(req, res, next) {
 
   const options = {
     q: req.query.q,
@@ -13,6 +13,3 @@ module.exports = (req, res, next)=> {
 
   next();
 }
-
-
-

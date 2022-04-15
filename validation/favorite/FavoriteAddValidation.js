@@ -1,8 +1,6 @@
-const InternalServerException = require("../../http/exceptions/InternalServerException");
 const FavoriteRepository = require("../../repository/FavoriteRepository");
 const ProductRepository = require("../../repository/ProductRepository");
 const ValidationRules = require("../ValidationRules");
-
 
 module.exports = {
 
@@ -18,11 +16,10 @@ module.exports = {
           if (await FavoriteRepository.exists(value, req.auth.customerId))
             return Promise.reject(req.__('_error._form._favorite_exists'));
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     }
   },
 
 };
-

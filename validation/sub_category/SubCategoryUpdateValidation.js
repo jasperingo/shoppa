@@ -1,5 +1,3 @@
-
-const InternalServerException = require('../../http/exceptions/InternalServerException');
 const { notEmpty } = require('../ValidationRules');
 const SubCategoryRepository = require('../../repository/SubCategoryRepository');
 
@@ -13,7 +11,7 @@ module.exports = {
           if (await SubCategoryRepository.updateNameExists(value, req.params.id))
             return Promise.reject(req.__('_error._form._name_exists'));
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     }
@@ -23,4 +21,3 @@ module.exports = {
     optional: true
   }
 };
-

@@ -1,4 +1,3 @@
-const InternalServerException = require('../../http/exceptions/InternalServerException');
 const WithdrawalAccount = require('../../models/WithdrawalAccount');
 const BankRepository = require('../../repository/BankRepository');
 const ValidationRules = require('../ValidationRules');
@@ -26,7 +25,7 @@ module.exports = {
           if (! (await BankRepository.accountNumberExists(value, req.body.bank_code || '')))
             return Promise.reject(req.__('_error._form._field_invalid'));
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     }
@@ -41,5 +40,3 @@ module.exports = {
   }
 
 };
-
-

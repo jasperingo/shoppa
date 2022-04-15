@@ -1,9 +1,7 @@
-const InternalServerException = require("../../http/exceptions/InternalServerException");
 const Order = require("../../models/Order");
 const OrderRepository = require("../../repository/OrderRepository");
 const WithdrawalAccountRepository = require("../../repository/WithdrawalAccountRepository");
 const ValidationRules = require("../ValidationRules");
-
 
 module.exports = {
 
@@ -37,11 +35,10 @@ module.exports = {
           req.data = { order };
           
         } catch (error) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(error);
         }
       }
     }
   }
 
 };
-

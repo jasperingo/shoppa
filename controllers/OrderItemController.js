@@ -1,10 +1,11 @@
 const { StatusCodes } = require("http-status-codes");
-const InternalServerException = require("../http/exceptions/InternalServerException");
-const Response = require("../http/Response");
-const StringGenerator = require("../http/StringGenerator");
+const createHttpError = require("http-errors");
+const EmailService = require("../emailService");
+const ResponseDTO = require("../utils/ResponseDTO");
+const StringGenerator = require("../utils/StringGenerator");
+const Order = require("../models/Order");
 const OrderItemRepository = require("../repository/OrderItemRepository");
 const { messageSender } = require("../websocket");
-
 
 module.exports = class OrderItemController {
 
@@ -14,16 +15,16 @@ module.exports = class OrderItemController {
       
       const result = await OrderItemRepository.updateProcessedAt(req.data.orderItem);
 
-      result.messages.forEach(async (chat)=> await messageSender(req.auth.userId, chat));
+      await Promise.all(result.messages.map(chat=> messageSender(req.auth.userId, chat)));
 
       const orderItem = await OrderItemRepository.get(req.data.orderItem.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._order_item'), orderItem);
+      const response = ResponseDTO.success(req.__('_updated._order_item'), orderItem);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -33,16 +34,16 @@ module.exports = class OrderItemController {
       
       const result = await OrderItemRepository.updateTransportedAt(req.data.orderItem);
 
-      result.messages.forEach(async (chat)=> await messageSender(req.auth.userId, chat));
+      await Promise.all(result.messages.map(chat=> messageSender(req.auth.userId, chat)));
 
       const orderItem = await OrderItemRepository.get(req.data.orderItem.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._order_item'), orderItem);
+      const response = ResponseDTO.success(req.__('_updated._order_item'), orderItem);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -52,18 +53,20 @@ module.exports = class OrderItemController {
       
       const result = await OrderItemRepository.updateDeliveredAt(req.data.orderItem, StringGenerator.transactionReference);
 
-      result.messages.forEach(async (chat)=> await messageSender(req.auth.userId, chat));
+      await Promise.all(result.messages.map(chat=> messageSender(req.auth.userId, chat)));
 
       const orderItem = await OrderItemRepository.get(req.data.orderItem.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._order_item'), orderItem);
+      if (orderItem.order.status === Order.STATUS_FULFILLED)
+        await EmailService.send(orderItem.order.customer.user.email, EmailService.ORDER_FULFILLED, { id: orderItem.order.id });
+
+      const response = ResponseDTO.success(req.__('_updated._order_item'), orderItem);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
 }
-

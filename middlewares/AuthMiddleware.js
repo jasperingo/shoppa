@@ -1,7 +1,7 @@
-const UnauthorizedException = require("../http/exceptions/UnauthorizedException");
+const createHttpError = require("http-errors");
 const JWT = require("../security/JWT");
 
-module.exports = async (req, res, next)=> {
+module.exports = async function(req, res, next) {
 
   try {
     
@@ -24,9 +24,8 @@ module.exports = async (req, res, next)=> {
 
   } catch (error) {
     if (req.get)
-      next(new UnauthorizedException(error));
+      next(createHttpError.Unauthorized(error));
     else
       next(error);
   }
 };
-

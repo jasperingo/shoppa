@@ -13,11 +13,7 @@ Route.init({
     allowNull: false
   },
 
-  state: {
-    type: DataTypes.STRING
-  },
-
-  city: {
+  name: {
     type: DataTypes.STRING
   },
 
@@ -59,16 +55,4 @@ DeliveryFirm.hasMany(Route, { foreignKey });
 Route.belongsTo(DeliveryFirm, { foreignKey });
 
 
-Route.belongsTo(Route, { as: 'origin_route', foreignKey: {
-  name: 'origin_route_id',
-  type: DataTypes.BIGINT
-}});
-
-
-Route.belongsTo(Route, { as: 'destination_route', foreignKey: {
-  name: 'destination_route_id',
-  type: DataTypes.BIGINT
-}});
-
 module.exports = Route;
-

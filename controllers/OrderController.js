@@ -1,18 +1,19 @@
+const createHttpError = require("http-errors");
 const { StatusCodes } = require("http-status-codes");
-const InternalServerException = require("../http/exceptions/InternalServerException");
-const Pagination = require("../http/Pagination");
-const Response = require("../http/Response");
-const StringGenerator = require("../http/StringGenerator");
+const EmailService = require("../emailService");
+const Pagination = require("../utils/Pagination");
+const ResponseDTO = require("../utils/ResponseDTO");
+const StringGenerator = require("../utils/StringGenerator");
 const Discount = require("../models/Discount");
 const Order = require("../models/Order");
+const User = require("../models/User");
 const DiscountProductRepository = require("../repository/DiscountProductRepository");
 const OrderRepository = require("../repository/OrderRepository");
 const ProductVariantRepository = require("../repository/ProductVariantRepository");
-const RouteDurationRepository = require("../repository/RouteDurationRepository");
+const RouteLocationRepository = require("../repository/RouteLocationRepository");
 const RouteRepository = require("../repository/RouteRepository");
 const RouteWeightRepository = require("../repository/RouteWeightRepository");
 const { messageSender } = require("../websocket");
-
 
 module.exports = class OrderController {
 
@@ -53,18 +54,11 @@ module.exports = class OrderController {
           data.order_items[i].delivery_fee = routeWeight.fee;
           data.delivery_total += routeWeight.fee;
         }
-
-        if (item.delivery_duration_id !== undefined && item.delivery_duration_id !== null) {
-          let routeDuration = await RouteDurationRepository.get(item.delivery_duration_id);
-          data.order_items[i].delivery_fee += routeDuration.fee;
-          data.delivery_total += routeDuration.fee;
-        }
-
       }
+      
+      for (const item of data.order_items) {
 
-      for (let item of data.order_items) {
-
-        let index = products.findIndex(product=> product.id === item.product_id);
+        const index = products.findIndex(product=> product.id === item.product_id);
 
         if (index === -1) {
           products.push({ id: item.product_id, product_variants: [item] })
@@ -73,7 +67,7 @@ module.exports = class OrderController {
         }
       }
 
-      for (let product of products) {
+      for (const product of products) {
 
         if (product.product_variants[0].discount_product_id === undefined || 
             product.product_variants[0].discount_product_id === null) 
@@ -104,16 +98,27 @@ module.exports = class OrderController {
       
       const result = await OrderRepository.create(data);
 
-      result.messages.forEach(async (chat)=> await messageSender(req.auth.userId, chat));
+      await Promise.all(result.messages.map(chat=> messageSender(req.auth.userId, chat)));
       
       const order = await OrderRepository.get(result.order.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_created._order'), order);
+      const emails =  [
+        EmailService.send(order.customer.user.email, EmailService.ORDER_CREATED, { id: order.id }),
+        EmailService.send(order.store.user.email,  EmailService.ORDER_CREATED, { id: order.id, store: true }),
+      ];
+
+      if (order.delivery_firm !== null) {
+        emails.push(EmailService.send(order.delivery_firm.user.email, EmailService.ORDER_CREATED, { id: order.id, deliveryFirm: true }));
+      }
+
+      await Promise.all(emails);
+      
+      const response = ResponseDTO.success(req.__('_created._order'), order);
 
       res.status(StatusCodes.CREATED).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -125,24 +130,55 @@ module.exports = class OrderController {
 
       const { customerAddress, storeAddress } = req.data;
       
-      const routes = await RouteRepository.getListByTwoCityAndState(
+      const routes = await RouteRepository.getListByLocationCityAndState(
         customerAddress.state, 
         customerAddress.city, 
         storeAddress.state, 
         storeAddress.city
       );
 
+      const within = customerAddress.state === storeAddress.state && customerAddress.city === storeAddress.city;
+      
       for (let i=0; i<routes.length; i++) {
 
-        let weights = [];
+        const route = routes[i];
 
-        for (let item of data.order_items) {
+        const locations = await RouteLocationRepository.getListByDeliveryRouteId(route.id);
 
-          let productVariant = await ProductVariantRepository.get(item.product_variant_id);
+        if ((within && locations.length > 1) || (!within && locations.length < 2)) {
+          routes.splice(i--, 1);
+          continue;
+        }
+        
+        let customerFound  = false, storeFound = false;
+          
+        for (const location of locations) {
+
+          if (location.state === customerAddress.state && location.city === customerAddress.city) {
+            customerFound = true;
+          }
+
+          if (location.state === storeAddress.state && location.city === storeAddress.city) {
+            storeFound = true;
+          }
+
+          if (customerFound && storeFound) break;
+        }
+
+        if (!customerFound || !storeFound) {
+          routes.splice(i--, 1);
+          continue;
+        }
+
+        const weights = [];
+
+        for (const item of data.order_items) {
+
+          const productVariant = await ProductVariantRepository.get(item.product_variant_id);
   
-          let weight = Number((productVariant.weight * item.quantity).toFixed(2));
+          const weight = Number((productVariant.weight * item.quantity).toFixed(2));
 
-          const routeWeight = await RouteWeightRepository.getByRouteAndWeight(routes[i].id, weight);
+          const routeWeight = await RouteWeightRepository.getByRouteAndWeight(route.id, weight);
 
           if (routeWeight === null) break;
 
@@ -157,18 +193,13 @@ module.exports = class OrderController {
           routes[i].setDataValue('route_weights', weights);
         }
       }
-
-      for (let [i, route] of routes.entries()) {
-        let routeDurations = await RouteDurationRepository.getListByRoute(route.id);
-        routes[i].setDataValue('route_durations', routeDurations);
-      }
      
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._route'), routes);
+      const response = ResponseDTO.success(req.__('_list_fetched._route'), routes);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -218,12 +249,12 @@ module.exports = class OrderController {
 
       }
       
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._discount'), products);
+      const response = ResponseDTO.success(req.__('_list_fetched._discount'), products);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -235,17 +266,27 @@ module.exports = class OrderController {
 
         const result = await OrderRepository.updateStatusToCancel(req.data.order);
 
-        result.messages.forEach(async (chat)=> await messageSender(req.auth.userId, chat));
+        await Promise.all(result.messages.map(chat=> messageSender(req.auth.userId, chat)));
       }
 
       const order = await OrderRepository.get(req.data.order.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._order'), order);
+      if (req.body.status === Order.STATUS_CANCELLED) {
+        const emails =  [EmailService.send(order.store.user.email, EmailService.ORDER_CANCELLED, { id: order.id })];
+
+        if (order.delivery_firm !== null) {
+          emails.push(EmailService.send(order.delivery_firm.user.email, EmailService.ORDER_CANCELLED, { id: order.id }));
+        }
+
+        await Promise.all(emails);
+      }
+
+      const response = ResponseDTO.success(req.__('_updated._order'), order);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -253,13 +294,15 @@ module.exports = class OrderController {
     
     try {
 
-      let result;
+      let result, emailType;
       
       switch (req.body.store_status) {
         case Order.STORE_STATUS_ACCEPTED:
+          emailType = EmailService.ORDER_ACCEPTED;
           result = await OrderRepository.updateStoreStatusToAccepted(req.data.order);
           break;
         case Order.STORE_STATUS_DECLINED:
+          emailType = EmailService.ORDER_DECLINED;
           result = await OrderRepository.updateStoreStatusToDeclined(req.data.order);
           break;
       }
@@ -269,12 +312,15 @@ module.exports = class OrderController {
       
       const order = await OrderRepository.get(req.data.order.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._order'), order);
+      if (emailType !== undefined)
+        await EmailService.send(order.customer.user.email, emailType, { id: order.id, userType: User.TYPE_STORE });
+      
+      const response = ResponseDTO.success(req.__('_updated._order'), order);
 
       res.status(StatusCodes.OK).send(response);
       
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -282,13 +328,15 @@ module.exports = class OrderController {
     
     try {
       
-      let result;
+      let result, emailType;
 
       switch (req.body.delivery_firm_status) {
         case Order.DELIVERY_FIRM_STATUS_ACCEPTED:
+          emailType = EmailService.ORDER_ACCEPTED;
           result = await OrderRepository.updateDeliveryFirmStatusToAccepted(req.data.order);
           break;
         case Order.DELIVERY_FIRM_STATUS_DECLINED:
+          emailType = EmailService.ORDER_DECLINED;
           result = await OrderRepository.updateDeliveryFirmStatusToDeclined(req.data.order);
           break;
       }
@@ -297,19 +345,22 @@ module.exports = class OrderController {
         await messageSender(req.auth.userId, result.message);
 
       const order = await OrderRepository.get(req.data.order.id);
+      
+      if (emailType !== undefined)
+        await EmailService.send(order.customer.user.email, emailType, { id: order.id, userType: User.TYPE_DELIVERY_FIRM });
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._order'), order);
+      const response = ResponseDTO.success(req.__('_updated._order'), order);
 
       res.status(StatusCodes.OK).send(response);
       
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
   get(req, res) {
 
-    const response = new Response(Response.SUCCESS, req.__('_fetched._order'), req.data.order);
+    const response = ResponseDTO.success(req.__('_fetched._order'), req.data.order);
 
     res.status(StatusCodes.OK).send(response);
   }
@@ -324,12 +375,12 @@ module.exports = class OrderController {
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._order'), rows, pagination);
+      const response = ResponseDTO.success(req.__('_list_fetched._order'), rows, pagination);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -343,12 +394,12 @@ module.exports = class OrderController {
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._order'), rows, pagination);
+      const response = ResponseDTO.success(req.__('_list_fetched._order'), rows, pagination);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -362,12 +413,12 @@ module.exports = class OrderController {
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._order'), rows, pagination);
+      const response = ResponseDTO.success(req.__('_list_fetched._order'), rows, pagination);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
   
@@ -381,14 +432,13 @@ module.exports = class OrderController {
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._order'), rows, pagination);
+      const response = ResponseDTO.success(req.__('_list_fetched._order'), rows, pagination);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
 }
-

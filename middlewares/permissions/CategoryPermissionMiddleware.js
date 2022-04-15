@@ -1,11 +1,10 @@
-const ForbiddenException = require("../../http/exceptions/ForbiddenException");
+const createHttpError = require("http-errors");
 const JWT = require("../../security/JWT");
 
-module.exports = function permit(req, res, next) {
+module.exports = function(req, res, next) {
   if (req.auth.authType === JWT.AUTH_APP_ADMIN) {
     next();
   } else {
-    next(new ForbiddenException());
+    next(createHttpError.Forbidden());
   }
 };
-

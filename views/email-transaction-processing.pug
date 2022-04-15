@@ -1,0 +1,6 @@
+
+extends email-layout.pug
+
+block content
+  div.mb-lg Your #{type} transaction is being processed.
+  a.link(href=`${clientUrl}/transaction/${id}`) View transaction.

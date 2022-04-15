@@ -1,8 +1,8 @@
 const { StatusCodes } = require("http-status-codes");
-const InternalServerException = require("../http/exceptions/InternalServerException");
-const Pagination = require("../http/Pagination");
-const Response = require("../http/Response");
+const Pagination = require("../utils/Pagination");
+const ResponseDTO = require("../utils/ResponseDTO");
 const ReviewRepository = require("../repository/ReviewRepository");
+const createHttpError = require("http-errors");
 
 module.exports = class ReviewController {
 
@@ -10,16 +10,16 @@ module.exports = class ReviewController {
 
     try {
 
-      const _review = await ReviewRepository.createForProduct(req.body, req.auth.customerId);
+      const result = await ReviewRepository.createForProduct(req.body, req.auth.customerId);
 
-      const review = await ReviewRepository.get(_review.id);
+      const review = await ReviewRepository.get(result.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_created._review'), review);
+      const response = ResponseDTO.success(req.__('_created._review'), review);
 
       res.status(StatusCodes.CREATED).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -31,12 +31,12 @@ module.exports = class ReviewController {
 
       const review = await ReviewRepository.get(_review.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_created._review'), review);
+      const response = ResponseDTO.success(req.__('_created._review'), review);
 
       res.status(StatusCodes.CREATED).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
   
@@ -48,12 +48,12 @@ module.exports = class ReviewController {
 
       const review = await ReviewRepository.get(_review.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_created._review'), review);
+      const response = ResponseDTO.success(req.__('_created._review'), review);
 
       res.status(StatusCodes.CREATED).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -67,12 +67,12 @@ module.exports = class ReviewController {
 
       const review = await ReviewRepository.get(_review.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._review'), review);
+      const response = ResponseDTO.success(req.__('_updated._review'), review);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -82,12 +82,12 @@ module.exports = class ReviewController {
       
       await ReviewRepository.delete(req.data.review);
 
-      const response = new Response(Response.SUCCESS, req.__('_deleted._review'));
+      const response = ResponseDTO.success(req.__('_deleted._review'));
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -101,12 +101,12 @@ module.exports = class ReviewController {
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._review'), rows, pagination);
+      const response = ResponseDTO.success(req.__('_list_fetched._review'), rows, pagination);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -120,12 +120,12 @@ module.exports = class ReviewController {
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._review'), rows, pagination);
+      const response = ResponseDTO.success(req.__('_list_fetched._review'), rows, pagination);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
   
@@ -139,14 +139,13 @@ module.exports = class ReviewController {
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._review'), rows, pagination);
+      const response = ResponseDTO.success(req.__('_list_fetched._review'), rows, pagination);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
 }
-

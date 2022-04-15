@@ -1,0 +1,6 @@
+
+extends email-layout.pug
+
+block content
+  div.mb-lg Your #{type} transaction has been sent and approved.
+  a.link(href=`${clientUrl}/transaction/${id}`) View transaction.

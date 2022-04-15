@@ -1,5 +1,3 @@
-
-const InternalServerException = require("../http/exceptions/InternalServerException");
 const Address = require("../models/Address");
 const Category = require("../models/Category");
 const Review = require("../models/Review");
@@ -27,16 +25,16 @@ module.exports = {
     for (let err of errs) {
       if (Array.isArray(err.message)) {
         for (let e of err.message) {
-          if (e.message === InternalServerException.TAG) {
-            return true;
+          if (e.message instanceof Error) {
+            return e;
           }
         }
-      } else if (err.message === InternalServerException.TAG) {
-        return true;
+      } else if (err.message instanceof Error) {
+        return err;
       }
     }
 
-    return false;
+    return null;
   },
 
   isPasswordLength: {
@@ -170,7 +168,7 @@ module.exports = {
       notEmpty: this.notEmpty,
       custom: {
         options: (value, { req })=> {
-          if (!LocationRepository.getCities(req.body[state]).includes(value)) {
+          if (!LocationRepository.getCities(req.body[state] ?? '').includes(value)) {
             throw req.__('_error._form._field_invalid');
           } else {
             return true;
@@ -204,8 +202,7 @@ module.exports = {
             if (!req.data || !req.data[user] || ! (await Hash.comparePassword(value, req.data[user].password)) )
               return Promise.reject(req.__('_error._form._password_invalid'));
           } catch (err) {
-            console.log(err)
-            return Promise.reject(InternalServerException.TAG);
+            return Promise.reject(err);
           }
         }
       }
@@ -225,7 +222,7 @@ module.exports = {
             else 
               req.data = { customer };
           } catch (err) {
-            return Promise.reject(InternalServerException.TAG);
+            return Promise.reject(err);
           }
         }
       }
@@ -245,7 +242,7 @@ module.exports = {
             else 
               req.data = { administrator };
           } catch (err) {
-            return Promise.reject(InternalServerException.TAG);
+            return Promise.reject(err);
           }
         }
       }
@@ -264,7 +261,7 @@ module.exports = {
             else 
               req.data = { store };
           } catch (err) {
-            return Promise.reject(InternalServerException.TAG);
+            return Promise.reject(err);
           }
         }
       }
@@ -287,7 +284,7 @@ module.exports = {
             else 
               req.data.administrator = administrator;
           } catch (err) {
-            return Promise.reject(InternalServerException.TAG);
+            return Promise.reject(err);
           }
         }
       }
@@ -306,7 +303,7 @@ module.exports = {
             else 
               req.data = { deliveryFirm };
           } catch (err) {
-            return Promise.reject(InternalServerException.TAG);
+            return Promise.reject(err);
           }
         }
       }
@@ -330,7 +327,7 @@ module.exports = {
               req.data.administrator = administrator;
           } catch (err) {
             console.error(err)
-            return Promise.reject(InternalServerException.TAG);
+            return Promise.reject(err);
           }
         }
       }

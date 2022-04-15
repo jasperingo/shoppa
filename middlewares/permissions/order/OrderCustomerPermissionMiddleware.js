@@ -1,22 +1,20 @@
-
-const ForbiddenException = require("../../../http/exceptions/ForbiddenException");
-const InternalServerException = require("../../../http/exceptions/InternalServerException");
+const createHttpError = require("http-errors");
 const CustomerRepository = require("../../../repository/CustomerRepository");
 const JWT = require("../../../security/JWT");
 
-module.exports = async function permit(req, res, next) {
+module.exports = async function(req, res, next) {
 
   try {
-    if (req.auth.authType === JWT.AUTH_CUSTOMER && 
+    if (
+      req.auth.authType === JWT.AUTH_CUSTOMER && 
       req.data.order.customer_id === req.auth.userId &&
-      await CustomerRepository.statusIsActive(req.auth.userId)) 
-    {
+      await CustomerRepository.statusIsActive(req.auth.userId)
+    ) {
       next();
     } else {
-      next(new ForbiddenException());
+      next(createHttpError.Forbidden());
     }
   } catch (error) {
-    next(new InternalServerException(error));
+    next(createHttpError.InternalServerError(error));
   }
-};
-
+}

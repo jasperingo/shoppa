@@ -1,8 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
-const InternalServerException = require("../http/exceptions/InternalServerException");
-const Response = require("../http/Response");
+const ResponseDTO = require("../utils/ResponseDTO");
 const CategoryRepository = require("../repository/CategoryRepository");
-
+const createHttpError = require("http-errors");
 
 module.exports = class CategoryController {
 
@@ -14,12 +13,12 @@ module.exports = class CategoryController {
 
       const category = await CategoryRepository.get(_category.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_created._category'), category);
+      const response = ResponseDTO.success(req.__('_created._category'), category);
 
       res.status(StatusCodes.CREATED).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -33,12 +32,12 @@ module.exports = class CategoryController {
 
       const category = await CategoryRepository.get(_category.id);
       
-      const response = new Response(Response.SUCCESS, req.__('_updated._category'), category);
+      const response = ResponseDTO.success(req.__('_updated._category'), category);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -52,18 +51,18 @@ module.exports = class CategoryController {
 
       const category = await CategoryRepository.get(_category.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._photo'), category);
+      const response = ResponseDTO.success(req.__('_updated._photo'), category);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
   get(req, res) {
 
-    const response = new Response(Response.SUCCESS, req.__('_fetched._category'), req.data.category);
+    const response = ResponseDTO.success(req.__('_fetched._category'), req.data.category);
 
     res.status(StatusCodes.OK).send(response);
   }
@@ -76,12 +75,12 @@ module.exports = class CategoryController {
 
       const categories = await CategoryRepository.getRandomList(pager.page_limit);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._category'), categories);
+      const response = ResponseDTO.success(req.__('_list_fetched._category'), categories);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -91,12 +90,12 @@ module.exports = class CategoryController {
 
       const categories = await CategoryRepository.getListStore();
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._category'), categories);
+      const response = ResponseDTO.success(req.__('_list_fetched._category'), categories);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -106,12 +105,12 @@ module.exports = class CategoryController {
 
       const categories = await CategoryRepository.getListByProduct();
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._category'), categories);
+      const response = ResponseDTO.success(req.__('_list_fetched._category'), categories);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -123,15 +122,13 @@ module.exports = class CategoryController {
 
       const categories = await CategoryRepository.getListByProductInStore(store);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._category'), categories);
+      const response = ResponseDTO.success(req.__('_list_fetched._category'), categories);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
-
 }
-

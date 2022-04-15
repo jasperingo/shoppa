@@ -1,4 +1,3 @@
-const InternalServerException = require("../../http/exceptions/InternalServerException");
 const Order = require("../../models/Order");
 const ProductVariantRepository = require("../../repository/ProductVariantRepository");
 const ValidationRules = require("../ValidationRules");
@@ -39,7 +38,7 @@ module.exports = {
           }
 
         } catch(error) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(error);
         }
       }
     }

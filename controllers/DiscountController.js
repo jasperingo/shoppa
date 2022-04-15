@@ -1,9 +1,8 @@
 const { StatusCodes } = require("http-status-codes");
-const InternalServerException = require("../http/exceptions/InternalServerException");
-const Pagination = require("../http/Pagination");
-const Response = require("../http/Response");
+const createHttpError = require("http-errors");
+const Pagination = require("../utils/Pagination");
+const ResponseDTO = require("../utils/ResponseDTO");
 const DiscountRepository = require("../repository/DiscountRepository");
-
 
 module.exports = class DiscountController {
 
@@ -15,12 +14,12 @@ module.exports = class DiscountController {
 
       const discount = await DiscountRepository.get(_discount.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_created._discount'), discount);
+      const response = ResponseDTO.success(req.__('_created._discount'), discount);
 
       res.status(StatusCodes.CREATED).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -32,12 +31,12 @@ module.exports = class DiscountController {
       
       const discount = await DiscountRepository.get(req.params.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._discount'), discount);
+      const response = ResponseDTO.success(req.__('_updated._discount'), discount);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -47,18 +46,18 @@ module.exports = class DiscountController {
 
       await DiscountRepository.delete(req.data.discount);
 
-      const response = new Response(Response.SUCCESS, req.__('_deleted._discount'));
+      const response = ResponseDTO.success(req.__('_deleted._discount'));
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
   get(req, res) {
 
-    const response = new Response(Response.SUCCESS, req.__('_fetched._discount'), req.data.discount);
+    const response = ResponseDTO.success(req.__('_fetched._discount'), req.data.discount);
 
     res.status(StatusCodes.OK).send(response);
   }
@@ -73,15 +72,13 @@ module.exports = class DiscountController {
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._discount'), rows, pagination);
+      const response = ResponseDTO.success(req.__('_list_fetched._discount'), rows, pagination);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
 }
-
-

@@ -1,7 +1,6 @@
-const Pagination = require("../http/Pagination");
+const Pagination = require("../utils/Pagination");
 
-
-module.exports = (req, res, next) => {
+module.exports = function(req, res, next) {
 
   const page = req.query.page == undefined ? 1 : parseInt(''+req.query.page.replace(/[^0-9]/, ''));
 

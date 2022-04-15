@@ -1,4 +1,3 @@
-const InternalServerException = require("../../http/exceptions/InternalServerException");
 const ProductVariantRepository = require("../../repository/ProductVariantRepository");
 const ValidationRules = require("../ValidationRules");
 
@@ -12,7 +11,7 @@ module.exports = {
           if (await ProductVariantRepository.nameExists(value, req.body.product_id))
             return Promise.reject(req.__('_error._form._name_exists'));
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     }

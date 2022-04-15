@@ -1,7 +1,7 @@
 const { query } = require("express-validator");
-const InternalServerException = require("../../http/exceptions/InternalServerException");
+const createHttpError = require("http-errors");
 
-module.exports = async (req, res, next)=> {
+module.exports = async function(req, res, next) {
 
   try {
 
@@ -15,7 +15,6 @@ module.exports = async (req, res, next)=> {
     next();
 
   } catch (error) {
-    next(new InternalServerException(error));
+    next(createHttpError.InternalServerError(error));
   }
 }
-

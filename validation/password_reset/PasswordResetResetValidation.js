@@ -1,7 +1,5 @@
-const InternalServerException = require("../../http/exceptions/InternalServerException");
 const PasswordResetRepository = require("../../repository/PasswordResetRepository");
 const ValidationRules = require("../ValidationRules");
-
 
 module.exports = {
 
@@ -17,7 +15,7 @@ module.exports = {
           else 
             req.data = { passwordReset };
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     }

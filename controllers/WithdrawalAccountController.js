@@ -1,11 +1,10 @@
 const { StatusCodes } = require("http-status-codes");
-const InternalServerException = require("../http/exceptions/InternalServerException");
-const Response = require("../http/Response");
+const createHttpError = require("http-errors");
+const ResponseDTO = require("../utils/ResponseDTO");
 const CustomerRepository = require("../repository/CustomerRepository");
 const DeliveryFirmRepository = require("../repository/DeliveryFirmRepository");
 const StoreRepository = require("../repository/StoreRepository");
 const WithdrawalAccountRepository = require("../repository/WithdrawalAccountRepository");
-
 
 module.exports = class WithdrawalAccountController {
 
@@ -19,13 +18,12 @@ module.exports = class WithdrawalAccountController {
       
       const customer = await CustomerRepository.get(req.data.customer.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._withdrawal_account'), customer);
+      const response = ResponseDTO.success(req.__('_updated._withdrawal_account'), customer);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      console.log(error)
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -39,12 +37,12 @@ module.exports = class WithdrawalAccountController {
       
       const store = await StoreRepository.get(req.data.store.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._withdrawal_account'), store);
+      const response = ResponseDTO.success(req.__('_updated._withdrawal_account'), store);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -58,14 +56,13 @@ module.exports = class WithdrawalAccountController {
       
       const deliveryFirm = await DeliveryFirmRepository.get(req.data.deliveryFirm.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._withdrawal_account'), deliveryFirm);
+      const response = ResponseDTO.success(req.__('_updated._withdrawal_account'), deliveryFirm);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
 };
-

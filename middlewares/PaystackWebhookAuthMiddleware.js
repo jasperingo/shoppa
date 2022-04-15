@@ -1,7 +1,7 @@
 const crypto = require("crypto");
-const UnauthorizedException = require("../http/exceptions/UnauthorizedException");
+const createHttpError = require("http-errors");
 
-module.exports = async (req, res, next)=> {
+module.exports = function(req, res, next) {
 
   try {
     
@@ -14,7 +14,6 @@ module.exports = async (req, res, next)=> {
     next();
 
   } catch (error) {
-    next(new UnauthorizedException(error));
+    next(createHttpError.InternalServerError(error));
   }
-};
-
+}

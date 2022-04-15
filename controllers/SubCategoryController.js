@@ -1,7 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
-const InternalServerException = require("../http/exceptions/InternalServerException");
+const createHttpError = require("http-errors");
+const ResponseDTO = require("../utils/ResponseDTO");
 const SubCategoryRepository = require("../repository/SubCategoryRepository");
-const Response = require("../http/Response");
 
 module.exports = class SubCategoryController {
 
@@ -13,12 +13,12 @@ module.exports = class SubCategoryController {
 
       const subCategory = await SubCategoryRepository.get(_subCategory.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_created._sub_category'), subCategory);
+      const response = ResponseDTO.success(req.__('_created._sub_category'), subCategory);
 
       res.status(StatusCodes.CREATED).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -32,12 +32,12 @@ module.exports = class SubCategoryController {
 
       const subCategory = await SubCategoryRepository.get(_subCategory.id);
       
-      const response = new Response(Response.SUCCESS, req.__('_updated._sub_category'), subCategory);
+      const response = ResponseDTO.success(req.__('_updated._sub_category'), subCategory);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -51,18 +51,18 @@ module.exports = class SubCategoryController {
 
       const subCategory = await SubCategoryRepository.get(_subCategory.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._photo'), subCategory);
+      const response = ResponseDTO.success(req.__('_updated._photo'), subCategory);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
   
   get(req, res) {
 
-    const response = new Response(Response.SUCCESS, req.__('_fetched._sub_category'), req.data.subCategory);
+    const response = ResponseDTO.success(req.__('_fetched._sub_category'), req.data.subCategory);
 
     res.status(StatusCodes.OK).send(response);
   }

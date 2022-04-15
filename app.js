@@ -6,11 +6,11 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var i18n = require('i18n');
 var cors = require('cors');
-
-var MyResponse = require('./http/Response');
-var apiRouter = require('./routes/EndPoints');
+const createHttpError = require('http-errors');
 const { StatusCodes } = require('http-status-codes');
-const NotFoundException = require('./http/exceptions/NotFoundException');
+
+var apiRouter = require('./routes/EndPoints');
+const ResponseDTO = require('./utils/ResponseDTO');
 
 var app = express();
 
@@ -45,20 +45,40 @@ app.use('/api', apiRouter);
 
 
 app.use(function(req, res, next) {
-  next(new NotFoundException({ path: req.originalUrl }));
+  next(createHttpError.NotFound({ data: { path: req.originalUrl } }));
 });
 
-app.use(function(err, req, res, next) {
+app.use(function(err, req, res, _next) {
 
-  console.log(err);
+  //if (process.env.NODE_ENV === 'production')
+  console.error(err);
 
-  const response = new MyResponse();
-  response.status = MyResponse.ERROR;
-  response.message = res.__(err.message || '');
-  response.data = err.data ?? undefined;
+  let message = '';
+
+  switch(err.status) {
+    case 400:
+      message = req.__(err.message.message || "_error._bad_request");
+      break;
+    
+    case 401:
+      message = req.__(err.message.message || "_error._unauthorized");
+      break;
+
+    case 403:
+      message = req.__(err.message.message || "_error._forbidden");
+      break;
+    
+    case 404:
+      message = req.__(err.message.message || "_error._not_found");
+      break;
+    
+    default:
+      message = req.__("_error._server");
+  }
+
+  const response = ResponseDTO.error(message, err.message.data);
   
-  res.status(err.status || StatusCodes.INTERNAL_SERVER_ERROR);
-  res.json(response);
+  res.status(err.status || StatusCodes.INTERNAL_SERVER_ERROR).send(response);
 });
 
 module.exports = app;

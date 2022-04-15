@@ -1,8 +1,7 @@
 
-const InternalServerException = require('../../http/exceptions/InternalServerException');
 const ValidationRules = require('../ValidationRules');
-const StoreRepository = require('../../repository/StoreRepository');
 const SubCategoryRepository = require('../../repository/SubCategoryRepository');
+const UserRepository = require('../../repository/UserRepository');
 
 module.exports = {
 
@@ -11,10 +10,10 @@ module.exports = {
     custom: {
       options: async (value, { req })=> {
         try {
-          if (await StoreRepository.updateNameExists(value, req.data.store.user.id))
+          if (await UserRepository.updateNameExists(value, req.data.store.user.id))
             return Promise.reject(req.__('_error._form._name_exists'));
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     }
@@ -28,7 +27,7 @@ module.exports = {
           if (! (await SubCategoryRepository.idForStoreExists(value)) )
             return Promise.reject(req.__('_error._form._id_invalid'));
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     }
@@ -40,10 +39,10 @@ module.exports = {
     custom: {
       options: async (value, { req })=> {
         try {
-          if (await StoreRepository.updateEmailExists(value, req.data.store.user.id))
+          if (await UserRepository.updateEmailExists(value, req.data.store.user.id))
             return Promise.reject(req.__('_error._form._email_exists'));
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     },
@@ -57,10 +56,10 @@ module.exports = {
     custom: {
       options: async (value, { req })=> {
         try {
-          if (await StoreRepository.updatePhoneNumberExists(value, req.data.store.user.id))
+          if (await UserRepository.updatePhoneNumberExists(value, req.data.store.user.id))
             return Promise.reject(req.__('_error._form._phone_number_exists'));
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     }

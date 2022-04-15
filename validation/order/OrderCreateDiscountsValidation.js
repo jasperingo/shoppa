@@ -1,5 +1,5 @@
 const { validationResult, body } = require("express-validator");
-const InternalServerException = require("../../http/exceptions/InternalServerException");
+const createHttpError = require("http-errors");
 const DiscountProductRepository = require("../../repository/DiscountProductRepository");
 const ProductVariantRepository = require("../../repository/ProductVariantRepository");
 
@@ -104,6 +104,6 @@ module.exports = async function(req, res, next) {
     next();
 
   } catch (error) {
-    next(new InternalServerException(error));
+    next(createHttpError.InternalServerError(error));
   }
 }

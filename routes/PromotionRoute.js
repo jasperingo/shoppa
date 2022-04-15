@@ -2,7 +2,7 @@
 const express = require('express');
 const { checkSchema } = require('express-validator');
 const PromotionController = require('../controllers/PromotionController');
-const Files = require('../http/Files');
+const Files = require('../utils/Files');
 const AuthMiddleware = require('../middlewares/AuthMiddleware');
 const PromotionFetchMiddleware = require('../middlewares/fetch/PromotionFetchMiddleware');
 const FileUploadMiddleware = require('../middlewares/FileUploadMiddleware');

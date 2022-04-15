@@ -1,9 +1,8 @@
+const createHttpError = require("http-errors");
 const { StatusCodes } = require("http-status-codes");
-const InternalServerException = require("../http/exceptions/InternalServerException");
-const Pagination = require("../http/Pagination");
-const Response = require("../http/Response");
+const Pagination = require("../utils/Pagination");
+const ResponseDTO = require("../utils/ResponseDTO");
 const RouteRepository = require("../repository/RouteRepository");
-
 
 module.exports = class RouteController {
 
@@ -11,33 +10,16 @@ module.exports = class RouteController {
     
     try {
 
-      const _route = await RouteRepository.add(req.body, req.auth.deliveryFirmId);
+      const result = await RouteRepository.add(req.body, req.auth.deliveryFirmId);
+      
+      const route = await RouteRepository.get(result.id);
 
-      const route = await RouteRepository.get(_route.id);
-
-      const response = new Response(Response.SUCCESS, req.__('_created._route'), route);
-
-      res.status(StatusCodes.CREATED).send(response);
-
-    } catch (error) {
-      next(new InternalServerException(error));
-    }
-  }
-
-  async createLink(req, res, next) {
-    
-    try {
-
-      const _route = await RouteRepository.createLink(req.body, req.auth.deliveryFirmId);
-
-      const route = await RouteRepository.get(_route.id);
-
-      const response = new Response(Response.SUCCESS, req.__('_created._route'), route);
+      const response = ResponseDTO.success(req.__('_created._route'), route);
 
       res.status(StatusCodes.CREATED).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -49,12 +31,12 @@ module.exports = class RouteController {
 
       const route = await RouteRepository.get(req.data.route.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._route'), route);
-
+      const response = ResponseDTO.success(req.__('_updated._route'), route);
+      
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
   
@@ -66,12 +48,12 @@ module.exports = class RouteController {
 
       const route = await RouteRepository.get(req.data.route.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._route'), route);
+      const response = ResponseDTO.success(req.__('_updated._route'), route);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
   
@@ -82,18 +64,18 @@ module.exports = class RouteController {
 
       await RouteRepository.delete(req.data.route);
 
-      const response = new Response(Response.SUCCESS, req.__('_deleted._route'));
+      const response = ResponseDTO.success(req.__('_deleted._route'));
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
   get(req, res) {
 
-    const response = new Response(Response.SUCCESS, req.__('_fetched._route'), req.data.route);
+    const response = ResponseDTO.success(req.__('_fetched._route'), req.data.route);
 
     res.status(StatusCodes.OK).send(response);
   }
@@ -108,12 +90,12 @@ module.exports = class RouteController {
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._route'), rows, pagination);
+      const response = ResponseDTO.success(req.__('_list_fetched._route'), rows, pagination);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -127,12 +109,12 @@ module.exports = class RouteController {
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._route'), rows, pagination);
+      const response = ResponseDTO.success(req.__('_list_fetched._route'), rows, pagination);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 

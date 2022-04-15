@@ -1,26 +1,22 @@
-
-const ForbiddenException = require("../../../http/exceptions/ForbiddenException");
-const InternalServerException = require("../../../http/exceptions/InternalServerException");
+const createHttpError = require("http-errors");
 const CustomerRepository = require("../../../repository/CustomerRepository");
 const ReviewRepository = require("../../../repository/ReviewRepository");
 const JWT = require("../../../security/JWT");
 
-module.exports = async function permit(req, res, next) {
+module.exports = async function(req, res, next) {
   try {
-    if (req.auth.authType === JWT.AUTH_CUSTOMER && 
+    if (
+      req.auth.authType === JWT.AUTH_CUSTOMER && 
       await CustomerRepository.statusIsActive(req.auth.userId) && 
       req.body.product_id !== null && 
       req.body.product_id !== undefined && 
-      await ReviewRepository.canReviewProduct(req.body.product_id, req.auth.customerId)) 
-    {
+      await ReviewRepository.canReviewProduct(req.body.product_id, req.auth.customerId)
+    ) {
       next();
     } else {
-      next(new ForbiddenException());
+      next(createHttpError.Forbidden());
     }
   } catch (error) {
-    next(new InternalServerException(error));
+    next(createHttpError.InternalServerError(error));
   }
-};
-
-
-
+}

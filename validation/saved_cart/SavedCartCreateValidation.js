@@ -1,7 +1,5 @@
-const InternalServerException = require("../../http/exceptions/InternalServerException");
 const ProductVariantRepository = require("../../repository/ProductVariantRepository");
 const ValidationRules = require("../ValidationRules");
-
 
 module.exports = {
 
@@ -38,7 +36,7 @@ module.exports = {
             }
             
           } catch (error) {
-            err.push({ name: 'product_variant_id', message: InternalServerException.TAG, index: i });
+            err.push({ name: 'product_variant_id', message: error, index: i });
           }
         }
 

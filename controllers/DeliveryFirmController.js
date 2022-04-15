@@ -1,15 +1,15 @@
 const { StatusCodes } = require("http-status-codes");
 const EmailService = require("../emailService");
-const InternalServerException = require("../http/exceptions/InternalServerException");
-const Pagination = require("../http/Pagination");
-const Response = require("../http/Response");
-const StringGenerator = require("../http/StringGenerator");
+const Pagination = require("../utils/Pagination");
+const ResponseDTO = require("../utils/ResponseDTO");
+const StringGenerator = require("../utils/StringGenerator");
 const User = require("../models/User");
 const AdministratorRepository = require("../repository/AdministratorRepository");
 const DeliveryFirmRepository = require("../repository/DeliveryFirmRepository");
 const ReviewRepository = require("../repository/ReviewRepository");
 const Hash = require("../security/Hash");
 const JWT = require("../security/JWT");
+const createHttpError = require("http-errors");
 
 module.exports = class DeliveryFirmController {
 
@@ -33,12 +33,12 @@ module.exports = class DeliveryFirmController {
 
       deliveryFirm.setDataValue('administrators', [administrator]);
 
-      const response = new Response(Response.SUCCESS, req.__('_created._delivery_firm'), deliveryFirm);
+      const response = ResponseDTO.success(req.__('_created._delivery_firm'), deliveryFirm);
 
       res.status(StatusCodes.CREATED).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
   
@@ -56,7 +56,7 @@ module.exports = class DeliveryFirmController {
 
       const token = await JWT.signDeliveryFirmJWT(deliveryFirm.toJSON());
 
-      const response = new Response(Response.SUCCESS, req.__('_login'), {
+      const response = ResponseDTO.success(req.__('_login'), {
         delivery_firm: deliveryFirm,
         api_token: token
       });
@@ -64,7 +64,7 @@ module.exports = class DeliveryFirmController {
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -78,12 +78,12 @@ module.exports = class DeliveryFirmController {
 
       deliveryFirm.review_summary = await ReviewRepository.getSummaryForDeliveryFirm(deliveryFirm);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._delivery_firm'), deliveryFirm);
+      const response = ResponseDTO.success(req.__('_updated._delivery_firm'), deliveryFirm);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -97,12 +97,12 @@ module.exports = class DeliveryFirmController {
 
       deliveryFirm.review_summary = await ReviewRepository.getSummaryForDeliveryFirm(deliveryFirm);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._delivery_firm'), deliveryFirm);
+      const response = ResponseDTO.success(req.__('_updated._delivery_firm'), deliveryFirm);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -122,16 +122,16 @@ module.exports = class DeliveryFirmController {
           EmailService.EMAIL_VERIFICATION, 
           { 
             name: deliveryFirm.user.name,
-            verificationLink: `${process.env.CLIENT_DOMAIN_NAME}email-verification?token=${deliveryFirm.user.email_verification_token}`
+            token: deliveryFirm.user.email_verification_token
           }
         );
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._status'), deliveryFirm);
+      const response = ResponseDTO.success(req.__('_updated._status'), deliveryFirm);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
   
@@ -152,12 +152,12 @@ module.exports = class DeliveryFirmController {
         deliveryFirm.setDataValue('reviews', review === null ? [] : [review]);
       }
 
-      const response = new Response(Response.SUCCESS, req.__('_fetched._delivery_firm'), deliveryFirm);
+      const response = ResponseDTO.success(req.__('_fetched._delivery_firm'), deliveryFirm);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -171,14 +171,13 @@ module.exports = class DeliveryFirmController {
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._delivery_firm'), rows, pagination);
+      const response = ResponseDTO.success(req.__('_list_fetched._delivery_firm'), rows, pagination);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
 }
-

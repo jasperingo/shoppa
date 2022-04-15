@@ -1,5 +1,5 @@
 const { validationResult, body } = require("express-validator");
-const InternalServerException = require("../../http/exceptions/InternalServerException");
+const createHttpError = require("http-errors");
 const Order = require("../../models/Order");
 const AddressRepository = require("../../repository/AddressRepository");
 const DeliveryFirmRepository = require("../../repository/DeliveryFirmRepository");
@@ -25,11 +25,7 @@ module.exports = async function(req, res, next) {
 
   const notRequiredMessage =  req.__('_error._form._field_not_required');
 
-  const invalidMessage =  req.__('_error._form._field_invalid');
-
   const invalidIDMessage = req.__('_error._form._id_invalid');
-
-  const differenceMessage = req.__('_error._form._field_not_duplicated');
 
   try {
 
@@ -66,12 +62,6 @@ module.exports = async function(req, res, next) {
         } else if (route === null || route === undefined || route.delivery_route_weights.find(w=> w.id === item.delivery_weight_id) === undefined) {
           err.push({ name: 'delivery_weight_id', message: invalidIDMessage, index: i });
         }
-        
-        if (item.delivery_duration_id === undefined || item.delivery_duration_id === null) {
-          err.push({ name: 'delivery_duration_id', message: requiredMessage, index: i });
-        } else if (route === null || route === undefined || route.delivery_route_durations.find(d=> d.id === item.delivery_duration_id) === undefined) {
-          err.push({ name: 'delivery_duration_id', message: invalidIDMessage, index: i });
-        }
       }
 
       
@@ -79,62 +69,45 @@ module.exports = async function(req, res, next) {
         
         const storeAddress = (await StoreRepository.get(data.store_id)).user.addresses[0];
 
+        const within = customerAddress.state === storeAddress.state && customerAddress.city === storeAddress.city;
+        
         if (
-          ((route.state === customerAddress.state &&
-            route.state === storeAddress.state) &&
-            (route.city === customerAddress.city &&
-            route.city === storeAddress.city))
-          ||
-          (
-            (route.origin_route.state === storeAddress.state &&
-            route.destination_route.state === customerAddress.state && 
-            route.origin_route.city === storeAddress.city &&
-            route.destination_route.city === customerAddress.city)
-            ||
-            (route.origin_route.state === customerAddress.state &&
-            route.destination_route.state === storeAddress.state && 
-            route.origin_route.city === customerAddress.city &&
-            route.destination_route.city === storeAddress.city)
-          )
+          (within && route.delivery_route_locations.length === 1) || 
+          (!within && route.delivery_route_locations.length > 1)
         ) {
 
-          for (let [i, item] of data.order_items.entries()) {
-
-            let routeWeight = route.delivery_route_weights.find(w=> w.id === item.delivery_weight_id);
-            
-            let productVariant = await ProductVariantRepository.get(item.product_variant_id);
-
-            let weight = productVariant.weight * item.quantity;
-
-            if (routeWeight.minimium > weight || routeWeight.maximium < weight) {
-              err.push({ name: 'delivery_weight_id', message: invalidIDMessage, index: i });
-            }
-            
-          }
-
-          if (err.length === 0) {
-
-            const errIndex = [];
-
-            for (let i = 0; i <  data.order_items.length; i++) {
-              for (let j = i; j <  data.order_items.length-1; j++) {
-                let v1 = data.order_items[i];
-                let v2 = data.order_items[j+1];
-                if (v1.delivery_duration_id !== v2.delivery_duration_id) {
-                  
-                  if (!errIndex.includes(i)) {
-                    errIndex.push(i);
-                    err.push({ name: 'delivery_duration_id', message: differenceMessage, index: i });
-                  }
+          let customerFound  = false, storeFound = false;
           
-                  if (!errIndex.includes(j+1)) {
-                    errIndex.push(j+1);
-                    err.push({ name: 'delivery_duration_id', message: differenceMessage, index: j+1 });
-                  }
-                }
+          for(const location of route.delivery_route_locations) {
+
+            if (location.state === customerAddress.state && location.city === customerAddress.city) {
+              customerFound = true;
+            }
+
+            if (location.state === storeAddress.state && location.city === storeAddress.city) {
+              storeFound = true;
+            }
+
+            if (customerFound && storeFound) break;
+          }
+          
+          if (customerFound && storeFound) {
+
+            for (let [i, item] of data.order_items.entries()) {
+
+              let routeWeight = route.delivery_route_weights.find(w=> w.id === item.delivery_weight_id);
+              
+              let productVariant = await ProductVariantRepository.get(item.product_variant_id);
+  
+              let weight = productVariant.weight * item.quantity;
+  
+              if (routeWeight.minimium > weight || routeWeight.maximium < weight) {
+                err.push({ name: 'delivery_weight_id', message: invalidIDMessage, index: i });
               }
             }
 
+          } else {
+            routeErr = invalidIDMessage;
           }
 
         } else {
@@ -144,6 +117,8 @@ module.exports = async function(req, res, next) {
 
     } else {
 
+      // Delivery data should not be sent if delivery method is not DOOR.
+
       if (data.delivery_firm_id !== undefined && data.delivery_firm_id !== null) {
         deliveryFirmErr = notRequiredMessage;
       }
@@ -152,7 +127,7 @@ module.exports = async function(req, res, next) {
         customerAddressErr = notRequiredMessage;
       }
 
-      if (data.route_id !== undefined && data.route_id !== null) {
+      if (data.delivery_route_id !== undefined && data.delivery_route_id !== null) {
         routeErr = notRequiredMessage;
       }
 
@@ -161,11 +136,6 @@ module.exports = async function(req, res, next) {
         if (item.delivery_weight_id !== undefined && item.delivery_weight_id !== null) {
           err.push({ name: 'delivery_weight_id', message: notRequiredMessage, index: i });
         }
-
-        if (item.delivery_duration_id !== undefined && item.delivery_duration_id !== null) {
-          err.push({ name: 'delivery_duration_id', message: notRequiredMessage, index: i });
-        }
-
       }
     }
 
@@ -189,6 +159,6 @@ module.exports = async function(req, res, next) {
 
   } catch (error) {
     console.error(error);
-    next(new InternalServerException(error));
+    next(createHttpError.InternalServerError(error));
   }
 }

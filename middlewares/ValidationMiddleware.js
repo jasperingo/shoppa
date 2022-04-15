@@ -1,5 +1,4 @@
-const BadRequestException = require("../http/exceptions/BadRequestException");
-const InternalServerException = require("../http/exceptions/InternalServerException");
+const createHttpError = require("http-errors");
 const ValidationCheck = require("../validation/ValidationCheck");
 const { validationHasServerError } = require("../validation/ValidationRules");
 
@@ -7,10 +6,12 @@ module.exports = function(req, res, next) {
 
   const errors = ValidationCheck(req);
 
-  if (validationHasServerError(errors)) {
-    next(new InternalServerException());
+  const serverError = validationHasServerError(errors);
+
+  if (serverError !== null) {
+    next(createHttpError.InternalServerError(serverError));
   } else if (!errors.isEmpty()) {
-    next(new BadRequestException(errors.array()));
+    next(createHttpError.BadRequest({ data: errors.array() }));
   } else {
     next();
   }

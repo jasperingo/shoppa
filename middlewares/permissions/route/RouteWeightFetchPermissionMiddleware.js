@@ -1,15 +1,14 @@
-const ForbiddenException = require("../../../http/exceptions/ForbiddenException");
-const InternalServerException = require("../../../http/exceptions/InternalServerException");
+const createHttpError = require("http-errors");
 const User = require("../../../models/User");
 const RouteRepository = require("../../../repository/RouteRepository");
 const JWT = require("../../../security/JWT");
 
-module.exports = async function permit(req, res, next) {
-
-  const route = await RouteRepository.get(req.data.routeWeight.delivery_route_id);
+module.exports = async function(req, res, next) {
 
   try {
 
+    const route = await RouteRepository.get(req.data.routeWeight.delivery_route_id);
+    
     if (
       (route.delivery_firm.user.status === User.STATUS_ACTIVE)
        || 
@@ -28,10 +27,10 @@ module.exports = async function permit(req, res, next) {
     ) {
       next();
     } else {
-      next(new ForbiddenException());
+      next(createHttpError.Forbidden());
     }
     
   } catch (error) {
-    next(new InternalServerException(error));
+    next(createHttpError.InternalServerError(error));
   }
-};
+}

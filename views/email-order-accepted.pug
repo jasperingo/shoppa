@@ -1,0 +1,6 @@
+
+extends email-layout.pug
+
+block content
+  div.mb-lg Your order has been accepted by the #{userType}.
+  a.link(href=`${clientUrl}/order/${id}`) View order.

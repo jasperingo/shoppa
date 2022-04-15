@@ -1,7 +1,5 @@
-
-const InternalServerException = require('../../http/exceptions/InternalServerException');
 const ValidationRules = require('../ValidationRules');
-const DeliveryFirmRepository = require('../../repository/DeliveryFirmRepository');
+const UserRepository = require('../../repository/UserRepository');
 
 module.exports = {
 
@@ -10,10 +8,10 @@ module.exports = {
     custom: {
       options: async (value, { req })=> {
         try {
-          if (await DeliveryFirmRepository.nameExists(value))
+          if (await UserRepository.nameExists(value))
             return Promise.reject(req.__('_error._form._name_exists'));
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     }
@@ -25,10 +23,10 @@ module.exports = {
     custom: {
       options: async (value, { req })=> {
         try {
-          if (await DeliveryFirmRepository.emailExists(value))
+          if (await UserRepository.emailExists(value))
             return Promise.reject(req.__('_error._form._email_exists'));
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     },
@@ -42,10 +40,10 @@ module.exports = {
     custom: {
       options: async (value, { req })=> {
         try {
-          if (await DeliveryFirmRepository.phoneNumberExists(value))
+          if (await UserRepository.phoneNumberExists(value))
             return Promise.reject(req.__('_error._form._phone_number_exists'));
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     }
@@ -59,4 +57,3 @@ module.exports = {
   
   administrator_password_confirmation: ValidationRules.getPasswordConfirmation('administrator_password')
 };
-

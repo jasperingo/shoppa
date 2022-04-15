@@ -2,7 +2,7 @@
 const express = require('express');
 const { checkSchema } = require('express-validator');
 const SubCategoryController = require('../controllers/SubCategoryController');
-const Files = require('../http/Files');
+const Files = require('../utils/Files');
 const AuthMiddleware = require('../middlewares/AuthMiddleware');
 const SubCategoryFetchMiddleware = require('../middlewares/fetch/SubCategoryFetchMiddleware');
 const FileUploadMiddleware = require('../middlewares/FileUploadMiddleware');

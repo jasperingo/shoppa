@@ -11,7 +11,7 @@
     "_product_variant": "Product variant created",
     "_route": "Route created",
     "_route_weight": "Route weight created",
-    "_route_duration": "Route duration created",
+    "_route_location": "Route location created",
     "_favorite": "Favorite created",
     "_saved_cart": "Saved cart created",
     "_discount": "Discount created",
@@ -40,7 +40,7 @@
     "_delivery_firm": "Delivery firm updated",
     "_route": "Route updated",
     "_route_weight": "Route weight updated",
-    "_route_duration": "Route duration updated",
+    "_route_location": "Route location updated",
     "_working_hours": "Working hours updated",
     "_withdrawal_account": "Withdrawal account updated",
     "_discount": "Discount updated",
@@ -56,7 +56,7 @@
     "_product_variant": "Product variant deleted",
     "_route": "Route deleted",
     "_route_weight": "Route weight deleted",
-    "_route_duration": "Route duration deleted",
+    "_route_location": "Route location deleted",
     "_favorite": "Favorite deleted",
     "_saved_cart": "Saved cart deleted",
     "_discount": "Discount deleted",
@@ -77,7 +77,7 @@
     "_product_variant": "Product variant fetched",
     "_route": "Route fetched",
     "_route_weight": "Route weight fetched",
-    "_route_duration": "Route duration fetched",
+    "_route_location": "Route location fetched",
     "_saved_cart": "Saved cart fetched",
     "_discount": "Discount fetched",
     "_discount_product": "Discount product fetched",
@@ -111,7 +111,7 @@
 
   "_error": {
     
-    "_server": "Server is unable to process request",
+    "_server": "An error occured while server was processing request",
     "_bad_request": "Request parameters could not be processed",
     "_not_found": "Resource could not be found",
     "_forbidden": "Permission not granted",
@@ -137,8 +137,8 @@
       "_code_exists": "This code already exists",
 
       "_route_exists": "This route already exists",
+      "_route_location_exists": "This route location already exists",
       "_route_weight_exists": "This route weight already exists",
-      "_route_duration_exists": "This route duration already exists",
       "_route_cant_have_state_and_city": "This route cannot have a state and city",
       "_route_cant_be_a_link": "This route cannot be made a link route",
       

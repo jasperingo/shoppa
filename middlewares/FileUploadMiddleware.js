@@ -2,7 +2,7 @@
 const path = require('path');
 const multer = require('multer');
 
-module.exports = (photoPath)=> {
+module.exports = function(photoPath) {
 
   const prefix = photoPath.split('/')[0];
 

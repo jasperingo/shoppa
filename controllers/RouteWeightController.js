@@ -1,8 +1,7 @@
+const createHttpError = require("http-errors");
 const { StatusCodes } = require("http-status-codes");
-const InternalServerException = require("../http/exceptions/InternalServerException");
-const Response = require("../http/Response");
+const ResponseDTO = require("../utils/ResponseDTO");
 const RouteWeightRepository = require("../repository/RouteWeightRepository");
-
 
 module.exports = class RouteWeightController {
 
@@ -10,16 +9,16 @@ module.exports = class RouteWeightController {
     
     try {
 
-      const _routeWeight = await RouteWeightRepository.create(req.body);
+      const result = await RouteWeightRepository.create(req.body);
 
-      const routeWeight = await RouteWeightRepository.get(_routeWeight.id);
+      const routeWeight = await RouteWeightRepository.get(result.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_created._route_weight'), routeWeight);
+      const response = ResponseDTO.success(req.__('_created._route_weight'), routeWeight);
 
       res.status(StatusCodes.CREATED).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -31,12 +30,12 @@ module.exports = class RouteWeightController {
 
       const routeWeight = await RouteWeightRepository.get(req.data.routeWeight.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._route_weight'), routeWeight);
+      const response = ResponseDTO.success(req.__('_updated._route_weight'), routeWeight);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -46,21 +45,19 @@ module.exports = class RouteWeightController {
 
       await RouteWeightRepository.delete(req.data.routeWeight);
 
-      const response = new Response(Response.SUCCESS, req.__('_deleted._route_weight'));
+      const response = ResponseDTO.success(req.__('_deleted._route_weight'));
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
   
   get(req, res) {
 
-    const response = new Response(Response.SUCCESS, req.__('_fetched._route_weight'), req.data.routeWeight);
+    const response = ResponseDTO.success(req.__('_fetched._route_weight'), req.data.routeWeight);
 
     res.status(StatusCodes.OK).send(response);
   }
 }
-
-

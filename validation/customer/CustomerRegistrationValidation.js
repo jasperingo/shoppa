@@ -1,7 +1,5 @@
-
-const InternalServerException = require('../../http/exceptions/InternalServerException');
 const ValidationRules = require('../ValidationRules');
-const CustomerRepository = require('../../repository/CustomerRepository');
+const UserRepository = require('../../repository/UserRepository');
 
 module.exports = {
 
@@ -19,10 +17,10 @@ module.exports = {
     custom: {
       options: async (value, { req })=> {
         try {
-          if (await CustomerRepository.emailExists(value))
+          if (await UserRepository.emailExists(value))
             return Promise.reject(req.__('_error._form._email_exists'));
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     },
@@ -36,10 +34,10 @@ module.exports = {
     custom: {
       options: async (value, { req })=> {
         try {
-          if (await CustomerRepository.phoneNumberExists(value))
+          if (await UserRepository.phoneNumberExists(value))
             return Promise.reject(req.__('_error._form._phone_number_exists'));
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     }
@@ -51,4 +49,3 @@ module.exports = {
   
   password_confirmation: ValidationRules.getPasswordConfirmation()
 };
-

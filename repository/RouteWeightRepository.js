@@ -2,20 +2,19 @@ const { Op } = require("sequelize");
 const Route = require("../models/Route");
 const RouteWeight = require("../models/RouteWeight");
 
-
 module.exports = {
 
-  async idExists(id) {
+  async existsById(id) {
     const weight = await RouteWeight.findOne({ attributes: ['id'], where: { id } });
     return weight !== null;
   },
 
-  async routeWeightExists({ delivery_route_id, minimium, maximium }) {
+  async existsByMinimiumAndMaxiMiumAndDeliveryRouteId({ delivery_route_id, minimium, maximium }) {
     const weight = await RouteWeight.findOne({where: { delivery_route_id, minimium, maximium } });
     return weight !== null;
   },
 
-  async updateRouteWeightExists({ minimium, maximium }, routeWeight) {
+  async existsByMinimiumAndMaxiMiumAndDeliveryRouteIdNotId({ minimium, maximium }, routeWeight) {
     const weight = await RouteWeight.findOne({ 
       where: { 
         minimium, 

@@ -1,11 +1,12 @@
 const { StatusCodes } = require("http-status-codes");
+const createHttpError = require("http-errors");
 const EmailService = require("../emailService");
-const InternalServerException = require("../http/exceptions/InternalServerException");
-const Response = require("../http/Response");
-const StringGenerator = require("../http/StringGenerator");
+const StringGenerator = require("../utils/StringGenerator");
 const Administrator = require("../models/Administrator");
+const PasswordReset = require("../models/PasswordReset");
 const PasswordResetRepository = require("../repository/PasswordResetRepository");
 const Hash = require("../security/Hash");
+const ResponseDTO = require("../utils/ResponseDTO");
 
 module.exports = class PasswordResetController {
 
@@ -17,12 +18,12 @@ module.exports = class PasswordResetController {
 
       await PasswordResetRepository.resetPassword(req.data.passwordReset, hashedPassword);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._password'));
+      const response = ResponseDTO.success(req.__('_updated._password'));
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -36,18 +37,14 @@ module.exports = class PasswordResetController {
 
       await PasswordResetRepository.createCustomer(token, customer);
 
-      await EmailService.send(
-        customer.user.email,
-        EmailService.PASSWORD_RESET, 
-        { resetLink: `${process.env.CLIENT_DOMAIN_NAME}reset-password?token=${token}` }
-      );
+      await EmailService.send(customer.user.email, EmailService.PASSWORD_RESET, { token, expires: PasswordReset.EXPIRE_DURATION / (1000 * 60) });
       
-      const response = new Response(Response.SUCCESS, req.__('_created._password_reset'));
+      const response = ResponseDTO.success(req.__('_created._password_reset'));
 
       res.status(StatusCodes.CREATED).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -74,22 +71,14 @@ module.exports = class PasswordResetController {
         name = 'account';
       }
       
-      await EmailService.send(
-        administrator.customer.user.email,
-        EmailService.PASSWORD_RESET, 
-        { 
-          type,
-          name,
-          resetLink: `${process.env.CLIENT_DOMAIN_NAME}reset-password?token=${token}`
-        }
-      );
+      await EmailService.send(administrator.customer.user.email, EmailService.PASSWORD_RESET, { type, name, token, expires: PasswordReset.EXPIRE_DURATION / (1000 * 60) });
 
-      const response = new Response(Response.SUCCESS, req.__('_created._password_reset'));
+      const response = ResponseDTO.success(req.__('_created._password_reset'));
 
       res.status(StatusCodes.CREATED).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 }

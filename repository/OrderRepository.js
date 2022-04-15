@@ -368,10 +368,9 @@ module.exports = {
       { transaction }
       );
 
-      for (let { 
+      for (const { 
         product_variant_id, 
         delivery_weight_id, 
-        delivery_duration_id, 
         discount_product_id, 
         quantity, 
         amount, 
@@ -389,7 +388,6 @@ module.exports = {
             delivery_fee: delivery_fee ?? 0,
             discount_amount: discount_amount ?? 0,
             delivery_weight_id: delivery_weight_id ?? undefined,
-            delivery_duration_id: delivery_duration_id ?? undefined,
             discount_product_id: discount_product_id ?? undefined,
           },
           { transaction }

@@ -1,4 +1,3 @@
-const InternalServerException = require("../../http/exceptions/InternalServerException");
 const Transaction = require("../../models/Transaction");
 const TransactionRepository = require("../../repository/TransactionRepository");
 const WithdrawalAccountRepository = require("../../repository/WithdrawalAccountRepository");
@@ -27,11 +26,10 @@ module.exports = {
           if (balance < value)
             return Promise.reject(req.__('_error._form._withdrawal_amount_gt_balance'));
         } catch (error) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(error);
         }
       }
     }
   }
 
 };
-

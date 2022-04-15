@@ -3,4 +3,4 @@ extends email-layout.pug
 
 block content
   div.mb-lg Hello #{name}, you have to verify your email to activate your account.
-  a.link(href=verificationLink) Click this link to verify your email
+  a.link(href=`${clientUrl}email-verification?token=${token}`) Click this link to verify your email

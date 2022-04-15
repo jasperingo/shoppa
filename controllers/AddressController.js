@@ -1,6 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
-const InternalServerException = require("../http/exceptions/InternalServerException");
-const Response = require("../http/Response");
+const createHttpError = require("http-errors");
+const ResponseDTO = require("../utils/ResponseDTO");
 const AddressRepository = require("../repository/AddressRepository");
 const DeliveryFirmRepository = require("../repository/DeliveryFirmRepository");
 const StoreRepository = require("../repository/StoreRepository");
@@ -15,12 +15,12 @@ module.exports = class AddressController {
 
       const address = await AddressRepository.get(_address.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_created._address'), address);
+      const response = ResponseDTO.success(req.__('_created._address'), address);
 
       res.status(StatusCodes.CREATED).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -34,12 +34,12 @@ module.exports = class AddressController {
 
       const store = await StoreRepository.get(req.data.store.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._address'), store);
+      const response = ResponseDTO.success(req.__('_updated._address'), store);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -53,12 +53,12 @@ module.exports = class AddressController {
 
       const deliveryFirm = await DeliveryFirmRepository.get(req.data.deliveryFirm.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._address'), deliveryFirm);
+      const response = ResponseDTO.success(req.__('_updated._address'), deliveryFirm);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -72,12 +72,12 @@ module.exports = class AddressController {
 
       const address = await AddressRepository.get(_address.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._address'), address);
+      const response = ResponseDTO.success(req.__('_updated._address'), address);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -87,18 +87,18 @@ module.exports = class AddressController {
 
       await AddressRepository.deleteForCustomer(req.data.address);
 
-      const response = new Response(Response.SUCCESS, req.__('_deleted._address'));
+      const response = ResponseDTO.success(req.__('_deleted._address'));
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
   get(req, res) {
 
-    const response = new Response(Response.SUCCESS, req.__('_fetched._address'), req.data.address);
+    const response = ResponseDTO.success(req.__('_fetched._address'), req.data.address);
 
     res.status(StatusCodes.OK).send(response);
   }
@@ -109,12 +109,12 @@ module.exports = class AddressController {
 
       const addresses = await AddressRepository.getListByCustomer(req.data.customer.user.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._address'), addresses);
+      const response = ResponseDTO.success(req.__('_list_fetched._address'), addresses);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException());
+      next(createHttpError.InternalServerError());
     }
   }
 

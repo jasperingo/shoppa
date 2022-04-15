@@ -1,6 +1,6 @@
 const JWT = require("../security/JWT");
 
-module.exports = async (req, res, next)=> {
+module.exports = async function(req, res, next) {
 
   try {
     
@@ -15,10 +15,9 @@ module.exports = async (req, res, next)=> {
       req.auth = auth;
     }
 
-  } catch {
+    next();
 
-  } finally {
+  } catch {
     next();
   }
-};
-
+}

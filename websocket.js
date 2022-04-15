@@ -1,7 +1,7 @@
 
 const { Server } = require('socket.io');
 const MessageController = require('./controllers/MessageController');
-const Response = require('./http/Response');
+const ResponseDTO = require('./utils/ResponseDTO');
 const AuthMiddleware = require('./middlewares/AuthMiddleware');
 const ChatRepository = require('./repository/ChatRepository');
 const MessageRepository = require('./repository/MessageRepository');
@@ -25,7 +25,7 @@ async function messageSender(senderId, chat) {
   
   const receiverSockets = await WebsocketConnectionRepository.getListByUser(receiverId);
 
-  const response = new Response(Response.SUCCESS, Response.SUCCESS, chat);
+  const response = ResponseDTO.success(ResponseDTO.SUCCESS, chat);
 
   if (senderSockets.length > 0)
     socketIO.to(senderSockets.map(i=> i.socket_id)).emit('message_created', response);

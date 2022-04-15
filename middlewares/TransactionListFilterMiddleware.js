@@ -1,5 +1,5 @@
 
-module.exports = (req, res, next)=> {
+module.exports = function(req, res, next) {
 
   const options = req.query.type ? { type: req.query.type } : null;
 

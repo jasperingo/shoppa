@@ -1,8 +1,8 @@
-const ForbiddenException = require("../../../http/exceptions/ForbiddenException");
+const createHttpError = require("http-errors");
 const User = require("../../../models/User");
 const JWT = require("../../../security/JWT");
 
-module.exports = function permit(req, res, next) {
+module.exports = function (req, res, next) {
   if (req.auth.authType === JWT.AUTH_APP_ADMIN || 
     (req.auth.authType === JWT.AUTH_CUSTOMER && 
       req.data.customer.id === req.auth.customerId &&
@@ -11,7 +11,6 @@ module.exports = function permit(req, res, next) {
   {
     next();
   } else {
-    next(new ForbiddenException());
+    next(createHttpError.Forbidden());
   }
 };
-

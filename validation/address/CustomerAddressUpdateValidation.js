@@ -1,5 +1,3 @@
-
-const InternalServerException = require('../../http/exceptions/InternalServerException');
 const Address = require('../../models/Address');
 const AddressRepository = require('../../repository/AddressRepository');
 const ValidationRules = require('../ValidationRules');
@@ -14,7 +12,7 @@ module.exports = {
           if (await AddressRepository.updateTitleExistsForUser(value, req.data.address))
             return Promise.reject(req.__('_error._form._title_exists'));
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     }
@@ -42,4 +40,3 @@ module.exports = {
   }
 
 };
-

@@ -16,57 +16,6 @@ module.exports = {
     return res !== null;
   },
 
-  async nameExists(name) {
-    const res = await User.findOne({ attributes: ['id'], where: { type: User.TYPE_STORE, name } });
-    return res !== null;
-  },
-
-  async updateNameExists(name, id) {
-    const res = await User.findOne({ 
-      attributes: ['id'], 
-      where: { 
-        type: User.TYPE_STORE, 
-        name, 
-        [Op.not]: { id }
-      } 
-    });
-    return res !== null;
-  },
-
-  async emailExists(email) {
-    const res = await User.findOne({ attributes: ['id'], where: { type: User.TYPE_STORE, email } });
-    return res !== null;
-  },
-
-  async updateEmailExists(email, id) {
-    const res = await User.findOne({ 
-      attributes: ['id'], 
-      where: { 
-        type: User.TYPE_STORE, 
-        email,
-        [Op.not]: { id }
-      } 
-    });
-    return res !== null;
-  },
-
-  async phoneNumberExists(phone_number) {
-    const res = await User.findOne({ attributes: ['id'], where: { type: User.TYPE_STORE, phone_number } });
-    return res !== null;
-  },
-
-  async updatePhoneNumberExists(phone_number, id) {
-    const res = await User.findOne({ 
-      attributes: ['id'], 
-      where: { 
-        type: User.TYPE_STORE, 
-        phone_number,
-        [Op.not]: { id }
-      } 
-    });
-    return res !== null;
-  },
-
   async statusIsActive(id) {
     const res = await Store.findOne({ 
       attributes: ['id'], 
@@ -96,7 +45,6 @@ module.exports = {
     });
     return res !== null;
   },
-
 
   get(id) {
     return Store.findOne({

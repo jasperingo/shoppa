@@ -1,13 +1,12 @@
-
-const ForbiddenException = require("../../../http/exceptions/ForbiddenException");
-const InternalServerException = require("../../../http/exceptions/InternalServerException");
+const createHttpError = require("http-errors");
 const Transaction = require("../../../models/Transaction");
 const CustomerRepository = require("../../../repository/CustomerRepository");
 const DeliveryFirmRepository = require("../../../repository/DeliveryFirmRepository");
 const StoreRepository = require("../../../repository/StoreRepository");
 const JWT = require("../../../security/JWT");
 
-module.exports = async function permit(req, res, next) {
+module.exports = async function(req, res, next) {
+
   const status = req.body.status;
   const userId = req.data.transaction.user_id;
 
@@ -46,13 +45,12 @@ module.exports = async function permit(req, res, next) {
           )
         )
       )
-    ) 
-    {
+    ) {
       next();
     } else {
-      next(new ForbiddenException());
+      next(createHttpError.Forbidden());
     }
   } catch (error) {
-    next(new InternalServerException(error))
+    next(createHttpError.InternalServerError(error))
   }
-};
+}

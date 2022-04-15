@@ -1,4 +1,4 @@
-const ForbiddenException = require("../../../http/exceptions/ForbiddenException");
+const createHttpError = require("http-errors");
 const User = require("../../../models/User");
 const JWT = require("../../../security/JWT");
 
@@ -8,7 +8,6 @@ module.exports = function permit(req, res, next) {
     req.data.customer.user.status === User.STATUS_ACTIVE) {
     next();
   } else {
-    next(new ForbiddenException());
+    next(createHttpError.Forbidden());
   }
 };
-

@@ -1,11 +1,11 @@
-const ForbiddenException = require("../../../http/exceptions/ForbiddenException");
-const InternalServerException = require("../../../http/exceptions/InternalServerException");
+const createHttpError = require("http-errors");
 const User = require("../../../models/User");
 const ProductRepository = require("../../../repository/ProductRepository");
 const JWT = require("../../../security/JWT");
 
-module.exports = async function permit(req, res, next) {
+module.exports = async function(req, res, next) {
   try {
+
     const product = await ProductRepository.get(req.data.productVariant.product_id);
 
     if (
@@ -26,10 +26,9 @@ module.exports = async function permit(req, res, next) {
     ) {
       next();
     } else {
-      next(new ForbiddenException());
+      next(createHttpError.Forbidden());
     }
   } catch (error) {
-    next(new InternalServerException(error));
+    next(createHttpError.InternalServerError(error));
   }
-};
-
+}

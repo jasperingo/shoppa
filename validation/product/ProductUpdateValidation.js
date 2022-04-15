@@ -1,5 +1,3 @@
-
-const InternalServerException = require('../../http/exceptions/InternalServerException');
 const ProductRepository = require('../../repository/ProductRepository');
 const SubCategoryRepository = require('../../repository/SubCategoryRepository');
 const ValidationRules = require('../ValidationRules');
@@ -15,7 +13,7 @@ module.exports = {
           if (! (await SubCategoryRepository.idForProductExists(value)))
             return Promise.reject(req.__('_error._form._id_invalid'));
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     }
@@ -29,7 +27,7 @@ module.exports = {
           if (await ProductRepository.updateTitleExists(value, req.params.id))
             return Promise.reject(req.__('_error._form._title_exists'));
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     }
@@ -40,4 +38,3 @@ module.exports = {
   },
 
 };
-

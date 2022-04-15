@@ -5,13 +5,14 @@ const RouteWeightController = require('../controllers/RouteWeightController');
 const AuthMiddleware = require('../middlewares/AuthMiddleware');
 const RouteWeightFetchMiddleware = require('../middlewares/fetch/RouteWeightFetchMiddleware');
 const OptionalAuthMiddleware = require('../middlewares/OptionalAuthMiddleware');
-const RouteWeightCreatePermissionMiddleware = require('../middlewares/permissions/route/RouteWeightAndDurationCreatePermissionMiddleware');
+const RouteCreatePermissionMiddleware = require('../middlewares/permissions/route/RouteCreatePermissionMiddleware');
 const RouteWeightFetchPermissionMiddleware = require('../middlewares/permissions/route/RouteWeightFetchPermissionMiddleware');
 const RouteWeightUpdatePermissionMiddleware = require('../middlewares/permissions/route/RouteWeightUpdatePermissionMiddleware');
 const ValidationMiddleware = require('../middlewares/ValidationMiddleware');
-const RouteWeightCreateUniqueValidation = require('../validation/route/RouteWeightCreateUniqueValidation');
-const RouteWeightUpdateUniqueValidation = require('../validation/route/RouteWeightUpdateUniqueValidation');
-const RouteWeightValidation = require('../validation/route/RouteWeightValidation');
+const RouteWeightUniqueCreateValidation = require('../validation/route/RouteWeightUniqueCreateValidation');
+const RouteWeightUniqueUpdateValidation = require('../validation/route/RouteWeightUniqueUpdateValidation');
+const RouteWeightCreateValidation = require('../validation/route/RouteWeightCreateValidation');
+const RouteWeightUpdateValidation = require('../validation/route/RouteWeightUpdateValidation');
 
 const router = express.Router();
 
@@ -20,9 +21,9 @@ const controller = new RouteWeightController();
 router.post(
   '/create',
   AuthMiddleware,
-  RouteWeightCreatePermissionMiddleware,
-  checkSchema(RouteWeightValidation),
-  RouteWeightCreateUniqueValidation,
+  RouteCreatePermissionMiddleware,
+  checkSchema(RouteWeightCreateValidation),
+  RouteWeightUniqueCreateValidation,
   ValidationMiddleware,
   controller.create
 );
@@ -32,8 +33,8 @@ router.put(
   RouteWeightFetchMiddleware,
   AuthMiddleware,
   RouteWeightUpdatePermissionMiddleware,
-  checkSchema(RouteWeightValidation),
-  RouteWeightUpdateUniqueValidation,
+  checkSchema(RouteWeightUpdateValidation),
+  RouteWeightUniqueUpdateValidation,
   ValidationMiddleware,
   controller.update
 );

@@ -1,8 +1,7 @@
 
 const { StatusCodes } = require("http-status-codes");
-const Response = require("../http/Response");
+const ResponseDTO = require("../utils/ResponseDTO");
 const AdministratorRepository = require("../repository/AdministratorRepository");
-const InternalServerException = require("../http/exceptions/InternalServerException");
 const JWT = require("../security/JWT");
 const Hash = require("../security/Hash");
 const CustomerRepository = require("../repository/CustomerRepository");
@@ -12,6 +11,7 @@ const CategoryRepository = require("../repository/CategoryRepository");
 const ProductRepository = require("../repository/ProductRepository");
 const OrderRepository = require("../repository/OrderRepository");
 const TransactionRepository = require("../repository/TransactionRepository");
+const createHttpError = require("http-errors");
 
 module.exports = class AdministratorController {
 
@@ -25,7 +25,7 @@ module.exports = class AdministratorController {
 
       administrator.hidePassword();
 
-      const response = new Response(Response.SUCCESS, req.__('_login'), {
+      const response = ResponseDTO.success(req.__('_login'), {
         administrator,
         api_token: token
       });
@@ -33,7 +33,7 @@ module.exports = class AdministratorController {
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -47,12 +47,12 @@ module.exports = class AdministratorController {
 
       administrator.hidePassword();
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._administrator'), administrator);
+      const response = ResponseDTO.success(req.__('_updated._administrator'), administrator);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -66,12 +66,12 @@ module.exports = class AdministratorController {
 
       administrator.hidePassword();
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._photo'), administrator);
+      const response = ResponseDTO.success(req.__('_updated._photo'), administrator);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -83,12 +83,12 @@ module.exports = class AdministratorController {
       
       await AdministratorRepository.updatePassword(req.data.administrator.id, hashedPassword);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._password'));
+      const response = ResponseDTO.success(req.__('_updated._password'));
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -98,7 +98,7 @@ module.exports = class AdministratorController {
 
     administrator.hidePassword();
 
-    const response = new Response(Response.SUCCESS, req.__('_fetched._administrator'), administrator);
+    const response = ResponseDTO.success(req.__('_fetched._administrator'), administrator);
 
     res.status(StatusCodes.OK).send(response);
   }
@@ -124,14 +124,13 @@ module.exports = class AdministratorController {
 
       statistics.total_earnings = await TransactionRepository.getBalance(req.auth.userId);
 
-      const response = new Response(Response.SUCCESS, req.__('_fetched._statistics'), statistics);
+      const response = ResponseDTO.success(req.__('_fetched._statistics'), statistics);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
 }
-

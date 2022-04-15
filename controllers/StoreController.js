@@ -1,9 +1,9 @@
 const { StatusCodes } = require("http-status-codes");
-const InternalServerException = require("../http/exceptions/InternalServerException");
-const Pagination = require("../http/Pagination");
-const Response = require("../http/Response");
+const createHttpError = require("http-errors");
+const Pagination = require("../utils/Pagination");
+const ResponseDTO = require("../utils/ResponseDTO");
 const EmailService = require("../emailService");
-const StringGenerator = require("../http/StringGenerator");
+const StringGenerator = require("../utils/StringGenerator");
 const AdministratorRepository = require("../repository/AdministratorRepository");
 const ReviewRepository = require("../repository/ReviewRepository");
 const StoreRepository = require("../repository/StoreRepository");
@@ -33,12 +33,12 @@ module.exports = class StoreController {
 
       store.setDataValue('administrators', [administrator]);
 
-      const response = new Response(Response.SUCCESS, req.__('_created._store'), store);
+      const response = ResponseDTO.success(req.__('_created._store'), store);
 
       res.status(StatusCodes.CREATED).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
   
@@ -56,7 +56,7 @@ module.exports = class StoreController {
 
       const token = await JWT.signStoreJWT(store.toJSON());
 
-      const response = new Response(Response.SUCCESS, req.__('_login'), {
+      const response = ResponseDTO.success(req.__('_login'), {
         store,
         api_token: token
       });
@@ -64,7 +64,7 @@ module.exports = class StoreController {
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -78,12 +78,12 @@ module.exports = class StoreController {
 
       store.review_summary = await ReviewRepository.getSummaryForStore(store);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._store'), store);
+      const response = ResponseDTO.success(req.__('_updated._store'), store);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -97,12 +97,12 @@ module.exports = class StoreController {
 
       store.review_summary = await ReviewRepository.getSummaryForStore(store);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._photo'), store);
+      const response = ResponseDTO.success(req.__('_updated._photo'), store);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
   
@@ -122,16 +122,16 @@ module.exports = class StoreController {
           EmailService.EMAIL_VERIFICATION, 
           { 
             name: store.user.name,
-            verificationLink: `${process.env.CLIENT_DOMAIN_NAME}email-verification?token=${store.user.email_verification_token}`
+            token: store.user.email_verification_token
           }
         );
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._status'), store);
+      const response = ResponseDTO.success(req.__('_updated._status'), store);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -145,12 +145,12 @@ module.exports = class StoreController {
 
       store.review_summary = await ReviewRepository.getSummaryForStore(store);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._store'), store);
+      const response = ResponseDTO.success(req.__('_updated._store'), store);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
   
@@ -171,12 +171,12 @@ module.exports = class StoreController {
         store.setDataValue('reviews', review === null ? [] : [review]);
       }
       
-      const response = new Response(Response.SUCCESS, req.__('_fetched._store'), store);
+      const response = ResponseDTO.success(req.__('_fetched._store'), store);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -190,12 +190,12 @@ module.exports = class StoreController {
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._store'), rows, pagination);
+      const response = ResponseDTO.success(req.__('_list_fetched._store'), rows, pagination);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -207,12 +207,12 @@ module.exports = class StoreController {
 
       const stores = await StoreRepository.getRandomList(pager.page_limit);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._store'), stores);
+      const response = ResponseDTO.success(req.__('_list_fetched._store'), stores);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -224,12 +224,12 @@ module.exports = class StoreController {
 
       const stores = await StoreRepository.getListByRecommended(pager.page_limit);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._store'), stores);
+      const response = ResponseDTO.success(req.__('_list_fetched._store'), stores);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -243,12 +243,12 @@ module.exports = class StoreController {
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._store'), rows, pagination);
+      const response = ResponseDTO.success(req.__('_list_fetched._store'), rows, pagination);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 

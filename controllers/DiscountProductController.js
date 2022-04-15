@@ -1,9 +1,8 @@
 const { StatusCodes } = require("http-status-codes");
-const InternalServerException = require("../http/exceptions/InternalServerException");
-const Pagination = require("../http/Pagination");
-const Response = require("../http/Response");
+const createHttpError = require("http-errors");
+const Pagination = require("../utils/Pagination");
+const ResponseDTO = require("../utils/ResponseDTO");
 const DiscountProductRepository = require("../repository/DiscountProductRepository");
-
 
 module.exports = class DiscountProductController {
 
@@ -15,12 +14,12 @@ module.exports = class DiscountProductController {
 
       const discountProduct = await DiscountProductRepository.get(_discountProduct.id);
 
-      const response = new Response(Response.SUCCESS, req.__('_created._discount_product'), discountProduct);
+      const response = ResponseDTO.success(req.__('_created._discount_product'), discountProduct);
 
       res.status(StatusCodes.CREATED).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -30,12 +29,12 @@ module.exports = class DiscountProductController {
 
       await DiscountProductRepository.delete(req.data.discountProduct);
 
-      const response = new Response(Response.SUCCESS, req.__('_deleted._discount_product'));
+      const response = ResponseDTO.success(req.__('_deleted._discount_product'));
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -49,14 +48,13 @@ module.exports = class DiscountProductController {
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._discount_product'), rows, pagination);
+      const response = ResponseDTO.success(req.__('_list_fetched._discount_product'), rows, pagination);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
 }
-

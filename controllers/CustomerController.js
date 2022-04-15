@@ -1,10 +1,10 @@
 
 const { StatusCodes } = require("http-status-codes");
+const createHttpError = require("http-errors");
 const EmailService = require("../emailService");
-const InternalServerException = require("../http/exceptions/InternalServerException");
-const Pagination = require("../http/Pagination");
-const Response = require("../http/Response");
-const StringGenerator = require("../http/StringGenerator");
+const Pagination = require("../utils/Pagination");
+const ResponseDTO = require("../utils/ResponseDTO");
+const StringGenerator = require("../utils/StringGenerator");
 const CustomerRepository = require("../repository/CustomerRepository");
 const Hash = require("../security/Hash");
 const JWT = require("../security/JWT");
@@ -34,12 +34,12 @@ module.exports = class CustomerController {
 
       customer.hidePassword();
 
-      const response = new Response(Response.SUCCESS, req.__('_created._customer'), customer);
+      const response = ResponseDTO.success(req.__('_created._customer'), customer);
 
       res.status(StatusCodes.CREATED).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -53,7 +53,7 @@ module.exports = class CustomerController {
 
       customer.hidePassword();
 
-      const response = new Response(Response.SUCCESS, req.__('_login'), {
+      const response = ResponseDTO.success(req.__('_login'), {
         customer,
         api_token: token
       });
@@ -61,7 +61,7 @@ module.exports = class CustomerController {
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -75,12 +75,12 @@ module.exports = class CustomerController {
 
       customer.hidePassword();
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._customer'), customer);
+      const response = ResponseDTO.success(req.__('_updated._customer'), customer);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -92,12 +92,12 @@ module.exports = class CustomerController {
       
       await CustomerRepository.updatePassword(req.data.customer, hashedPassword);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._password'));
+      const response = ResponseDTO.success(req.__('_updated._password'));
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -111,12 +111,12 @@ module.exports = class CustomerController {
 
       customer.hidePassword();
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._photo'), customer);
+      const response = ResponseDTO.success(req.__('_updated._photo'), customer);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
   
@@ -130,12 +130,12 @@ module.exports = class CustomerController {
 
       customer.hidePassword();
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._status'), customer);
+      const response = ResponseDTO.success(req.__('_updated._status'), customer);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -143,7 +143,7 @@ module.exports = class CustomerController {
 
     req.data.customer.hidePassword();
 
-    const response = new Response(Response.SUCCESS, req.__('_fetched._customer'), req.data.customer);
+    const response = ResponseDTO.success(req.__('_fetched._customer'), req.data.customer);
 
     res.status(StatusCodes.OK).send(response);
   }
@@ -158,14 +158,13 @@ module.exports = class CustomerController {
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._customer'), rows, pagination);
+      const response = ResponseDTO.success(req.__('_list_fetched._customer'), rows, pagination);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
 }
-

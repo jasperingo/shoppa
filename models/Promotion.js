@@ -1,6 +1,6 @@
 
 const { Model, DataTypes } = require("sequelize");
-const Files = require("../http/Files");
+const Files = require("../utils/Files");
 const sequelize = require('../repository/DB');
 
 class Promotion extends Model {}

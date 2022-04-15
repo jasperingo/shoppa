@@ -1,5 +1,3 @@
-
-const InternalServerException = require('../../http/exceptions/InternalServerException');
 const Address = require('../../models/Address');
 const AddressRepository = require('../../repository/AddressRepository');
 const ValidationRules = require('../ValidationRules');
@@ -14,7 +12,7 @@ module.exports = {
           if (await AddressRepository.titleExistsForUser(value, req.auth.userId))
             return Promise.reject(req.__('_error._form._title_exists'));
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     }
@@ -37,11 +35,10 @@ module.exports = {
           if (value !== Address.TYPE_DEFAULT && ! (await AddressRepository.typeDefaultExistsForUser(req.auth.userId)))
             return Promise.reject(req.__('_error._form._address_type_not_default'));
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     }
   }
 
 };
-

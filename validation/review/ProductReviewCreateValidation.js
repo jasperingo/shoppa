@@ -1,7 +1,5 @@
-const InternalServerException = require("../../http/exceptions/InternalServerException");
 const ReviewRepository = require("../../repository/ReviewRepository");
 const ValidationRules = require("../ValidationRules");
-
 
 module.exports = {
 
@@ -14,7 +12,7 @@ module.exports = {
           if (await ReviewRepository.existsForProduct(value, req.auth.customerId))
             return Promise.reject(req.__('_error._form._review_exists'));
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     }
@@ -30,4 +28,3 @@ module.exports = {
   }
 
 };
-

@@ -1,0 +1,6 @@
+
+extends email-layout.pug
+
+block content
+  div.mb-lg Sorry, your order was declined by the #{userType}.
+  a.link(href=`${clientUrl}/order/${id}`) View order.

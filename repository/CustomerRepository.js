@@ -1,4 +1,3 @@
-const { Op } = require("sequelize");
 const Customer = require("../models/Customer");
 const User = require("../models/User");
 const WithdrawalAccount = require("../models/WithdrawalAccount");
@@ -11,45 +10,6 @@ module.exports = {
     return res !== null;
   },
 
-  async emailVerificationTokenExists(email_verification_token) {
-    const res = await User.findOne({ attributes: ['id'], where: { email_verification_token } });
-    return res !== null;
-  },
-
-  async emailExists(email) {
-    const res = await User.findOne({ attributes: ['id'], where: { type: User.TYPE_CUSTOMER, email } });
-    return res !== null;
-  },
-
-  async updateEmailExists(email, id) {
-    const user = await User.findOne({ 
-      attributes: ['id'], 
-      where: { 
-        email, 
-        type: User.TYPE_CUSTOMER,
-        [Op.not]: { id } 
-      } 
-    });
-    return user !== null;
-  },
-
-  async phoneNumberExists(phone_number) {
-    const res = await User.findOne({ attributes: ['id'], where: { type: User.TYPE_CUSTOMER, phone_number } });
-    return res !== null;
-  },
-
-  async updatePhoneNumberExists(phone_number, id) {
-    const res = await User.findOne({ 
-      attributes: ['id'], 
-      where: { 
-        type: User.TYPE_CUSTOMER, 
-        phone_number,
-        [Op.not]: { id }
-      } 
-    });
-    return res !== null;
-  },
-  
   async statusIsActive(id) {
     const res = await User.findOne({ 
       attributes: ['id'], 
@@ -151,4 +111,3 @@ module.exports = {
   },
 
 };
-

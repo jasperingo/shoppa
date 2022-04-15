@@ -1,4 +1,3 @@
-const InternalServerException = require("../../http/exceptions/InternalServerException");
 const Order = require("../../models/Order");
 const ProductVariantRepository = require("../../repository/ProductVariantRepository");
 const StoreRepository = require("../../repository/StoreRepository");
@@ -15,7 +14,7 @@ module.exports = {
           if (! (await StoreRepository.statusIsActive(value)))
             return Promise.reject(req.__('_error._form._id_invalid'));
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     }

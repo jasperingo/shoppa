@@ -1,5 +1,3 @@
-
-const InternalServerException = require('../../http/exceptions/InternalServerException');
 const ValidationRules = require('../ValidationRules');
 const DeliveryFirmRepository = require('../../repository/DeliveryFirmRepository');
 
@@ -13,7 +11,7 @@ module.exports = {
           if (await DeliveryFirmRepository.updateNameExists(value, req.data.deliveryFirm.user.id))
             return Promise.reject(req.__('_error._form._name_exists'));
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     }
@@ -28,7 +26,7 @@ module.exports = {
           if (await DeliveryFirmRepository.updateEmailExists(value, req.data.deliveryFirm.user.id))
             return Promise.reject(req.__('_error._form._email_exists'));
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     },
@@ -45,11 +43,10 @@ module.exports = {
           if (await DeliveryFirmRepository.updatePhoneNumberExists(value, req.data.deliveryFirm.user.id))
             return Promise.reject(req.__('_error._form._phone_number_exists'));
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     }
   },
 
 };
-

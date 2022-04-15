@@ -1,22 +1,22 @@
-const ForbiddenException = require("../../../http/exceptions/ForbiddenException");
-const InternalServerException = require("../../../http/exceptions/InternalServerException");
+
+const createHttpError = require("http-errors");
 const DeliveryFirmRepository = require("../../../repository/DeliveryFirmRepository");
 const RouteRepository = require("../../../repository/RouteRepository");
 const JWT = require("../../../security/JWT");
 
-module.exports = async function permit(req, res, next) {
+module.exports = async function(req, res, next) {
 
   try {
-    if (req.auth.authType === JWT.AUTH_DELIVERY_ADMIN && 
+    if (
+      req.auth.authType === JWT.AUTH_DELIVERY_ADMIN && 
       await DeliveryFirmRepository.statusIsActiveOrActivating(req.auth.userId) &&
-      await RouteRepository.idExistsForDeliveryFirm(req.data.routeWeight.delivery_route_id, req.auth.deliveryFirmId)) 
-    {
+      await RouteRepository.existsByIdAndDeliveryFirmId(req.data.routeWeight.delivery_route_id, req.auth.deliveryFirmId)
+    ) {
       next();
     } else {
-      next(new ForbiddenException());
+      next(createHttpError.Forbidden());
     }
   } catch (error) {
-    next(new InternalServerException(error));
+    next(createHttpError.InternalServerError(error));
   }
 };
-

@@ -1,7 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
+const createHttpError = require("http-errors");
+const ResponseDTO = require("../utils/ResponseDTO");
 const EmailService = require("../emailService");
-const InternalServerException = require("../http/exceptions/InternalServerException");
-const Response = require("../http/Response");
 const UserRepository = require("../repository/UserRepository");
 
 module.exports = class EmailVerificationController {
@@ -17,16 +17,16 @@ module.exports = class EmailVerificationController {
         EmailService.EMAIL_VERIFICATION, 
         { 
           name: user.name,
-          verificationLink: `${process.env.CLIENT_DOMAIN_NAME}email-verification?token=${user.email_verification_token}`
+          token: user.email_verification_token
         }
       );
       
-      const response = new Response(Response.SUCCESS, req.__('_updated._email_verification_token'));
+      const response = ResponseDTO.success(req.__('_updated._email_verification_token'));
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
@@ -36,12 +36,12 @@ module.exports = class EmailVerificationController {
 
       await UserRepository.updateEmailVerified(req.data.user, true);
 
-      const response = new Response(Response.SUCCESS, req.__('_updated._email_verified'));
+      const response = ResponseDTO.success(req.__('_updated._email_verified'));
 
       res.status(StatusCodes.OK).send(response);
 
     } catch (error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 

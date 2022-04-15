@@ -1,4 +1,3 @@
-const InternalServerException = require("../../http/exceptions/InternalServerException");
 const UserRepository = require("../../repository/UserRepository");
 const ValidationRules = require("../ValidationRules");
 
@@ -14,10 +13,10 @@ module.exports = {
           else 
             req.data = { user };
         } catch (err) {
-          return Promise.reject(InternalServerException.TAG);
+          return Promise.reject(err);
         }
       }
     },
     normalizeEmail: true
   }
-}
+};

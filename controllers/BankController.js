@@ -1,8 +1,8 @@
 
 const { StatusCodes } = require('http-status-codes');
-const InternalServerException = require('../http/exceptions/InternalServerException');
-const Response = require('../http/Response');
+const ResponseDTO = require('../utils/ResponseDTO');
 const BankRepository = require('../repository/BankRepository');
+const createHttpError = require('http-errors');
 
 module.exports = class LocationController {
 
@@ -13,15 +13,13 @@ module.exports = class LocationController {
 
       const banks = await BankRepository.getList();
 
-      const response = new Response(Response.SUCCESS, req.__('_list_fetched._bank'), banks);
+      const response = ResponseDTO.success(req.__('_list_fetched._bank'), banks);
 
       res.status(StatusCodes.OK).send(response);
 
     } catch(error) {
-      next(new InternalServerException(error));
+      next(createHttpError.InternalServerError(error));
     }
   }
 
 }
-
-

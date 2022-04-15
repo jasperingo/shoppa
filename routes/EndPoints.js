@@ -12,7 +12,7 @@ const DeliveryFirmRoute = require('./DeliveryFirmRoute');
 const LocationRoute = require('./LocationRoute');
 const RouteRoute = require('./RouteRoute');
 const RouteWeightRoute = require('./RouteWeightRoute');
-const RouteDurationRoute = require('./RouteDurationRoute');
+const RouteLocationRoute = require('./RouteLocationRoute');
 const FavoriteRoute = require('./FavoriteRoute');
 const SavedCartRoute = require('./SavedCartRoute');
 const DiscountRoute = require('./DiscountRoute');
@@ -52,7 +52,7 @@ router.use('/delivery-route', RouteRoute);
 
 router.use('/delivery-route-weight', RouteWeightRoute);
 
-router.use('/delivery-route-duration', RouteDurationRoute);
+router.use('/delivery-route-location', RouteLocationRoute);
 
 router.use('/favorite', FavoriteRoute);
 

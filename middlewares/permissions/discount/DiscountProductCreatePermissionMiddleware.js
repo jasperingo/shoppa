@@ -1,22 +1,21 @@
-const ForbiddenException = require("../../../http/exceptions/ForbiddenException");
-const InternalServerException = require("../../../http/exceptions/InternalServerException");
+const createHttpError = require("http-errors");
 const DiscountRepository = require("../../../repository/DiscountRepository");
 const StoreRepository = require("../../../repository/StoreRepository");
 const JWT = require("../../../security/JWT");
 
-module.exports = async function permit(req, res, next) {
+module.exports = async function(req, res, next) {
   try {
-    if (req.auth.authType === JWT.AUTH_STORE_ADMIN && 
+    if (
+      req.auth.authType === JWT.AUTH_STORE_ADMIN && 
       await StoreRepository.statusIsActiveOrActivating(req.auth.userId) &&
       req.body.discount_id !== undefined && 
-      await DiscountRepository.idExistsForStore(req.body.discount_id, req.auth.storeId)) 
-    {
+      await DiscountRepository.idExistsForStore(req.body.discount_id, req.auth.storeId)
+    ) {
       next();
     } else {
-      next(new ForbiddenException());
+      next(createHttpError.Forbidden());
     }
   } catch (error) {
-    next(new InternalServerException(error));
+    next(createHttpError.InternalServerError(error));
   }
-};
-
+}
