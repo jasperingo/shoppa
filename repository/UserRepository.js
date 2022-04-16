@@ -56,6 +56,14 @@ module.exports = {
     return res !== null;
   },
 
+  async statusIsActive(id) {
+    const res = await User.findOne({ 
+      attributes: ['id'], 
+      where: { id, status: User.STATUS_ACTIVE } 
+    });
+    return res !== null;
+  },
+
   getByEmail(email) {
     return User.findOne({ where: { email } });
   },
