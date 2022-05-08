@@ -73,7 +73,13 @@ module.exports = {
   },
 
   updateEmailVerified(user, email_verified) {
-    return User.update({ email_verified }, { where: { id: user.id } });
+    return User.update(
+      { 
+        email_verified, 
+        status: user.type === User.TYPE_CUSTOMER ? User.STATUS_ACTIVE : User.STATUS_ACTIVATING,
+      }, 
+      { where: { id: user.id } }
+    );
   }
   
 }
