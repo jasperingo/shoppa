@@ -28,7 +28,7 @@ module.exports = class CustomerController {
         EmailService.EMAIL_VERIFICATION, 
         { 
           name: customer.user.name,
-          verificationLink: `${process.env.CLIENT_DOMAIN_NAME}email-verification?token=${emailToken}`
+          token: emailToken
         }
       );
 
