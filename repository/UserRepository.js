@@ -1,5 +1,8 @@
 const { Op } = require("sequelize");
+const Address = require("../models/Address");
 const User = require("../models/User");
+const WithdrawalAccount = require("../models/WithdrawalAccount");
+const WorkingHour = require("../models/WorkingHour");
 
 module.exports = {
 
@@ -69,14 +72,34 @@ module.exports = {
   },
 
   getByEmailVerificationToken(email_verification_token) {
-    return User.findOne({ where: { email_verification_token } });
+    return User.findOne({ 
+      where: { email_verification_token },
+      include: [
+        {
+          model: Address,
+          attributes: Address.GET_ATTR
+        },
+        {
+          model: WorkingHour,
+          attributes: WorkingHour.GET_ATTR
+        },
+        {
+          model: WithdrawalAccount,
+          attributes: WithdrawalAccount.GET_ATTR
+        }
+      ]
+    });
   },
 
   updateEmailVerified(user, email_verified) {
     return User.update(
       { 
         email_verified, 
-        status: user.type === User.TYPE_CUSTOMER ? User.STATUS_ACTIVE : User.STATUS_ACTIVATING,
+        status: user.type === User.TYPE_CUSTOMER 
+          ? User.STATUS_ACTIVE 
+          : user.working_hours.length > 0 && user.addresses.length > 0 
+            ? User.STATUS_ACTIVE
+            : User.STATUS_ACTIVATING,
       }, 
       { where: { id: user.id } }
     );
