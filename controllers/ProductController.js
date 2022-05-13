@@ -133,7 +133,12 @@ module.exports = class ProductController {
 
       const { pager, store, productFilter } = req.data;
 
-      const { count, rows } = await ProductRepository.getListByStore(store, pager.page_offset, pager.page_limit, productFilter);
+      const { count, rows } = await ProductRepository.getListByStore(
+        store, 
+        pager.page_offset, 
+        pager.page_limit, 
+        productFilter
+      );
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
@@ -152,7 +157,12 @@ module.exports = class ProductController {
 
       const { pager, store } = req.data;
 
-      const { count, rows } = await ProductRepository.getListByStoreWithDiscount(store, req.params.discountId, pager.page_offset, pager.page_limit);
+      const { count, rows } = await ProductRepository.getListByStoreWithDiscount(
+        store, 
+        req.params.discountId, 
+        pager.page_offset, 
+        pager.page_limit
+      );
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
@@ -169,9 +179,9 @@ module.exports = class ProductController {
     
     try {
 
-      const { pager } = req.data;
+      const { pager, productFilter } = req.data;
 
-      const products = await ProductRepository.getRandomList(pager.page_limit);
+      const products = await ProductRepository.getRandomList(pager.page_limit, productFilter);
 
       const response = ResponseDTO.success(req.__('_list_fetched._product'), products);
 
@@ -186,9 +196,9 @@ module.exports = class ProductController {
     
     try {
 
-      const { pager } = req.data;
+      const { pager, productFilter } = req.data;
 
-      const products = await ProductRepository.getListByRecommended(pager.page_limit);
+      const products = await ProductRepository.getListByRecommended(pager.page_limit, productFilter);
 
       const response = ResponseDTO.success(req.__('_list_fetched._product'), products);
 
@@ -203,9 +213,13 @@ module.exports = class ProductController {
     
     try {
 
-      const { pager, searchParams } = req.data;
+      const { pager, searchParams, productFilter } = req.data;
 
-      const { count, rows } = await ProductRepository.getListBySearch(pager.page_offset, pager.page_limit, searchParams);
+      const { count, rows } = await ProductRepository.getListBySearch(
+        pager.page_offset, 
+        pager.page_limit, 
+        { ...productFilter, ...searchParams }
+      );
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 
@@ -222,9 +236,14 @@ module.exports = class ProductController {
     
     try {
 
-      const { pager, product } = req.data;
+      const { pager, product, productFilter } = req.data;
 
-      const { count, rows } = await ProductRepository.getRelatedList(product, pager.page_offset, pager.page_limit);
+      const { count, rows } = await ProductRepository.getRelatedList(
+        product, 
+        pager.page_offset, 
+        pager.page_limit,
+        productFilter
+      );
 
       const pagination = new Pagination(req, pager.page, pager.page_limit, count);
 

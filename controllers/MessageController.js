@@ -3,6 +3,7 @@ const ResponseDTO = require("../utils/ResponseDTO");
 const ChatRepository = require("../repository/ChatRepository");
 const MessageRepository = require("../repository/MessageRepository");
 const WebsocketConnectionRepository = require("../repository/WebsocketConnectionRepository");
+const { encrypt, decrypt } = require("../security/Encrypt");
 
 module.exports = class MessageController {
 
@@ -30,6 +31,8 @@ module.exports = class MessageController {
     try {
       if (content === '')
         throw new Error();
+
+      content = encrypt(content);
       
       const users = await WebsocketConnectionRepository.getListByUser(receiverId);
 
@@ -41,16 +44,18 @@ module.exports = class MessageController {
 
       const message = await MessageRepository.get(result.message.id);
 
+      message.content = decrypt(message.content);
+
       const chat = await ChatRepository.get(result.chat.id);
 
       chat.setDataValue('messages', [message]);
 
-      const reponse = ResponseDTO.success(ResponseDTO.SUCCESS, chat);
+      const response = ResponseDTO.success(ResponseDTO.SUCCESS, chat);
 
-      socket.emit('message_created', reponse);
+      socket.emit('message_created', response);
 
       if (users.length > 0)
-        socket.to(users.map(i=> i.socket_id)).emit('message', reponse);
+        socket.to(users.map(i=> i.socket_id)).emit('message', response);
 
     } catch {
       socket.emit('message_created', ResponseDTO.error(ResponseDTO.ERROR));
@@ -78,11 +83,17 @@ module.exports = class MessageController {
     
     try {
       
-      const recipients = await ChatRepository.getListByMember(
+      const result = await ChatRepository.getListByMember(
         socket.request.auth.userId,
         this.getTimeOffset(lastDate),
         this.getPageLimit(pageLimit)
       );
+      
+      const recipients = result.map(chat => {
+        const content = chat.message.content;
+        chat.message.content = content ? decrypt(content) : content;
+        return chat;
+      });
       
       const reponse = ResponseDTO.success(ResponseDTO.SUCCESS, recipients);
 
@@ -108,18 +119,25 @@ module.exports = class MessageController {
 
     try {
       
-      const messages = await MessageRepository.getListByMembers(
+      const result = await MessageRepository.getListByMembers(
         memberId,
         socket.request.auth.userId,
         this.getTimeOffset(lastDate),
         this.getPageLimit(pageLimit)
       );
       
-      const reponse = ResponseDTO.success(ResponseDTO.SUCCESS, messages);
+      const messages = result.map(message => { 
+        const content = message.content;
+        message.content = content ? decrypt(content) : content;
+        return message;
+      });
 
-      socket.emit('messages', reponse);
+      const response = ResponseDTO.success(ResponseDTO.SUCCESS, messages);
+
+      socket.emit('messages', response);
       
     } catch(error) {
+      console.log(error)
       socket.emit('messages', ResponseDTO.error(ResponseDTO.ERROR));
     }
   }

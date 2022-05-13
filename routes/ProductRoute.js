@@ -20,6 +20,7 @@ const ProductAddValidation = require('../validation/product/ProductAddValidation
 const ProductRecommendedUpdateValidation = require('../validation/product/ProductRecommendedUpdateValidation');
 const ProductUpdateValidation = require('../validation/product/ProductUpdateValidation');
 const SearchValidation = require('../validation/search/SearchValidation');
+const ProductListFilterMiddleware = require('../middlewares/ProductListFilterMiddleware');
 
 const router = express.Router();
 
@@ -77,12 +78,14 @@ router.delete(
 router.get(
   '/random/list',
   PaginationMiddleware,
+  ProductListFilterMiddleware,
   controller.getRandomList
 );
 
 router.get(
   '/recommended/list',
   PaginationMiddleware,
+  ProductListFilterMiddleware,
   controller.getListByRecommeded
 );
 
@@ -92,6 +95,7 @@ router.get(
   ValidationMiddleware,
   SearchParamsMiddleware,
   PaginationMiddleware,
+  ProductListFilterMiddleware,
   controller.getListBySearch
 );
 
@@ -110,6 +114,7 @@ router.get(
   OptionalAuthMiddleware,
   ProductFetchPermissionMiddleware,
   PaginationMiddleware,
+  ProductListFilterMiddleware,
   controller.getRelatedList
 );
 
@@ -122,4 +127,3 @@ router.get(
 );
 
 module.exports = router;
-

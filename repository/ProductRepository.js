@@ -11,7 +11,6 @@ const SubCategory = require("../models/SubCategory");
 const User = require("../models/User");
 const sequelize = require("./DB");
 
-
 module.exports = {
 
   async idExists(id) {
@@ -56,10 +55,20 @@ module.exports = {
         {
           model: Store,
           attributes: ['id'],
-          include: {
-            model: User,
-            attributes: User.GET_ATTR
-          }
+          include: [
+            {
+              model: User,
+              attributes: User.GET_ATTR
+            },
+            {
+              model: SubCategory,
+              attributes: SubCategory.GET_ATTR,
+              include: {
+                model: Category,
+                attributes: Category.GET_ATTR,
+              }
+            },
+          ]
         },
         {
           model: ProductVariant,
@@ -88,10 +97,20 @@ module.exports = {
         include: [
           {
             model: Store,
-            include: {
-              model: User,
-              attributes: User.GET_ATTR
-            }
+            include: [
+              {
+                model: User,
+                attributes: User.GET_ATTR
+              },
+              {
+                model: SubCategory,
+                attributes: SubCategory.GET_ATTR,
+                include: {
+                  model: Category,
+                  attributes: Category.GET_ATTR,
+                }
+              },
+            ]
           },
           {
             model: SubCategory,
@@ -141,18 +160,28 @@ module.exports = {
     });
   },
 
-  getRandomList(limit) {
+  getRandomList(limit, options) {
     return sequelize.transaction(async (transaction)=> {
 
       const rows = await Product.findAll({
-        where: { '$store.user.status$': User.STATUS_ACTIVE },
+        where: { '$store.user.status$': User.STATUS_ACTIVE, ...options },
         include: [
           {
             model: Store,
-            include: {
-              model: User,
-              attributes: User.GET_ATTR
-            }
+            include: [
+              {
+                model: User,
+                attributes: User.GET_ATTR
+              },
+              {
+                model: SubCategory,
+                attributes: SubCategory.GET_ATTR,
+                include: {
+                  model: Category,
+                  attributes: Category.GET_ATTR,
+                }
+              },
+            ]
           },
           {
             model: SubCategory,
@@ -174,21 +203,32 @@ module.exports = {
     });
   },
 
-  getListByRecommended(limit) {
+  getListByRecommended(limit, options) {
     return sequelize.transaction(async (transaction)=> {
 
       const rows = await Product.findAll({
         where: { 
           recommended: true,
-          '$store.user.status$': User.STATUS_ACTIVE 
+          '$store.user.status$': User.STATUS_ACTIVE,
+          ...options
         },
         include: [
           {
             model: Store,
-            include: {
-              model: User,
-              attributes: User.GET_ATTR
-            }
+            include: [
+              {
+                model: User,
+                attributes: User.GET_ATTR
+              },
+              {
+                model: SubCategory,
+                attributes: SubCategory.GET_ATTR,
+                include: {
+                  model: Category,
+                  attributes: Category.GET_ATTR,
+                }
+              },
+            ]
           },
           {
             model: SubCategory,
@@ -210,9 +250,9 @@ module.exports = {
     });
   },
 
-  getListBySearch(offset, limit, { q, sub_category_id }) {
+  getListBySearch(offset, limit, { q, sub_category_id, ...options }) {
     
-    const where = { '$store.user.status$': User.STATUS_ACTIVE };
+    const where = { '$store.user.status$': User.STATUS_ACTIVE, ...options };
 
     if (q) {
       where.title = { [Op.like]: `%${q}%` };
@@ -229,10 +269,20 @@ module.exports = {
         include: [
           {
             model: Store,
-            include: {
-              model: User,
-              attributes: User.GET_ATTR
-            }
+            include: [
+              {
+                model: User,
+                attributes: User.GET_ATTR
+              },
+              {
+                model: SubCategory,
+                attributes: SubCategory.GET_ATTR,
+                include: {
+                  model: Category,
+                  attributes: Category.GET_ATTR,
+                }
+              },
+            ]
           },
           {
             model: SubCategory,
@@ -255,7 +305,7 @@ module.exports = {
     });
   },
 
-  getRelatedList(product, offset, limit) {
+  getRelatedList(product, offset, limit, options) {
     return sequelize.transaction(async (transaction)=> {
 
       const { count, rows } = await Product.findAndCountAll({
@@ -263,15 +313,26 @@ module.exports = {
           id: { [Op.not]: product.id },
           store_id: product.store.id,
           '$store.user.status$': User.STATUS_ACTIVE,
-          '$sub_category.category.id$': product.sub_category.category.id
+          '$sub_category.category.id$': product.sub_category.category.id,
+          ...options
         },
         include: [
           {
             model: Store,
-            include: {
-              model: User,
-              attributes: User.GET_ATTR
-            }
+            include: [
+              {
+                model: User,
+                attributes: User.GET_ATTR
+              },
+              {
+                model: SubCategory,
+                attributes: SubCategory.GET_ATTR,
+                include: {
+                  model: Category,
+                  attributes: Category.GET_ATTR,
+                }
+              },
+            ]
           },
           {
             model: SubCategory,

@@ -17,4 +17,15 @@ module.exports = {
     }
   },
 
+  description: {
+    optional: true
+  },
+
+  hide_products: {
+    notEmpty: ValidationRules.notEmpty,
+    isBoolean: {
+      bail: true,
+      options: { loose: false },
+    }
+  }
 };

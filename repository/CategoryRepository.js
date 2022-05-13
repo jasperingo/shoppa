@@ -4,7 +4,6 @@ const Product = require("../models/Product");
 const SubCategory = require("../models/SubCategory");
 const sequelize = require("./DB");
 
-
 module.exports = {
 
   async idExists(id) {
@@ -86,12 +85,12 @@ module.exports = {
     return Category.count();
   },
 
-  add({ name, type, description }) {
-    return Category.create({ name, type, description });
+  add({ name, type, description, hide_products }) {
+    return Category.create({ name, type, description, hide_products });
   },
   
-  update(category, { name, description }) {
-    return Category.update({ name, description }, { where: { id: category.id } });
+  update(category, { name, description, hide_products }) {
+    return Category.update({ name, description, hide_products }, { where: { id: category.id } });
   },
   
   updatePhoto(category, photo) {

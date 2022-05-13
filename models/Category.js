@@ -9,7 +9,7 @@ class Category extends Model {
   static TYPE_STORE = 'store';
 
 
-  static GET_ATTR =  ['id', 'name', 'href'];
+  static GET_ATTR =  ['id', 'name', 'href', 'hide_products'];
 
 }
 
@@ -44,6 +44,10 @@ Category.init({
 
   description: {
     type: DataTypes.STRING
+  },
+
+  hide_products: {
+    type: DataTypes.BOOLEAN
   },
 
   created_at: {

@@ -1,5 +1,6 @@
 const { notEmpty, categoryTypeIsIn } = require('../ValidationRules');
 const CategoryRepository = require('../../repository/CategoryRepository');
+const ValidationRules = require('../ValidationRules');
 
 module.exports = {
 
@@ -23,5 +24,13 @@ module.exports = {
 
   description: {
     optional: true
+  },
+
+  hide_products: {
+    notEmpty: ValidationRules.notEmpty,
+    isBoolean: {
+      bail: true,
+      options: { loose: false },
+    }
   }
 };
