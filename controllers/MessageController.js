@@ -90,8 +90,8 @@ module.exports = class MessageController {
       );
       
       const recipients = result.map(chat => {
-        const content = chat.message.content;
-        chat.message.content = content ? decrypt(content) : content;
+        const content = chat.messages[0].content;
+        chat.messages[0].content = content ? decrypt(content) : content;
         return chat;
       });
       
@@ -100,6 +100,7 @@ module.exports = class MessageController {
       socket.emit('message_recipients', reponse);
       
     } catch(error) {
+      console.log(error)
       socket.emit('message_recipients', ResponseDTO.error(ResponseDTO.ERROR));
     }
   }
