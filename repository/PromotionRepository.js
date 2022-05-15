@@ -36,8 +36,8 @@ module.exports = {
     });
   },
 
-  create({ title, link, link_type, amount, duration }) {
-    return Promotion.create({ title, link, link_type, amount, duration });
+  create({ title, link, call_to_action, amount, duration }) {
+    return Promotion.create({ title, link, call_to_action, amount, duration });
   },
 
   updatePhoto(promotion, photo) {

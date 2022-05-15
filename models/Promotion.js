@@ -23,7 +23,7 @@ Promotion.init({
     allowNull: false
   },
 
-  link_type: {
+  call_to_action: {
     type: DataTypes.STRING,
     allowNull: false
   },

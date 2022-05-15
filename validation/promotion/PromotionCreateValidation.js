@@ -15,7 +15,7 @@ const PromotionCreateValidation = {
     }
   },
 
-  link_type: {
+  call_to_action: {
     notEmpty: ValidationRules.notEmpty
   },
 
