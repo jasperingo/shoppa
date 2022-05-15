@@ -17,6 +17,7 @@ module.exports = class EmailVerificationController {
         EmailService.EMAIL_VERIFICATION, 
         { 
           name: user.name,
+          type: user.type,
           token: user.email_verification_token
         }
       );
